@@ -1,0 +1,35 @@
+.table-container {
+  width: 100%;
+  overflow-x: hidden; /* Disable horizontal scrolling */
+}
+
+.table {
+  table-layout: auto; /* Allow the table to auto-adjust its layout */
+  width: 100%;
+  border-collapse: collapse; /* Ensures no unwanted spaces between cells */
+}
+
+th, td {
+  text-align: center;
+  padding: 12px; /* Adjust padding for better readability */
+  white-space: nowrap; /* Prevent text wrapping */
+  font-size: 1rem; /* Set a consistent font size */
+}
+
+thead {
+  background-color: #343a40;
+  color: white;
+  font-size: 1.1rem; /* Ensure the headings are readable */
+}
+
+th {
+  font-weight: bold; /* Make headings bold */
+}
+
+table, th, td {
+  border: 1px solid #ddd; /* Add borders around cells */
+}
+
+table td {
+  overflow: hidden; /* Hide any text overflow */
+}

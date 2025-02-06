@@ -1,0 +1,28 @@
+.form-layout {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .form-layout .form-label {
+    font-weight: bold;
+  }
+  
+  .form-layout .form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px;
+  }
+  
+  .form-layout button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 12px;
+    border-radius: 4px;
+  }
+  
+  .form-layout button:hover {
+    background-color: #0056b3;
+  }
+  
