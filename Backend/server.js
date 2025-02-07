@@ -11,6 +11,13 @@ const path = require('path');
 const customizedLeaveRoute = require('./routes/customizesleaveRoute');
 
 const app = express();
+app.use(cors(
+  {
+    origin:["https://deploy-mern-1whq.vercel.app"],
+    methods:["POST","GET"],
+    credentials:true
+  }
+  ));
 const PORT = 8080; // Default port
 
 // Middleware
