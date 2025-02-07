@@ -21,7 +21,8 @@ app.use(cors(
 const PORT = 8080; // Default port
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes (allow requests from any origin)
+//app.use(cors());
+// Enable CORS for all routes (allow requests from any origin)
 app.use(express.json()); // Allow body parsing for JSON data
 
 app.use(express.urlencoded({ extended: true })); // Fix empty req.body issue 
