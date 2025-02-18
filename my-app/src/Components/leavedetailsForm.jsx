@@ -63,24 +63,20 @@ const LeaveDetailsForm = () => {
   const calculateLeaveDays = () => {
     const start = new Date(startDate);
     const end = new Date(endDate);
-    let totalDays = 0;
-
+  
     if (start > end) {
       setMessage("Start date cannot be later than end date.");
+      setNumOfDays(0);
       return;
     }
-
-    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-      const dayOfWeek = d.getDay();
-      if (leaveType === 'CL' && dayOfWeek !== 0) {
-        totalDays++;
-      } else if (leaveType === 'ML' || leaveType === 'PL') {  // Updated to PL
-        totalDays++;
-      }
-    }
-
+  
+    // Calculate the difference in days (inclusive)
+    const timeDifference = end.getTime() - start.getTime();
+    const totalDays = Math.ceil(timeDifference / (1000 * 60 * 60 * 24)) + 1; 
+  
     setNumOfDays(totalDays);
   };
+  
 
   const handleAttachmentChange = (e) => {
     setAttachments(e.target.files);

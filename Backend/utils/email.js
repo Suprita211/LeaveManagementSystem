@@ -21,334 +21,193 @@ const formatDate = (date) => {
   return `${day}/${month}/${year}`;
 };
 
+
+
+// const sendLeaveRequestNotification = async (leaveRequest, leaveBalance) => {
+//   const adminEmail = 'groupproject366@gmail.com';
+
+//   try {
+//     // Fetch company name using employee ID
+//     const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+
+//     if (!employee) {
+//       console.error(`Employee not found for ID: ${leaveRequest.employeeId}`);
+//       return;
+//     }
+
+//     const companyName = employee.CompanyName; // Get Company Name
+//     const formattedFromDate = formatDate(leaveRequest.fromDate);
+//     const formattedToDate = formatDate(leaveRequest.toDate);
+
+//     // Dynamically get available leave balance based on leave type
+//     let leaveBalanceHtml = '';
+//     if (leaveBalance[leaveRequest.leaveType]) {
+//       if (typeof leaveBalance[leaveRequest.leaveType] === 'object') {
+//         leaveBalanceHtml = `
+//           <p><strong>${leaveRequest.leaveType} Details:</strong></p>
+//           <ul>
+//             ${Object.entries(leaveBalance[leaveRequest.leaveType])
+//               .map(([key, value]) => `<li><strong>${key.replace(/([A-Z])/g, ' $1')}:</strong> ${value}</li>`)
+//               .join('')}
+//           </ul>
+//         `;
+//       } else {
+//         leaveBalanceHtml = `<p><strong>Available ${leaveRequest.leaveType}:</strong> ${leaveBalance[leaveRequest.leaveType]}</p>`;
+//       }
+//     }
+
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: adminEmail,
+//       subject: 'New Leave Request',
+//       html: `
+//         <html>
+//           <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+//             <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+//               <h2 style="text-align: center; color: #2e6da4;">New Leave Request</h2>
+//               <div style="border: 2px solid #007bff; padding: 20px; border-radius: 5px; margin-top: 20px;">
+//                 <p><strong>Company Name:</strong> ${companyName}</p>
+//                 <p><strong>Leave Type:</strong> ${leaveRequest.leaveType}</p>
+//                 <p><strong>Employee ID:</strong> ${leaveRequest.employeeId}</p>
+//                 <p><strong>Employee Name:</strong> ${leaveRequest.name}</p>
+//                 <p><strong>Designation:</strong> ${leaveRequest.designation}</p>
+//                 <p><strong>Period:</strong> 
+//                   <span><strong>From:</strong> ${formattedFromDate}</span>
+//                   <span style="margin-left: 20px;"><strong>To:</strong> ${formattedToDate}</span>
+//                 </p>
+//                 <p><strong>Number of Days:</strong> ${leaveRequest.numOfDays}</p>
+//                 <p><strong>Reason for Leave:</strong> ${leaveRequest.reason}</p>
+//                 ${leaveBalanceHtml}
+//                 <div style="margin-top: 20px;">
+//                   ${leaveRequest.attachments && leaveRequest.attachments.length > 0
+//                     ? `<p><strong>Attachments:</strong> ${leaveRequest.attachments.map(file => {
+//                         const fileName = file.split('/').pop(); // Get only the file name
+//                         return `<a href="${file}" target="_blank">${fileName}</a>`;
+//                       }).join(', ')}</p>`
+//                     : `<p><strong>Attachments:</strong> None</p>`
+//                   }
+//                 </div>
+//               </div>
+//               <div style="margin-top: 20px; padding: 10px; background-color: #f1f1f1; border-radius: 5px; text-align: center;">
+//                 <p style="margin: 0; font-size: 14px; color: #888;">Please review the leave request.</p>
+//               </div>
+//             </div>
+//           </body>
+//         </html>
+//       `,
+//       attachments: leaveRequest.attachments
+//         ? leaveRequest.attachments.map(file => ({
+//             filename: file.split('/').pop(), // Attach only file name
+//             path: file
+//           }))
+//         : [],
+//     };
+
+//     await transporter.sendMail(mailOptions);
+//     console.log('Leave request notification sent!');
+
+//   } catch (error) {
+//     console.error('Error fetching company name or sending email:', error);
+//   }
+// };
 const sendLeaveRequestNotification = async (leaveRequest, leaveBalance) => {
   const adminEmail = 'groupproject366@gmail.com';
 
-  const formattedFromDate = formatDate(leaveRequest.fromDate);
-  const formattedToDate = formatDate(leaveRequest.toDate);
+  try {
+    // Fetch company name using employee ID
+    const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
 
-  // Get available leave balance based on the leave type
-  let leaveBalanceHtml = '';
-  if (leaveRequest.leaveType === 'CL') {
-    leaveBalanceHtml = `<p><strong>Available Casual Leave (CL):</strong> ${leaveBalance.CL}</p>`;
-  } else if (leaveRequest.leaveType === 'ML') {
-    leaveBalanceHtml = `<p><strong>Available Medical Leave (ML):</strong> ${leaveBalance.ML}</p>`;
-  } else if (leaveRequest.leaveType === 'SL') {
-    leaveBalanceHtml = `
-      <p><strong>Sick Leave (SL) Details:</strong></p>
-      <ul>
-        <li><strong>Days Taken:</strong> ${leaveBalance.SL.daysTaken}</li>
-        <li><strong>Times Taken:</strong> ${leaveBalance.SL.timesTaken}</li>
-      </ul>
-    `;
-  }
+    if (!employee) {
+      console.error(`Employee not found for ID: ${leaveRequest.employeeId}`);
+      return;
+    }
 
-  const mailOptions = {
-    from: 'suprita213@gmail.com',
-    to: adminEmail,
-    subject: 'New Leave Request',
-    html: `
-      <html>
-        <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
-          <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-            <h2 style="text-align: center; color: #2e6da4;">New Leave Request</h2>
-            <div style="border: 2px solid #007bff; padding: 20px; border-radius: 5px; margin-top: 20px;">
-              <p><strong>Leave Type:</strong> ${leaveRequest.leaveType}</p>
-              <p><strong>Employee ID:</strong> ${leaveRequest.employeeId}</p>
-              <p><strong>Employee Name:</strong> ${leaveRequest.name}</p>
-              <p><strong>Designation:</strong> ${leaveRequest.designation}</p>
-              <p><strong>Period:</strong> 
-                <span><strong>From:</strong> ${formattedFromDate}</span>
-                <span style="margin-left: 20px;"><strong>To:</strong> ${formattedToDate}</span>
-              </p>
-              <p><strong>Number of Days:</strong> ${leaveRequest.numOfDays}</p>
-              <p><strong>Reason for Leave:</strong> ${leaveRequest.reason}</p>
-              ${leaveBalanceHtml}
-              <div style="margin-top: 20px;">
-                ${leaveRequest.attachments && leaveRequest.attachments.length > 0
-                  ? `<p><strong>Attachments:</strong> ${leaveRequest.attachments.map(file => {
-                      const fileName = file.split('/').pop(); // Get only the file name
-                      return `<a href="${file}" target="_blank">${fileName}</a>`;
-                    }).join(', ')}</p>`
-                  : `<p><strong>Attachments:</strong> None</p>`
-                }
+    const companyName = employee.CompanyName; // Get Company Name
+    const formattedFromDate = formatDate(leaveRequest.fromDate);
+    const formattedToDate = formatDate(leaveRequest.toDate);
+
+    // Dynamically get available leave balance based on leave type
+    let leaveBalanceHtml = '';
+    if (leaveBalance[leaveRequest.leaveType]) {
+      if (typeof leaveBalance[leaveRequest.leaveType] === 'object') {
+        leaveBalanceHtml = `
+          <p><strong>${leaveRequest.leaveType} Details:</strong></p>
+          <ul>
+            ${Object.entries(leaveBalance[leaveRequest.leaveType])
+              .map(([key, value]) => `<li><strong>${key.replace(/([A-Z])/g, ' $1')}:</strong> ${value}</li>`)
+              .join('')}
+          </ul>
+        `;
+      } else {
+        leaveBalanceHtml = `<p><strong>Available ${leaveRequest.leaveType}:</strong> ${leaveBalance[leaveRequest.leaveType]}</p>`;
+      }
+    }
+
+    const mailOptions = {
+      from: 'suprita213@gmail.com',
+      to: adminEmail,
+      subject: 'New Leave Request',
+      html: `
+        <html>
+          <body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
+            <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+              <h2 style="text-align: center; color: #2e6da4;">New Leave Request</h2>
+              <div style="border: 2px solid #007bff; padding: 20px; border-radius: 5px; margin-top: 20px;">
+                <p><strong>Company Name:</strong> ${companyName}</p>
+                
+                <!-- Two-column layout -->
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="width: 50%; vertical-align: top; padding: 5px;">
+                      <p><strong>Employee ID:</strong> ${leaveRequest.employeeId}</p>
+                      <p><strong>Employee Name:</strong> ${leaveRequest.name}</p>
+                      <p><strong>Designation:</strong> ${leaveRequest.designation}</p>
+                      <p><strong>Leave Type:</strong> ${leaveRequest.leaveType}</p>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; padding: 5px;">
+                      <p><strong>From:</strong> ${formattedFromDate}</p>
+                      <p><strong>To:</strong> ${formattedToDate}</p>
+                      <p><strong>Number of Days:</strong> ${leaveRequest.numOfDays}</p>
+                      <p><strong>Reason:</strong> ${leaveRequest.reason}</p>
+                    </td>
+                  </tr>
+                </table>
+
+                ${leaveBalanceHtml}
+
+                <div style="margin-top: 20px;">
+                  ${leaveRequest.attachments && leaveRequest.attachments.length > 0
+                    ? `<p><strong>Attachments:</strong> ${leaveRequest.attachments.map(file => {
+                        const fileName = file.split('/').pop(); // Get only the file name
+                        return `<a href="${file}" target="_blank">${fileName}</a>`;
+                      }).join(', ')}</p>`
+                    : `<p><strong>Attachments:</strong> None</p>`
+                  }
+                </div>
+              </div>
+
+              <div style="margin-top: 20px; padding: 10px; background-color: #f1f1f1; border-radius: 5px; text-align: center;">
+                <p style="margin: 0; font-size: 14px; color: #888;">Please review the leave request.</p>
               </div>
             </div>
-            <div style="margin-top: 20px; padding: 10px; background-color: #f1f1f1; border-radius: 5px; text-align: center;">
-              <p style="margin: 0; font-size: 14px; color: #888;">Please review the leave request.</p>
-            </div>
-          </div>
-        </body>
-      </html>
-    `,
-    attachments: leaveRequest.attachments
-      ? leaveRequest.attachments.map(file => ({
-          filename: file.split('/').pop(), // Attach only file name
-          path: file
-        }))
-      : [],
-  };
+          </body>
+        </html>
+      `,
+      attachments: leaveRequest.attachments
+        ? leaveRequest.attachments.map(file => ({
+            filename: file.split('/').pop(), // Attach only file name
+            path: file
+          }))
+        : [],
+    };
 
-  try {
     await transporter.sendMail(mailOptions);
     console.log('Leave request notification sent!');
+
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('Error fetching company name or sending email:', error);
   }
 };
-
-
-// Function to send email to employee on leave request approval/rejection
-
-// const sendLeaveDecisionNotification = async (leaveRequest) => {
-//   const adminEmail = 'groupproject366@gmail.com';
-
-//   const formattedFromDate = formatDate(leaveRequest.fromDate);
-//   const formattedToDate = formatDate(leaveRequest.toDate);
-
-//   // Find the employee details by EmpID
-//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
-
-//   if (!employee) {
-//     console.error('Employee not found!');
-//     return; // Exit if employee is not found
-//   }
-
-//   const employeeEmail = employee.EmployeeEmailID; // Get employee email from the employee record
-//   const department=employee.Department;
-
-//   let remainingBalance = 'N/A';
-//   if (employee) {
-//     switch (leaveRequest.leaveType) {
-//       case 'CL':
-//         remainingBalance = employee.CL;
-//         break;
-//       case 'ML':
-//         remainingBalance = employee.ML;
-//         break;
-//       case 'SL':
-//         remainingBalance = '';  // No remaining balance for Sick Leave
-//         break;
-//     }
-//   }
-
-//   const mailOptions = {
-//     from: 'suprita213@gmail.com',
-//     to: employeeEmail,  // Send the email to the employee's email
-//     subject: `Leave Request ${leaveRequest.approvalStatus}`,
-//     html: `
-//    <html>
-//   <body style="font-family: Arial, sans-serif; padding: 10px; background-color: #f9f9f9;">
-//     <div style="max-width: 650px; margin: auto; background-color: #ffffff; padding: 5px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-      
-//       <!-- Outer container for the slip -->
-//       <div style="border: 2px solid #007bff; padding: 5px; border-radius: 8px; width: 100%;"> 
-
-//         <!-- Title inside the slip -->
-//         <h2 style="text-align: center; color: #2e6da4; margin-bottom: 5px;">Leave Application Form</h2>
-
-//         <!-- Leave Type -->
-//         <p style="font-size: 16px; font-weight: bold; margin: 0;"><strong>Leave Type:</strong> ${leaveRequest.leaveType}</p>
-
-//         <!-- Employee Details (Employee ID and Name in the same line) -->
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Employee ID:</strong> ${leaveRequest.employeeId}</p></div>
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Employee Name:</strong> ${leaveRequest.name}</p></div>
-//         </div>
-
-//         <!-- Department and Designation (In the same line) -->
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Department:</strong> ${department}</p></div>
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Designation:</strong> ${leaveRequest.designation}</p></div>
-//         </div>
-
-//         <!-- Period of Leave (From and To in the same line) -->
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>From:</strong> ${formattedFromDate}</p></div>
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>To:</strong> ${formattedToDate}</p></div>
-//         </div>
-
-//         <!-- Number of Days and Available Balance (In the same line for CL and ML only) -->
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Number of Days:</strong> ${leaveRequest.numOfDays}</p></div>
-//           ${leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML' 
-//             ? `<div style="width: 48%;"><p style="margin: 0;"><strong>Available Balance:</strong> ${remainingBalance}</p></div>` 
-//             : ''}
-//         </div>
-
-//         <!-- Reason for Leave -->
-//         <p style="font-size: 16px; font-weight: bold; margin: 0;"><strong>Reason for Leave:</strong> ${leaveRequest.reason}</p>
-
-//         <!-- Approved with Remarks Section -->
-//         <h4 style="margin: 10px 0 5px;">Approved with Remarks:</h4> <!-- Added some space below the title -->
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Reporting Head Signature:</strong> ${leaveRequest.reportingHeadSignature || 'Not Provided'}</p></div>
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Comment:</strong> ${leaveRequest.reportingHeadReason || 'Not Provided'}</p></div>
-//         </div>
-//         <div style="display: flex; justify-content: space-between; margin: 0;">
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Sanctioning Authority Signature:</strong> ${leaveRequest.sanctioningAuthoritySignature || 'Not Provided'}</p></div>
-//           <div style="width: 48%;"><p style="margin: 0;"><strong>Comment:</strong> ${leaveRequest.sanctioningAuthorityReason || 'Not Provided'}</p></div>
-//         </div>
-
-//         <!-- Attachments Section -->
-//         <div style="margin-top: 5px;">
-//           ${leaveRequest.attachments && leaveRequest.attachments.length > 0
-//             ? `<p style="margin: 0;"><strong>Attachments:</strong> ${leaveRequest.attachments.map(file => `<a href="${file}" target="_blank">${file}</a>`).join(', ')}</p>`
-//             : `<p style="margin: 0;"><strong>Attachments:</strong> None</p>`}
-//         </div>
-
-//       </div>
-
-//       <!-- Footer message -->
-//       <div style="margin-top: 5px; padding: 5px; background-color: #f1f1f1; border-radius: 5px; text-align: center;">
-//         <p style="margin: 0; font-size: 12px; color: #888;">Your leave request has been ${leaveRequest.approvalStatus}. Please review the decision.</p>
-//       </div>
-//     </div>
-//   </body>
-// </html>
-
-
-//     `,
-//     attachments: leaveRequest.attachments ? leaveRequest.attachments.map(file => ({
-//       filename: file.split('/').pop(),
-//       path: file
-//     })) : [],
-//   };
-
-//   try {
-//     await transporter.sendMail(mailOptions);
-//     console.log('Leave decision notification sent!');
-//   } catch (error) {
-//     console.error('Error sending email:', error);
-//   }
-// };
-
-// const sendLeaveDecisionNotification = async (leaveRequest) => {
-//   const formattedFromDate = formatDate(leaveRequest.fromDate);
-//   const formattedToDate = formatDate(leaveRequest.toDate);
-
-//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
-//   if (!employee) {
-//     console.error('Employee not found!');
-//     return;
-//   }
-
-//   const employeeEmail = employee.EmployeeEmailID;
-//   const department = employee.Department;
-
-//   let remainingBalance = 'N/A';
-//   if (employee) {
-//     switch (leaveRequest.leaveType) {
-//       case 'CL':
-//         remainingBalance = employee.CL;
-//         break;
-//       case 'ML':
-//         remainingBalance = employee.ML;
-//         break;
-//       case 'SL':
-//         remainingBalance = '';
-//         break;
-//     }
-//   }
-
-//   // Generate PDF
-//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
-//   const doc = new PDFDocument({ size: [600, 470], margin: 30 }); // Custom slip size
-//   const writeStream = fs.createWriteStream(pdfPath);
-//   doc.pipe(writeStream);
-
-//   // Border Box for Slip
-//   doc.rect(30, 30, 540, 370).stroke('#007bff');
-
-//   // Title Inside the Border Box
-//   doc.fontSize(18).fillColor('#2e6da4')
-//     .text('Leave Application Form', 30, 55, { width: 540, align: 'center' })
-//     .moveDown(0.5);
-
-//   // Leave Type
-//   doc.fontSize(12).fillColor('black').text(`Leave Type: ${leaveRequest.leaveType}`, 40, 90);
-
-//   // Employee Details
-//   doc.fontSize(10)
-//     .text(`Employee ID: ${leaveRequest.employeeId}`, 40, 110)
-//     .text(`Employee Name: ${leaveRequest.name}`, 280, 110);
-
-//   doc.text(`Department: ${department}`, 40, 130)
-//     .text(`Designation: ${leaveRequest.designation}`, 280, 130);
-
-//   // Leave Duration
-//   doc.text(`From: ${formattedFromDate}`, 40, 150)
-//     .text(`To: ${formattedToDate}`, 280, 150);
-
-//   // Number of Days & Balance
-//   doc.text(`Days: ${leaveRequest.numOfDays}`, 40, 170);
-//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
-//     doc.text(`Remaining Balance: ${remainingBalance}`, 280, 170);
-//   }
-
-//   // Reason for Leave
-//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', 40, 190);
-//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, 40, 205, { width: 500 });
-
-//   // Approval Remarks
-//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', 40, 230);
-//   doc.fontSize(10).fillColor('black')
-//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, 40, 245)
-//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, 280, 245)
-//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, 40, 265)
-//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, 280, 265);
-
-//   // Attachments
-//   doc.moveDown(0.5);
-//   doc.fontSize(10).fillColor('#2e6da4').text('Attachments:', 40, 290);
-//   doc.fillColor('black');
-//   if (leaveRequest.attachments && leaveRequest.attachments.length > 0) {
-//     doc.text(leaveRequest.attachments.map(file => file.split('/').pop()).join(', '), 100, 290);
-//   } else {
-//     doc.text('None', 100, 290);
-//   }
-
-//   // Footer Message
-//   doc.moveDown(1);
-//   doc.fontSize(10).fillColor('#888')
-//     .text(`Leave request ${leaveRequest.approvalStatus}`, { align: 'center' });
-
-//   doc.end();
-
-//   writeStream.on('finish', async () => {
-//     const mailOptions = {
-//       from: 'suprita213@gmail.com',
-//       to: employeeEmail,
-//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
-//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
-//       attachments: [
-//         {
-//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
-//           path: pdfPath,
-//         },
-//         ...(leaveRequest.attachments
-//           ? leaveRequest.attachments.map(file => ({
-//               filename: file.split('/').pop(),
-//               path: file,
-//             }))
-//           : []),
-//       ],
-//     };
-
-//     try {
-//       await transporter.sendMail(mailOptions);
-//       console.log('Leave decision notification sent with PDF attachment!');
-
-//       // Delete PDF after sending
-//       fs.unlink(pdfPath, (err) => {
-//         if (err) console.error('Error deleting PDF:', err);
-//       });
-
-//     } catch (error) {
-//       console.error('Error sending email:', error);
-//     }
-//   });
-// };
 
 
 // const sendLeaveDecisionNotification = async (leaveRequest) => {
@@ -462,9 +321,1051 @@ const sendLeaveRequestNotification = async (leaveRequest, leaveBalance) => {
 // };
 
 
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   if (employee) {
+//     switch (leaveRequest.leaveType) {
+//       case 'CL':
+//         remainingBalance = employee.CL;
+//         break;
+//       case 'ML':
+//         remainingBalance = employee.ML;
+//         break;
+//       case 'SL':
+//         remainingBalance = '';
+//         break;
+//     }
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 295], margin: 30 }); // Slightly increased height
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   // Border Box for Slip
+//   doc.rect(30, 30, 540, 235).stroke('#007bff'); // Adjusted height
+
+//   // Title - PIONEER GROUP (Bold, Italic, Centered)
+//   doc.font('Helvetica-BoldOblique') // Bold & Italic
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', 30, 35, { width: 540, align: 'center' });
+
+//   // Leave Application Form Title with Space Below
+//   doc.font('Helvetica-Bold') // Regular Bold
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('Leave Application Form', 30, 55, { width: 540, align: 'center' });
+
+//   doc.moveDown(0.5); // Adds space below Leave Application Form
+
+//   // Leave Type
+//   doc.fontSize(12).fillColor('black').text(`Leave Type: ${leaveRequest.leaveType}`, 40, 75);
+
+//   // Employee Details
+//   doc.fontSize(10)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, 40, 95)
+//     .text(`Employee Name: ${leaveRequest.name}`, 280, 95)
+//     .text(`Department: ${department}`, 40, 115)
+//     .text(`Designation: ${leaveRequest.designation}`, 280, 115);
+
+//   // Leave Duration
+//   doc.text(`From: ${formattedFromDate}`, 40, 135)
+//     .text(`To: ${formattedToDate}`, 280, 135);
+
+//   // Number of Days & Balance
+//   doc.text(`Number of Days: ${leaveRequest.numOfDays}`, 40, 155);
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, 280, 155);
+//   }
+
+//   // Reason for Leave
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', 40, 175);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, 40, 190, { width: 500 });
+
+//   // Approval Remarks with Extra Space Below Heading
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', 40, 210);
+//   doc.moveDown(0.5); // Adds a little extra space below "Approval Remarks"
+
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, 40, 225)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, 280, 225)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, 40, 245)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, 280, 245);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: employeeEmail,
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//         ...(leaveRequest.attachments
+//           ? leaveRequest.attachments.map(file => ({
+//               filename: file.split('/').pop(),
+//               path: file,
+//             }))
+//           : []),
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+
+//       // Delete PDF after sending
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 295], margin: 30 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   // Border Box for Slip
+//   doc.rect(30, 30, 540, 235).stroke('#007bff');
+
+//   // Title - PIONEER GROUP
+//   doc.font('Helvetica-Bold')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', 30, 35, { width: 540, align: 'center' });
+
+//   // Leave Application Form Title
+//   doc.font('Times-Roman')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('Leave Application Form', 30, 55, { width: 540, align: 'center' });
+
+//   doc.moveDown(1.5);
+
+//   // Employee & Leave Details
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, 40, 75)
+//     .fontSize(10)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, 40, 95)
+//     .text(`Employee Name: ${leaveRequest.name}`, 280, 95)
+//     .text(`Department: ${department}`, 40, 115)
+//     .text(`Designation: ${leaveRequest.designation}`, 280, 115)
+//     .text(`From: ${formattedFromDate}`, 40, 135)
+//     .text(`To: ${formattedToDate}`, 280, 135)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, 40, 155);
+  
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, 280, 155);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', 40, 175);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, 40, 190, { width: 500 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', 40, 210);
+//   doc.moveDown(1.5);
+
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, 40, 225)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, 280, 225)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, 40, 245)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, 280, 245);
+//     doc.moveDown(0.6);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'], // Sending to both employee and accounts department
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//         ...(leaveRequest.attachments
+//           ? leaveRequest.attachments.map(file => ({ filename: file.split('/').pop(), path: file }))
+//           : []),
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+
+//       // Delete PDF after sending
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 295], margin: 30 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   // 📌 Add Image (Top Left Corner)
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     console.log('Logo found. Adding to PDF.');
+//     doc.image(logoPath, 40, 35, { width: 60 }); // Adjust position & width if needed
+//   } else {
+//     console.error('Logo image not found at:', logoPath);
+//   }
+
+//   // Border Box for Slip
+//   doc.rect(30, 30, 540, 235).stroke('#007bff');
+
+//   // Title - PIONEER GROUP (Shifted Right)
+//   doc.font('Helvetica-Bold')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', 120, 35, { width: 450, align: 'center' });
+
+//   // Leave Application Form Title
+//   doc.font('Times-Roman')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('Leave Application Form', 120, 55, { width: 450, align: 'center' });
+
+//   doc.moveDown(1.5);
+
+//   // Employee & Leave Details
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, 40, 75)
+//     .fontSize(10)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, 40, 95)
+//     .text(`Employee Name: ${leaveRequest.name}`, 280, 95)
+//     .text(`Department: ${department}`, 40, 115)
+//     .text(`Designation: ${leaveRequest.designation}`, 280, 115)
+//     .text(`From: ${formattedFromDate}`, 40, 135)
+//     .text(`To: ${formattedToDate}`, 280, 135)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, 40, 155);
+
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, 280, 155);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', 40, 175);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, 40, 190, { width: 500 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', 40, 210);
+//   doc.moveDown(1.5);
+
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, 40, 225)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, 280, 225)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, 40, 245)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, 280, 245);
+
+//   doc.moveDown(0.6);
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+
+//       // Delete PDF after sending
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 350], margin: 30 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   // Border Box (Centered)
+//   const centerX = 300; // Half of 600
+//   const formWidth = 450;
+//   const startX = centerX - formWidth / 2;
+//   const startY = 50;
+
+//   doc.rect(startX, startY, formWidth, 250).stroke('#007bff');
+
+//   // 📌 Add Image (Top Left Inside Slip)
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     console.log('Logo found. Adding to PDF.');
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 }); // Adjust position inside the slip
+//   } else {
+//     console.error('Logo image not found at:', logoPath);
+//   }
+
+//   // Title - PIONEER GROUP (Centered)
+//   doc.font('Helvetica-Bold')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   // Leave Application Form Title
+//   doc.font('Times-Roman')
+//     .fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 30, { width: formWidth, align: 'center' });
+
+//   // Employee & Leave Details (Centered)
+//   const detailStartY = startY + 60;
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX + 20, detailStartY)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, detailStartY + 20)
+//     .text(`Employee Name: ${leaveRequest.name}`, startX + 230, detailStartY + 20)
+//     .text(`Department: ${department}`, startX + 20, detailStartY + 40)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 230, detailStartY + 40)
+//     .text(`From: ${formattedFromDate}`, startX + 20, detailStartY + 60)
+//     .text(`To: ${formattedToDate}`, startX + 230, detailStartY + 60)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 20, detailStartY + 80);
+
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, startX + 230, detailStartY + 80);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, detailStartY + 100);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, detailStartY + 115, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, detailStartY + 140);
+//   doc.moveDown(1.5);
+
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, detailStartY + 160)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 230, detailStartY + 160)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, detailStartY + 180)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 230, detailStartY + 180);
+
+//   doc.moveDown(0.6);
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+
+//       // Delete PDF after sending
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 350], margin: 30 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   // Border Box (Centered)
+//   const centerX = 300; // Half of 600
+//   const formWidth = 450;
+//   const startX = centerX - formWidth / 2;
+//   const startY = 50;
+
+//   doc.rect(startX, startY, formWidth, 250).stroke('#007bff');
+
+//   // 📌 Add Image (Top Left Inside Slip)
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     console.log('Logo found. Adding to PDF.');
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 }); // Adjust position inside the slip
+//   } else {
+//     console.error('Logo image not found at:', logoPath);
+//   }
+
+//   // Title - PIONEER GROUP (Centered)
+//   doc.font('Helvetica-Bold')
+//     .fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   // Address Lines (Centered)
+//   doc.font('Helvetica')
+//     .fontSize(10).fillColor('black')
+//     .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+//     .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+//     .fillColor('blue').text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center', link: 'mailto:pioneer.surveyors@gmail.com' })
+//     .fillColor('black');
+
+//   // Leave Application Form Title
+//   doc.font('Times-Roman')
+//     .fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 80, { width: formWidth, align: 'center' });
+
+//   // Employee & Leave Details (Centered)
+//   const detailStartY = startY + 110;
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX + 20, detailStartY)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, detailStartY + 20)
+//     .text(`Employee Name: ${leaveRequest.name}`, startX + 230, detailStartY + 20)
+//     .text(`Department: ${department}`, startX + 20, detailStartY + 40)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 230, detailStartY + 40)
+//     .text(`From: ${formattedFromDate}`, startX + 20, detailStartY + 60)
+//     .text(`To: ${formattedToDate}`, startX + 230, detailStartY + 60)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 20, detailStartY + 80);
+
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, startX + 230, detailStartY + 80);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, detailStartY + 100);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, detailStartY + 115, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, detailStartY + 140);
+//   doc.moveDown(1.5);
+
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, detailStartY + 160)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 230, detailStartY + 160)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, detailStartY + 180)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 230, detailStartY + 180);
+
+//   doc.moveDown(0.6);
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+
+//       // Delete PDF after sending
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 400], margin: 20 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   const startX = 50;
+//   const startY = 30;
+//   const formWidth = 500;
+
+//   doc.rect(startX, startY, formWidth, 340).stroke('#007bff');
+
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 });
+//   }
+
+//   doc.font('Helvetica-Bold').fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   doc.font('Helvetica').fontSize(10).fillColor('black')
+//     .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+//     .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+//     .fillColor('blue').text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center', link: 'mailto:pioneer.surveyors@gmail.com' })
+//     .fillColor('black');
+
+//   doc.font('Times-Roman').fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 80, { width: formWidth, align: 'center' });
+
+//   const detailStartY = startY + 110;
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX + 20, detailStartY)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, detailStartY + 20)
+//     .text(`Employee Name: ${leaveRequest.name}`, startX + 250, detailStartY + 20)
+//     .text(`Department: ${department}`, startX + 20, detailStartY + 40)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 250, detailStartY + 40)
+//     .text(`From: ${formattedFromDate}`, startX + 20, detailStartY + 60)
+//     .text(`To: ${formattedToDate}`, startX + 250, detailStartY + 60)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 20, detailStartY + 80);
+
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, startX + 250, detailStartY + 80);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, detailStartY + 100);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, detailStartY + 115, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, detailStartY + 140);
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, detailStartY + 160)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 250, detailStartY + 160)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, detailStartY + 180)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 250, detailStartY + 180);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 400], margin: 20 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   const startX = 50;
+//   const startY = 30;
+//   const formWidth = 500;
+
+//   doc.rect(startX, startY, formWidth, 340).stroke('#007bff');
+
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 });
+//   }
+
+//   doc.font('Helvetica-Bold').fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   doc.font('Helvetica').fontSize(10).fillColor('black')
+//     .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+//     .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+//     .fillColor('blue').text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center', link: 'mailto:pioneer.surveyors@gmail.com' })
+//     .fillColor('black');
+
+//   doc.font('Times-Roman').fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 80, { width: formWidth, align: 'center' });
+
+//   const detailStartY = startY + 110;
+
+//   // Centered Leave Type
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX, detailStartY, { width: formWidth, align: 'center' });
+
+//   doc.text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, detailStartY + 20)
+//     .text(`Employee Name: ${leaveRequest.name}`, startX + 250, detailStartY + 20)
+//     .text(`Department: ${department}`, startX + 20, detailStartY + 40)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 250, detailStartY + 40)
+//     .text(`From: ${formattedFromDate}`, startX + 20, detailStartY + 60)
+//     .text(`To: ${formattedToDate}`, startX + 250, detailStartY + 60)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 20, detailStartY + 80);
+
+//   if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
+//     doc.text(`Remaining Balance: ${remainingBalance}`, startX + 250, detailStartY + 80);
+//   }
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, detailStartY + 100);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, detailStartY + 115, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, detailStartY + 140);
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, detailStartY + 160)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 250, detailStartY + 160)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, detailStartY + 180)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 250, detailStartY + 180);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+//   const formattedApplicationDate = formatDate(leaveRequest.createdAt);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 400], margin: 20 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   const startX = 50;
+//   const startY = 30;
+//   const formWidth = 500;
+
+//   doc.rect(startX, startY, formWidth, 340).stroke('#007bff');
+
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 });
+//   }
+
+//   doc.font('Helvetica-Bold').fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   doc.font('Helvetica').fontSize(10).fillColor('black')
+//     .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+//     .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+//     .fillColor('blue').text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center', link: 'mailto:pioneer.surveyors@gmail.com' })
+//     .fillColor('black');
+
+//   doc.font('Times-Roman').fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 80, { width: formWidth, align: 'center' });
+
+//   const detailStartY = startY + 110;
+
+//   // Centered Leave Type
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX, detailStartY, { width: formWidth, align: 'center' });
+
+//   // Left Side Fields
+//   doc.text(`Employee Name: ${leaveRequest.name}`, startX + 20, detailStartY + 20)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, detailStartY + 40)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 20, detailStartY + 60)
+//     .text(`Department: ${department}`, startX + 20, detailStartY + 80);
+
+//   // Right Side Fields
+//   doc.text(`Leave Period: From ${formattedFromDate} To ${formattedToDate}`, startX + 250, detailStartY + 20)
+//     .text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 250, detailStartY + 40)
+//     .text(`Remaining Balance: ${remainingBalance}`, startX + 250, detailStartY + 60)
+//     .text(`Application Date: ${formattedApplicationDate}`, startX + 250, detailStartY + 80);
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, detailStartY + 100);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, detailStartY + 115, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, detailStartY + 140);
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, detailStartY + 160)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 250, detailStartY + 160)
+//     .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, detailStartY + 180)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 250, detailStartY + 180);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
+// const sendLeaveDecisionNotification = async (leaveRequest) => {
+//   const formattedFromDate = formatDate(leaveRequest.fromDate);
+//   const formattedToDate = formatDate(leaveRequest.toDate);
+//   const formattedApplicationDate = formatDate(leaveRequest.createdAt);
+
+//   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
+//   if (!employee) {
+//     console.error('Employee not found!');
+//     return;
+//   }
+
+//   const employeeEmail = employee.EmployeeEmailID;
+//   const department = employee.Department;
+
+//   let remainingBalance = 'N/A';
+//   switch (leaveRequest.leaveType) {
+//     case 'CL':
+//       remainingBalance = employee.CL;
+//       break;
+//     case 'ML':
+//       remainingBalance = employee.ML;
+//       break;
+//     case 'SL':
+//       remainingBalance = '';
+//       break;
+//   }
+
+//   // Generate PDF
+//   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
+//   const doc = new PDFDocument({ size: [600, 400], margin: 20 });
+//   const writeStream = fs.createWriteStream(pdfPath);
+//   doc.pipe(writeStream);
+
+//   const startX = 30;
+//   const startY = 30;
+//   const formWidth = 540;
+
+//   doc.rect(startX, startY, formWidth, 340).stroke('#007bff');
+
+//   const logoPath = path.join(__dirname, '../public/images/logo.png');
+//   if (fs.existsSync(logoPath)) {
+//     doc.image(logoPath, startX + 10, startY + 10, { width: 50 });
+//   }
+
+//   doc.font('Helvetica-Bold').fontSize(16).fillColor('#2e6da4')
+//     .text('PIONEER GROUP', startX, startY + 10, { width: formWidth, align: 'center' });
+
+//   doc.font('Helvetica').fontSize(10).fillColor('black')
+//     .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+//     .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+//     .fillColor('blue').text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center', link: 'mailto:pioneer.surveyors@gmail.com' })
+//     .fillColor('black');
+
+//   doc.font('Times-Roman').fontSize(14).fillColor('#2e6da4')
+//     .text('Leave Application Form', startX, startY + 75, { width: formWidth, align: 'center' }); // Reduced space above Leave Type
+
+//   const detailStartY = startY + 100;
+
+//   // Centered Leave Type with extra space below
+//   doc.fontSize(12).fillColor('black')
+//     .text(`Leave Type: ${leaveRequest.leaveType}`, startX, detailStartY, { width: formWidth, align: 'center' });
+  
+//   const fieldsStartY = detailStartY + 20; // Added extra space below Leave Type
+
+//   // Left Side Fields
+//   doc.text(`Employee Name: ${leaveRequest.name}`, startX + 20, fieldsStartY)
+//     .text(`Employee ID: ${leaveRequest.employeeId}`, startX + 20, fieldsStartY + 20)
+//     .text(`Designation: ${leaveRequest.designation}`, startX + 20, fieldsStartY + 40)
+//     .text(`Department: ${department}`, startX + 20, fieldsStartY + 60);
+
+//   // Right Side Fields with space before "To"
+//   doc.text(`Leave Period: From : ${formattedFromDate}  To : ${formattedToDate}`, startX + 250, fieldsStartY);
+//   doc.text(`Number of Days: ${leaveRequest.numOfDays}`, startX + 250, fieldsStartY + 20);
+//   doc.text(`Remaining Balance: ${remainingBalance}`, startX + 250, fieldsStartY + 40);
+//   doc.text(`Application Date: ${formattedApplicationDate}`, startX + 250, fieldsStartY + 60);
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Reason:', startX + 20, fieldsStartY + 80);
+//   doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, fieldsStartY + 95, { width: formWidth - 40 });
+
+//   doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', startX + 20, fieldsStartY + 120);
+//   doc.fontSize(10).fillColor('black')
+//     .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, fieldsStartY + 140)
+//     .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 250, fieldsStartY + 140);
+
+//   // Added more space below Reporting Head Signature & Comment
+//   const sanctionStartY = fieldsStartY + 160;
+
+//   doc.text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, sanctionStartY)
+//     .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 250, sanctionStartY);
+
+//   doc.end();
+
+//   writeStream.on('finish', async () => {
+//     const mailOptions = {
+//       from: 'suprita213@gmail.com',
+//       to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+//       subject: `Leave Request ${leaveRequest.approvalStatus}`,
+//       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
+//       attachments: [
+//         {
+//           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
+//           path: pdfPath,
+//         },
+//       ],
+//     };
+
+//     try {
+//       await transporter.sendMail(mailOptions);
+//       console.log('Leave decision notification sent with PDF attachment!');
+//       fs.unlink(pdfPath, (err) => {
+//         if (err) console.error('Error deleting PDF:', err);
+//       });
+//     } catch (error) {
+//       console.error('Error sending email:', error);
+//     }
+//   });
+// };
+
 const sendLeaveDecisionNotification = async (leaveRequest) => {
   const formattedFromDate = formatDate(leaveRequest.fromDate);
   const formattedToDate = formatDate(leaveRequest.toDate);
+  const formattedApplicationDate = formatDate(leaveRequest.createdAt);
 
   const employee = await Employee.findOne({ EmpID: leaveRequest.employeeId });
   if (!employee) {
@@ -474,83 +1375,91 @@ const sendLeaveDecisionNotification = async (leaveRequest) => {
 
   const employeeEmail = employee.EmployeeEmailID;
   const department = employee.Department;
+  const companyName = employee.CompanyName.toUpperCase();
 
   let remainingBalance = 'N/A';
-  if (employee) {
-    switch (leaveRequest.leaveType) {
-      case 'CL':
-        remainingBalance = employee.CL;
-        break;
-      case 'ML':
-        remainingBalance = employee.ML;
-        break;
-      case 'SL':
-        remainingBalance = '';
-        break;
-    }
+  switch (leaveRequest.leaveType) {
+    case 'CL':
+      remainingBalance = employee.CL;
+      break;
+    case 'ML':
+      remainingBalance = employee.ML;
+      break;
+    case 'SL':
+      remainingBalance = '';
+      break;
   }
 
   // Generate PDF
   const pdfPath = path.join(__dirname, `leave_request_${leaveRequest.employeeId}.pdf`);
-  const doc = new PDFDocument({ size: [600, 295], margin: 30 }); // Slightly increased height
+  const doc = new PDFDocument({ size: [600, 400], margin: 20 });
   const writeStream = fs.createWriteStream(pdfPath);
   doc.pipe(writeStream);
 
-  // Border Box for Slip
-  doc.rect(30, 30, 540, 235).stroke('#007bff'); // Adjusted height
+  const startX = 30;
+  const startY = 30;
+  const formWidth = 540;
 
-  // Title - PIONEER GROUP (Bold, Italic, Centered)
-  doc.font('Helvetica-BoldOblique') // Bold & Italic
-    .fontSize(16).fillColor('#2e6da4')
-    .text('PIONEER GROUP', 30, 35, { width: 540, align: 'center' });
+  doc.rect(startX, startY, formWidth, 340).stroke('#007bff');
 
-  // Leave Application Form Title with Space Below
-  doc.font('Helvetica-Bold') // Regular Bold
-    .fontSize(16).fillColor('#2e6da4')
-    .text('Leave Application Form', 30, 55, { width: 540, align: 'center' });
-
-  doc.moveDown(0.5); // Adds space below Leave Application Form
-
-  // Leave Type
-  doc.fontSize(12).fillColor('black').text(`Leave Type: ${leaveRequest.leaveType}`, 40, 75);
-
-  // Employee Details
-  doc.fontSize(10)
-    .text(`Employee ID: ${leaveRequest.employeeId}`, 40, 95)
-    .text(`Employee Name: ${leaveRequest.name}`, 280, 95)
-    .text(`Department: ${department}`, 40, 115)
-    .text(`Designation: ${leaveRequest.designation}`, 280, 115);
-
-  // Leave Duration
-  doc.text(`From: ${formattedFromDate}`, 40, 135)
-    .text(`To: ${formattedToDate}`, 280, 135);
-
-  // Number of Days & Balance
-  doc.text(`Number of Days: ${leaveRequest.numOfDays}`, 40, 155);
-  if (leaveRequest.leaveType === 'CL' || leaveRequest.leaveType === 'ML') {
-    doc.text(`Remaining Balance: ${remainingBalance}`, 280, 155);
+  const logoPath = path.join(__dirname, '../public/images/logo.png');
+  if (fs.existsSync(logoPath)) {
+    doc.image(logoPath, startX + 10, startY + 10, { width: 50 });
   }
 
-  // Reason for Leave
-  doc.fontSize(12).fillColor('#2e6da4').text('Reason:', 40, 175);
-  doc.fontSize(10).fillColor('black').text(leaveRequest.reason, 40, 190, { width: 500 });
+  doc.font('Helvetica-Bold').fontSize(16).fillColor('#2e6da4')
+    .text(companyName, startX, startY + 10, { width: formWidth, align: 'center' });
 
-  // Approval Remarks with Extra Space Below Heading
-  doc.fontSize(12).fillColor('#2e6da4').text('Approval Remarks:', 40, 210);
-  doc.moveDown(0.5); // Adds a little extra space below "Approval Remarks"
+    doc.font('Helvetica').fontSize(10).fillColor('black')
+    .text('"Pioneer Tower", Premises No. 20-085', startX, startY + 30, { width: formWidth, align: 'center' })
+    .text('Street No. 85, AB-109, New Town, Kolkata-700 193', startX, startY + 45, { width: formWidth, align: 'center' })
+    .text('Ph: 9007938111, Email: pioneer.surveyors@gmail.com', startX, startY + 60, { width: formWidth, align: 'center' }) // Removed 'link' and forced color to black
+    .fillColor('black');
+  
+
+  doc.font('Times-Roman').fontSize(14).fillColor('#2e6da4')
+    .text('Leave Application Form', startX, startY + 75, { width: formWidth, align: 'center' });
+
+  const detailStartY = startY + 100; // Moved Leave Type slightly higher
+
+  // Centered Leave Type with adjusted position
+  doc.fontSize(12).fillColor('black')
+    .text(`Leave Type: ${leaveRequest.leaveType}`, startX, detailStartY, { width: formWidth, align: 'center' });
+
+  const fieldsStartY = detailStartY + 35; // Increased space below Leave Type
+
+  // Left Side Fields
+  doc.text(`Employee Name: ${leaveRequest.name}`, startX + 20, fieldsStartY)
+    .text(`Employee ID     : ${leaveRequest.employeeId}`, startX + 20, fieldsStartY + 20)
+    .text(`Designation       : ${leaveRequest.designation}`, startX + 20, fieldsStartY + 40)
+    .text(`Department        : ${department}`, startX + 20, fieldsStartY + 60);
+
+  // Right Side Fields with space before "To"
+  doc.text(`Leave Period          : From : ${formattedFromDate}  To : ${formattedToDate}`, startX + 250, fieldsStartY);
+  doc.text(`Number of Days     : ${leaveRequest.numOfDays}`, startX + 250, fieldsStartY + 20);
+  doc.text(`Remaining Balance: ${remainingBalance}`, startX + 250, fieldsStartY + 40);
+  doc.text(`Application Date    : ${formattedApplicationDate}`, startX + 250, fieldsStartY + 60);
+
+  doc.fontSize(12).fillColor('#2e6da4').text('Leave Reason:', startX + 20, fieldsStartY + 80);
+  doc.fontSize(10).fillColor('black').text(leaveRequest.reason, startX + 20, fieldsStartY + 95, { width: formWidth - 40, lineGap: -2, height: 40 });
+
+  doc.fontSize(12).fillColor('#2e6da4').text('Approval with Remarks:', startX + 20, fieldsStartY + 120);
 
   doc.fontSize(10).fillColor('black')
-    .text(`Reporting Head Signature: ${leaveRequest.reportingHeadSignature || 'N/A'}`, 40, 225)
-    .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, 280, 225)
-    .text(`Sanctioning Authority Signature: ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, 40, 245)
-    .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, 280, 245);
+  .text(`Forwarded by : ${leaveRequest.reportingHeadSignature || 'N/A'}`, startX + 20, fieldsStartY + 140)
+  .text(`Comment: ${leaveRequest.reportingHeadReason || 'N/A'}`, startX + 250, fieldsStartY + 140);
+
+const sanctionStartY = fieldsStartY + 165; // Move sanctioning section higher
+
+  doc.text(`Approved by  : ${leaveRequest.sanctioningAuthoritySignature || 'N/A'}`, startX + 20, sanctionStartY)
+    .text(`Comment: ${leaveRequest.sanctioningAuthorityReason || 'N/A'}`, startX + 250, sanctionStartY);
 
   doc.end();
 
   writeStream.on('finish', async () => {
     const mailOptions = {
       from: 'suprita213@gmail.com',
-      to: employeeEmail,
+      to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
       subject: `Leave Request ${leaveRequest.approvalStatus}`,
       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
       attachments: [
@@ -558,24 +1467,15 @@ const sendLeaveDecisionNotification = async (leaveRequest) => {
           filename: `leave_request_${leaveRequest.employeeId}.pdf`,
           path: pdfPath,
         },
-        ...(leaveRequest.attachments
-          ? leaveRequest.attachments.map(file => ({
-              filename: file.split('/').pop(),
-              path: file,
-            }))
-          : []),
       ],
     };
 
     try {
       await transporter.sendMail(mailOptions);
       console.log('Leave decision notification sent with PDF attachment!');
-
-      // Delete PDF after sending
       fs.unlink(pdfPath, (err) => {
         if (err) console.error('Error deleting PDF:', err);
       });
-
     } catch (error) {
       console.error('Error sending email:', error);
     }

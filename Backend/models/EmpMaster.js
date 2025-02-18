@@ -23,6 +23,11 @@ const empMasterSchema = new mongoose.Schema(
       required: true,
       maxlength: 20, // Adjust as needed
     },
+    CompanyName: {
+      type: String,
+      required: true,
+      maxlength: 50,
+    },
     EmployeeEmailID: {
       type: String,
       required: true,

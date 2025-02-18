@@ -93,6 +93,10 @@ const EmployeeManager = () => {
             <input type="text" className="form-control" name="EmpName" value={formData.EmpName} onChange={handleChange} required />
           </div>
           <div className="mb-3">
+            <label className="form-label">Company Name</label>
+            <input type="text" className="form-control" name="CompanyName" value={formData.CompanyName} onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
             <label className="form-label">Designation</label>
             <input type="text" className="form-control" name="Designation" value={formData.Designation} onChange={handleChange} required />
           </div>
@@ -166,6 +170,7 @@ const EmployeeManager = () => {
         <thead className="table-dark">
           <tr>
             <th>EmpID</th>
+            <th>Company Name</th>
             <th>EmpName</th>
             <th>Designation</th>
             <th>Residence Address</th>
@@ -186,6 +191,7 @@ const EmployeeManager = () => {
           {employees.map((employee) => (
             <tr key={employee._id}>
               <td>{employee.EmpID}</td>
+              <td>{employee.CompanyName}</td>
               <td>{employee.EmpName}</td>
               <td>{employee.Designation}</td>
               <td>{employee.ResidenceAddress}</td>

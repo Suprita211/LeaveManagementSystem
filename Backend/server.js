@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const empMasterRoutes = require('./routes/EmpMasterRoutes'); // Import employee routes
 const empLeaveRoutes = require('./routes/leaveApplicationRoutes');
-const empRoutes  = require('./routes/employeeroutes');
 
-
+const adminRoutes= require('./routes/AdminRoutes');
+require('./routes/cronJobs');
 const path = require('path');
 const customizedLeaveRoute = require('./routes/customizesleaveRoute');
 
@@ -36,7 +36,8 @@ mongoose
 // Routes
 app.use('/api/employee', empMasterRoutes);
 app.use('/api/leave', empLeaveRoutes);
-app.use('/api',empRoutes);
+
+app.use('/api/admin',adminRoutes);
 
 
 

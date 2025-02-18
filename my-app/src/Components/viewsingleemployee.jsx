@@ -1,286 +1,267 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
-const ViewSingleEmployee = () => {
-  const [empID, setEmpID] = useState('');
+const EmployeeDetails = () => {
+  const [empID, setEmpID] = useState("");
   const [employee, setEmployee] = useState(null);
-  const [error, setError] = useState('');
   const [isEditable, setIsEditable] = useState(false);
   const [updatedEmployee, setUpdatedEmployee] = useState({});
+  const [error, setError] = useState("");
 
-  // Function to calculate retirement date based on the birth date or date of joining
-  const calculateRetirementDate = (birthDate, dateOfJoining) => {
-    const retirementAge = 60;
-  
-    const getLastDayOfMonth = (date) => {
-      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0); // Get last day of the current month
-      return lastDay;
-    };
-  
-    const getFirstDayOfMonth = (date) => {
-      const firstDay = new Date(date.getFullYear(), date.getMonth(), 1); // Get the first day of the current month
-      return firstDay;
-    };
-  
-    const isLeapYear = (year) => {
-      return (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0));
-    };
-  
-    const formatDate = (date) => {
-      return date.toISOString().split('T')[0]; // Format to YYYY-MM-DD
-    };
-  
-    let retirementDate = null;
-  
-    if (birthDate) {
-      const birthDateObj = new Date(birthDate);
-      birthDateObj.setFullYear(birthDateObj.getFullYear() + retirementAge);
-      retirementDate = birthDateObj;
-    } else if (dateOfJoining) {
-      const joiningDateObj = new Date(dateOfJoining);
-      joiningDateObj.setFullYear(joiningDateObj.getFullYear() + retirementAge);
-      retirementDate = joiningDateObj;
-    }
-  
-    if (retirementDate) {
-      const dayOfMonth = retirementDate.getDate();
-  
-      // Check if the day is between the 2nd and the last day of the month
-      if (dayOfMonth >= 2 && dayOfMonth <= getLastDayOfMonth(retirementDate).getDate()) {
-        // Set the last day of the month as the retirement date
-        retirementDate = getLastDayOfMonth(retirementDate);
-      } else {
-        // Otherwise, set the first day of the month as the retirement date
-        retirementDate = getFirstDayOfMonth(retirementDate);
-      }
-  
-      // Handle leap year: if the retirement date is in February, ensure the date is valid
-      if (retirementDate.getMonth() === 1 && !isLeapYear(retirementDate.getFullYear())) {
-        // If not a leap year, set the retirement date to the 28th of February
-        retirementDate.setDate(28);
-      }
-    }
-  
-    return retirementDate ? formatDate(retirementDate) : null;
-  };
-
-  // Fetch Employee by EmpID
-  const fetchEmployee = () => {
-    const inputEmpID = empID.trim();
-
-    if (!inputEmpID) {
-      setError('Please enter a valid Employee ID.');
-      setEmployee(null);
+  // Fetch Employee Details
+  const fetchEmployee = async () => {
+    if (!empID.trim()) {
+      setError("Please enter an Employee ID.");
       return;
     }
 
-    axios.get(`http://localhost:8080/api/employee/empID/${inputEmpID}`)
-      .then((response) => {
-        setEmployee(response.data);
-        setUpdatedEmployee(response.data); // Populate the form with current data
-        setError('');
-      })
-      .catch(() => {
-        setEmployee(null);
-        setError('Employee not found!');
-      });
+    try {
+      const response = await axios.get(`http://localhost:8080/api/employee/singleemployee/empID/${empID}`);
+      setEmployee(response.data);
+      setUpdatedEmployee(response.data);
+      setError("");
+    } catch (err) {
+      setError("Employee not found!");
+      setEmployee(null);
+    }
   };
 
-  // Handle input changes for form fields
-  const handleChange = (e) => {
+  // Handle Input Change for Editable Fields
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedEmployee(prevState => {
-      const newData = {
-        ...prevState,
-        [name]: value,
-      };
+    const updatedData = { ...updatedEmployee, [name]: value };
+    setUpdatedEmployee(updatedData);
+  };
 
-      // Automatically calculate and update the retirement date when BirthDate or DateOfJoining is updated
-      if (name === 'BirthDate' || name === 'DateOfJoining') {
-        const newRetirementDate = calculateRetirementDate(newData.BirthDate, newData.DateOfJoining);
-        newData.RetirementDate = newRetirementDate;
+  // Recalculate the Retirement Date based on DateOfJoining or BirthDate
+  const calculateRetirementDate = (data) => {
+    let newRetirementDate = null;
+
+    // Calculate Retirement Date based on BirthDate
+    if (data.BirthDate) {
+      const birthDate = new Date(data.BirthDate);
+      if (!isNaN(birthDate.getTime())) {
+        newRetirementDate = new Date(birthDate);
+        newRetirementDate.setFullYear(newRetirementDate.getFullYear() + 60); // Retirement at 60
       }
+    }
 
-      // Handle PL updates
-      if (name === 'PLtimesTaken' || name === 'PLdaysTaken') {
-        newData.PL = {
-          ...newData.PL,
-          [name]: value,
-        };
+    // Calculate Retirement Date based on DateOfJoining
+    if (data.DateOfJoining) {
+      const doj = new Date(data.DateOfJoining);
+      if (!isNaN(doj.getTime())) {
+        const dojRetirement = new Date(doj);
+        dojRetirement.setFullYear(dojRetirement.getFullYear() + 40); // Retirement at 40 years of service
+
+        // Prioritize the latest retirement date
+        if (!newRetirementDate || dojRetirement > newRetirementDate) {
+          newRetirementDate = dojRetirement;
+        }
       }
+    }
 
-      return newData;
-    });
+    // Ensure retirement date is set to the LAST day of the month
+    if (newRetirementDate) {
+      newRetirementDate = new Date(newRetirementDate.getFullYear(), newRetirementDate.getMonth() + 1, 0);
+      setUpdatedEmployee((prevState) => ({ ...prevState, RetirementDate: newRetirementDate }));
+    }
   };
 
   // Update Employee Details
-  const updateEmployee = () => {
-    if (!updatedEmployee.EmpID) {
-      setError('Employee ID is missing.');
-      return;
+  const updateEmployee = async () => {
+    try {
+      const response = await axios.put(
+        `http://localhost:8080/api/employee/empID/${empID}`,
+        updatedEmployee
+      );
+      setEmployee(response.data); // Updated response with new RetirementDate
+      setUpdatedEmployee(response.data);
+      setIsEditable(false);
+      setError("Employee details updated successfully.");
+    } catch {
+      setError("Error updating employee.");
     }
-
-    // Update Employee in the backend
-    axios.put(`http://localhost:8080/api/employee/empID/${updatedEmployee.EmpID}`, updatedEmployee)
-      .then((response) => {
-        setEmployee(response.data);
-        setUpdatedEmployee(response.data); // Sync state
-        setError('Employee details updated successfully.');
-        setIsEditable(false);
-      })
-      .catch(() => {
-        setError('Error updating employee.');
-      });
   };
 
   // Delete Employee
-  const deleteEmployee = () => {
-    if (window.confirm('Are you sure you want to delete this employee?')) {
-      axios.delete(`http://localhost:8080/api/employee/empID/${employee.EmpID}`)
-        .then(() => {
-          setEmployee(null);
-          setError('Employee deleted successfully.');
-        })
-        .catch(() => {
-          setError('Error deleting employee.');
-        });
+  const deleteEmployee = async () => {
+    try {
+      await axios.delete(`http://localhost:8080/api/employee/empID/${empID}`);
+      setEmployee(null);
+      setError("Employee deleted successfully.");
+    } catch {
+      setError("Error deleting employee.");
     }
   };
 
+  // useEffect to recalculate retirement date when DateOfJoining or BirthDate changes
+  useEffect(() => {
+    if (updatedEmployee.BirthDate || updatedEmployee.DateOfJoining) {
+      calculateRetirementDate(updatedEmployee);
+    }
+  }, [updatedEmployee.BirthDate, updatedEmployee.DateOfJoining]);
+
   return (
-    <div>
-      <h1>Search Employee</h1>
-      <div>
-        <label>Enter Employee ID:</label>
-        <input
-          type="text"
-          value={empID}
-          onChange={(e) => setEmpID(e.target.value)}
-          placeholder="Enter Employee ID"
-        />
-        <button onClick={fetchEmployee}>Search</button>
-      </div>
+    <div style={{ maxWidth: "500px", margin: "auto", padding: "20px", textAlign: "center" }}>
+      <h2>Employee Details</h2>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {/* Employee ID Input */}
+      <input
+        type="text"
+        placeholder="Enter Employee ID"
+        value={empID}
+        onChange={(e) => setEmpID(e.target.value)}
+        style={{ padding: "8px", width: "70%", marginBottom: "10px" }}
+      />
+      <button onClick={fetchEmployee} style={{ marginLeft: "10px", padding: "8px 15px" }}>
+        Submit
+      </button>
 
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {/* Employee Details */}
       {employee && (
-        <div>
-          <h2>Employee Details</h2>
-          {isEditable ? (
-            <form>
-              <label>ID: </label>
-              <input type="text" value={updatedEmployee.EmpID} disabled />
-              <br />
+        <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
+          <h3>Employee Information</h3>
 
-              <label>Name: </label>
-              <input type="text" name="EmpName" value={updatedEmployee.EmpName} onChange={handleChange} />
-              <br />
+          <p><strong>EmpID:</strong> {employee.EmpID}</p>
 
-              <label>Designation: </label>
-              <input type="text" name="Designation" value={updatedEmployee.Designation} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Name:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="EmpName" value={updatedEmployee.EmpName} onChange={handleInputChange} />
+            ) : (
+              employee.EmpName
+            )}
+          </p>
 
-              <label>Department: </label>
-              <input type="text" name="Department" value={updatedEmployee.Department} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Designation:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="Designation" value={updatedEmployee.Designation} onChange={handleInputChange} />
+            ) : (
+              employee.Designation
+            )}
+          </p>
 
-              <label>Email: </label>
-              <input type="email" name="EmployeeEmailID" value={updatedEmployee.EmployeeEmailID} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Department:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="Department" value={updatedEmployee.Department} onChange={handleInputChange} />
+            ) : (
+              employee.Department
+            )}
+          </p>
 
-              <label>Aadhar Number: </label>
-              <input type="text" name="AadharNumber" value={updatedEmployee.AadharNumber} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Company Name:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="CompanyName" value={updatedEmployee.CompanyName} onChange={handleInputChange} />
+            ) : (
+              employee.CompanyName
+            )}
+          </p>
 
-              <label>PAN Number: </label>
-              <input type="text" name="PANNumber" value={updatedEmployee.PANNumber} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Employee Email:</strong>{" "}
+            {isEditable ? (
+              <input type="email" name="EmployeeEmailID" value={updatedEmployee.EmployeeEmailID} onChange={handleInputChange} />
+            ) : (
+              employee.EmployeeEmailID
+            )}
+          </p>
 
-              <label>Residence Address: </label>
-              <input type="text" name="ResidenceAddress" value={updatedEmployee.ResidenceAddress} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Aadhar Number:</strong> {employee.AadharNumber}
+          </p>
 
-              <label>Primary Contact Number: </label>
-              <input type="text" name="PrimaryContactNumber" value={updatedEmployee.PrimaryContactNumber} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>PAN Number:</strong> {employee.PANNumber}
+          </p>
 
-              <label>Secondary Contact Number: </label>
-              <input type="text" name="SecondaryContactNumber" value={updatedEmployee.SecondaryContactNumber} onChange={handleChange} />
-              <br />
+          <p>
+            <strong>Residence Address:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="ResidenceAddress" value={updatedEmployee.ResidenceAddress} onChange={handleInputChange} />
+            ) : (
+              employee.ResidenceAddress
+            )}
+          </p>
 
-              <label>Date of Joining: </label>
+          <p>
+            <strong>Primary Contact Number:</strong>{" "}
+            {isEditable ? (
+              <input type="text" name="PrimaryContactNumber" value={updatedEmployee.PrimaryContactNumber} onChange={handleInputChange} />
+            ) : (
+              employee.PrimaryContactNumber
+            )}
+          </p>
+
+          <p>
+            <strong>Date of Joining:</strong>{" "}
+            {isEditable ? (
               <input
                 type="date"
                 name="DateOfJoining"
-                value={updatedEmployee.DateOfJoining?.slice(0, 10)}
-                onChange={handleChange}
+                value={updatedEmployee.DateOfJoining ? updatedEmployee.DateOfJoining.split("T")[0] : ""}
+                onChange={handleInputChange}
               />
-              <br />
+            ) : (
+              employee.DateOfJoining && new Date(employee.DateOfJoining).toLocaleDateString()
+            )}
+          </p>
 
-              <label>Birth Date: </label>
+          <p>
+            <strong>Birth Date:</strong>{" "}
+            {isEditable ? (
               <input
                 type="date"
                 name="BirthDate"
-                value={updatedEmployee.BirthDate?.slice(0, 10)}
-                onChange={handleChange}
+                value={updatedEmployee.BirthDate ? updatedEmployee.BirthDate.split("T")[0] : ""}
+                onChange={handleInputChange}
               />
-              <br />
+            ) : (
+              employee.BirthDate && new Date(employee.BirthDate).toLocaleDateString()
+            )}
+          </p>
 
-              <label>Retirement Date: </label>
-              <input type="date" name="RetirementDate" value={updatedEmployee.RetirementDate?.slice(0, 10)} readOnly />
-              <br />
+          <p>
+            <strong>Retirement Date:</strong>{" "}
+            {isEditable ? (
+              <input
+                type="date"
+                name="RetirementDate"
+                value={updatedEmployee.RetirementDate ? new Date(updatedEmployee.RetirementDate).toISOString().split("T")[0] : ""}
+                onChange={handleInputChange}
+              />
+            ) : (
+              updatedEmployee.RetirementDate ? new Date(updatedEmployee.RetirementDate).toLocaleDateString() : ""
+            )}
+          </p>
 
-              <label>PL (Privilege Leave Taken): </label>
-              <input type="number" name="PLtimesTaken" value={updatedEmployee.PL?.timesTaken} onChange={handleChange} />
-              <br />
-
-              <label>PL (Privilege Leave Remaining): </label>
-              <input type="number" name="PLdaysTaken" value={updatedEmployee.PL?.daysTaken} onChange={handleChange} />
-              <br />
-
-              <label>Gender: </label>
-              <input type="text" name="Gender" value={updatedEmployee.Gender} onChange={handleChange} />
-              <br />
-
-              <label>Marital Status: </label>
-              <input type="text" name="MarriedStatus" value={updatedEmployee.MarriedStatus} onChange={handleChange} />
-              <br />
-
-              <label>Guardian/Spouse Name: </label>
-              <input type="text" name="GuardianSpouseName" value={updatedEmployee.GuardianSpouseName} onChange={handleChange} />
-              <br />
-
-              <button type="button" onClick={updateEmployee}>Update</button>
-              <button type="button" onClick={() => setIsEditable(false)}>Cancel</button>
-            </form>
+          {/* Edit and Delete Buttons */}
+          {isEditable ? (
+            <>
+              <button onClick={updateEmployee} style={{ padding: "8px 15px", marginRight: "10px" }}>
+                Save
+              </button>
+              <button onClick={() => setIsEditable(false)} style={{ padding: "8px 15px" }}>
+                Cancel
+              </button>
+            </>
           ) : (
-            <div>
-              <p><strong>ID:</strong> {employee.EmpID}</p>
-              <p><strong>Name:</strong> {employee.EmpName}</p>
-              <p><strong>Designation:</strong> {employee.Designation}</p>
-              <p><strong>Department:</strong> {employee.Department}</p>
-              <p><strong>Email:</strong> {employee.EmployeeEmailID}</p>
-              <p><strong>Aadhar Number:</strong> {employee.AadharNumber}</p>
-              <p><strong>PAN Number:</strong> {employee.PANNumber}</p>
-              <p><strong>Residence Address:</strong> {employee.ResidenceAddress}</p>
-              <p><strong>Primary Contact Number:</strong> {employee.PrimaryContactNumber}</p>
-              <p><strong>Secondary Contact Number:</strong> {employee.SecondaryContactNumber}</p>
-              <p><strong>Date of Joining:</strong> {employee.DateOfJoining}</p>
-              <p><strong>Birth Date:</strong> {employee.BirthDate}</p>
-              <p><strong>Retirement Date:</strong> {employee.RetirementDate}</p>
-              <p><strong>PL (Privilege Leave Taken):</strong> {employee.PL?.timesTaken}</p>
-              <p><strong>PL (Privilege Leave Remaining):</strong> {employee.PL?.daysTaken}</p>
-              <p><strong>Gender:</strong> {employee.Gender}</p>
-              <p><strong>Marital Status:</strong> {employee.MarriedStatus}</p>
-              <p><strong>Guardian/Spouse Name:</strong> {employee.GuardianSpouseName}</p>
-              <button onClick={() => setIsEditable(true)}>Edit</button>
-              <button onClick={deleteEmployee}>Delete</button>
-            </div>
+            <button onClick={() => setIsEditable(true)} style={{ padding: "8px 15px", marginRight: "10px" }}>
+              Edit
+            </button>
           )}
+
+          <button onClick={deleteEmployee} style={{ padding: "8px 15px", backgroundColor: "red", color: "white" }}>
+            Delete
+          </button>
         </div>
       )}
     </div>
   );
 };
 
-export default ViewSingleEmployee;
+export default EmployeeDetails;

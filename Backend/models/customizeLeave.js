@@ -34,7 +34,7 @@ const customizeLeaveSchema = new mongoose.Schema({
     enum: ['Pending', 'Approved', 'Rejected'], 
     default: 'Pending' 
   }, // Leave approval status
-
+ createdAt: { type: Date, default: Date.now },
 
   notified: { type: Boolean, default: false },
 

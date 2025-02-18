@@ -28,23 +28,23 @@ const EmployeeManager = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
+
     setSelectedEmployee(prevState => {
       let updatedEmployee = { ...prevState, [name]: value };
-  
+
       // Handle Retirement Date calculation based on Birth Date or Date of Joining
       if (name === "BirthDate") {
         const birthDate = new Date(value);
         if (!isNaN(birthDate.getTime())) {
           const retirementFromBirth = new Date(birthDate);
           retirementFromBirth.setFullYear(retirementFromBirth.getFullYear() + 60);
-  
+
           let retirementDate = new Date(retirementFromBirth);
-          
+
           // Check if retirement date should be the last day of the month or first
           const lastDayOfMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth() + 1, 0);
           const firstDayOfMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 1);
-  
+
           if (retirementDate.getDate() >= 2 && retirementDate.getDate() <= lastDayOfMonth.getDate()) {
             // Between second and last day of the month, set to last day of the month
             updatedEmployee.RetirementDate = lastDayOfMonth.toISOString().split('T')[0];
@@ -54,19 +54,19 @@ const EmployeeManager = () => {
           }
         }
       }
-  
+
       if (name === "DateOfJoining") {
         const doj = new Date(value);
         if (!isNaN(doj.getTime())) {
           const retirementFromDOJ = new Date(doj);
           retirementFromDOJ.setFullYear(retirementFromDOJ.getFullYear() + 40);
-  
+
           let retirementDate = new Date(retirementFromDOJ);
-          
+
           // Check if retirement date should be the last day of the month or first
           const lastDayOfMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth() + 1, 0);
           const firstDayOfMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth(), 1);
-  
+
           if (retirementDate.getDate() >= 2 && retirementDate.getDate() <= lastDayOfMonth.getDate()) {
             // Between second and last day of the month, set to last day of the month
             updatedEmployee.RetirementDate = lastDayOfMonth.toISOString().split('T')[0];
@@ -76,14 +76,14 @@ const EmployeeManager = () => {
           }
         }
       }
-  
+
       return updatedEmployee;
     });
   };
 
   const handleUpdate = (empID) => {
     setLoading(true);
-    axios.get(`http://localhost:8080/api/employee/empID/${empID}`)
+    axios.get(`http://localhost:8080/api/employee/singleemployee/empID/${empID}`)
       .then(response => {
         setSelectedEmployee(response.data);
         setFormVisible(true);
@@ -145,6 +145,10 @@ const EmployeeManager = () => {
             <div className="mb-3">
               <label className="form-label">Employee ID</label>
               <input type="text" className="form-control" name="EmpID" value={selectedEmployee.EmpID} disabled />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Company Name</label>
+              <input type="text" className="form-control" name="CompanyName" value={selectedEmployee.CompanyName} onChange={handleInputChange} required />
             </div>
             <div className="mb-3">
               <label className="form-label">Employee Name</label>
@@ -221,6 +225,7 @@ const EmployeeManager = () => {
         <thead className="table-dark">
           <tr>
             <th>EmpID</th>
+            <th>Company Name</th>
             <th>EmpName</th>
             <th>Designation</th>
             <th>Residence Address</th>
@@ -232,8 +237,8 @@ const EmployeeManager = () => {
             <th>Marital Status</th>
             <th>Guardian/Spouse Name</th>
             <th>ML</th>
-            <th>PL Times Taken</th> {/* Change SL to PL */}
-            <th>PL Days Taken</th> {/* Change SL to PL */}
+            <th>PL Times Taken</th>
+            <th>PL Days Taken</th>
             <th>CL</th>
             <th>Department</th>
             <th>Employee Email ID</th>
@@ -246,6 +251,7 @@ const EmployeeManager = () => {
           {employees.map((employee) => (
             <tr key={employee._id}>
               <td>{employee.EmpID}</td>
+              <td>{employee.CompanyName}</td>
               <td>{employee.EmpName}</td>
               <td>{employee.Designation}</td>
               <td>{employee.ResidenceAddress}</td>
@@ -257,8 +263,8 @@ const EmployeeManager = () => {
               <td>{employee.MarriedStatus}</td>
               <td>{employee.GuardianSpouseName}</td>
               <td>{employee.ML}</td>
-              <td>{employee.PL?.timesTaken}</td> {/* Change SL to PL */}
-              <td>{employee.PL?.daysTaken}</td> {/* Change SL to PL */}
+              <td>{employee.PL?.timesTaken}</td>
+              <td>{employee.PL?.daysTaken}</td>
               <td>{employee.CL}</td>
               <td>{employee.Department}</td>
               <td>{employee.EmployeeEmailID}</td>
