@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import SignInPage from "./SignInPage";
 
 import "./css/HomePage.css"; // Custom CSS file for styling
 

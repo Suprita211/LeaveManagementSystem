@@ -5,7 +5,7 @@ const EmployeeView = () => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/employee/all') // Adjust API URL if needed
+    axios.get('http://localhost:8080/api/') // Adjust API URL if needed
       .then(response => {
         setEmployees(response.data);
       })

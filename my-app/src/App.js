@@ -17,10 +17,20 @@ import AdminAuth from './Components/Admin';
 import AdminLogin from './Components/Adminlogin';
 import AdminLogout from './Components/adminlogout';
 import AdminDashboard from './Components/AdminDashboard';
-import HomePage from './Components/homepage';
+import HomeLoginPage from './Components/homepage';
 import EmployeeDetails from './Components/viewsingleemployee'
 
 
+//other
+import SignInPage from "./Components/SignInPage";
+import SignUpPage from "./Components/SignUpPage";
+import HomePage from "./Components/HomePage copy";
+import UpdateEmployee from "./Components/UpdateEmployee";
+import Payslip from "./Components/Payslip";
+import AddSalaryForm from "./Components/AddSalaryForm";
+import EmployeeManager from "./Components/EmployeeMaster";
+import EmployeeList from "./Components/EmployeeList copy";
+import SaveSalaries from "./Components/SaveSalaries"
 
 const isAdmin = () => {
   const user = JSON.parse(localStorage.getItem("adminDetails"));
@@ -30,24 +40,39 @@ const isAdmin = () => {
 
 
 // Protected Route Component
-const AdminRoute = ({ element }) => {
-  return isAdmin() ? element : <Navigate to="/admin/login" />;
+const UserRoute = ({ element }) => {
+  return isUser() ? element : <Navigate to="/employee/login" />;
 };
+
+// Function to check if the user is authenticated and an admin
+const isUser = () => {
+  const user = JSON.parse(localStorage.getItem("userData"));
+  console.log("Stored User Data:", user);
+  return user && user.usertype === "admin";
+};
+
+
+// Protected Route Component
+const AdminRoute = ({ element }) => {
+  return isAdmin() ? element : <Navigate to="/signin" />;
+};
+
 function App() {
   return (
     <Router>
       <div className="App">
         
         <Routes>
-        <Route path="/" element={<HomePage />} /> 
+        <Route path="/" element={<HomeLoginPage />} /> 
           <Route path="/emp-leaveform" element={<EmployeeForm />} />
-          <Route path="/emp-master" element={<EmpMaster />} />
-          <Route path="/view-update" element={<View_UpdateEmployee />} />
-          <Route path="/search-employee" element={<EmployeeDetails />} />
+          {/* <Route path="/emp-master" element={<EmpMaster />} /> */}
+          <Route path="/view-employee" element={<View_UpdateEmployee />} />
+          <Route path="/update-employee" element={<EmployeeDetails />} />
           <Route path="/leave-records" element={<LeaveRecords />} />
           <Route path="/leave-details" element={<LeaveDetailsForm />} /> 
           <Route path="/employeeDetailsView" element={<EmployeeView />} /> 
-          <Route path="/addEmplyee" element={<AddEmployeeForm />} /> 
+          {/* <Route path="/addEmployee" element={<AddEmployeeForm />} />  */}
+          {/* Admin */}
           <Route path="/AdminAuth" element={<AdminAuth />} /> 
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/AdminApproval"   element={<AdminRoute element={<AdminLeaveRequests />} />} />  
@@ -57,7 +82,21 @@ function App() {
          
          
          
+           {/* Public Routes */}
+           <Route path="/employee/login" element={<SignInPage />} />
+          <Route path="/employee/signup" element={<SignUpPage />} />
+          <Route path="/home" element={<HomePage />} />
 
+          {/* Protected Routes (Only Admins can access) */}
+          {/* <Route path="/update-employee" element={<UserRoute element={<UpdateEmployee />} />} /> */}
+          <Route path="/emp-salary" element={<UserRoute element={<Payslip />} />} />
+          <Route path="/add-salary" element={<UserRoute element={<AddSalaryForm />} />} />
+          <Route path="/empMaster" element={<UserRoute element={<EmployeeManager />} />} />
+          <Route path="/emplist" element={<UserRoute element={<EmployeeList />} />} />
+          <Route path="/save-salaries" element={<UserRoute element={<SaveSalaries />} />} />
+
+          {/* Redirect unknown routes to SignIn */}
+          <Route path="*" element={<Navigate to="/signin" />} />
        
 
         </Routes>

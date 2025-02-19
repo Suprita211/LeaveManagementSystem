@@ -1,0 +1,7 @@
+node_modules
+
+
+*.logs
+
+salary_pdfs
+salary_slips

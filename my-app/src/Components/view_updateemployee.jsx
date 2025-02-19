@@ -15,7 +15,7 @@ const EmployeeManager = () => {
 
   const fetchEmployees = () => {
     setLoading(true);
-    axios.get('http://localhost:8080/api/employee')
+    axios.get('http://localhost:8080/api/')
       .then(response => {
         setEmployees(response.data);
         setLoading(false);
@@ -83,7 +83,7 @@ const EmployeeManager = () => {
 
   const handleUpdate = (empID) => {
     setLoading(true);
-    axios.get(`http://localhost:8080/api/employee/singleemployee/empID/${empID}`)
+    axios.get(`http://localhost:8080/api/singleemployee/empID/${empID}`)
       .then(response => {
         setSelectedEmployee(response.data);
         setFormVisible(true);
@@ -101,7 +101,7 @@ const EmployeeManager = () => {
     if (!selectedEmployee) return;
 
     setLoading(true);
-    axios.put(`http://localhost:8080/api/employee/empID/${selectedEmployee.EmpID}`, selectedEmployee)
+    axios.put(`http://localhost:8080/api/empID/${selectedEmployee.EmpID}`, selectedEmployee)
       .then(() => {
         alert('Employee updated successfully');
         fetchEmployees();

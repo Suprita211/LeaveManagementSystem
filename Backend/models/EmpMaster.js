@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const empMasterSchema = new mongoose.Schema(
   {
@@ -47,7 +47,7 @@ const empMasterSchema = new mongoose.Schema(
       unique: true,
       match: [/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/, "Invalid PAN format"],
     },
-   
+
     ResidenceAddress: {
       type: String,
       required: true,
@@ -95,10 +95,18 @@ const empMasterSchema = new mongoose.Schema(
     RetirementDate: {
       type: Date,
     },
+    UAN: {
+      type: String,
+      required: true,
+    },
+    basic: {
+      type: Number,
+      required: true,
+    },
   },
   { timestamps: true }
 );
 
-const EmpMaster = mongoose.model('EmpMaster', empMasterSchema);
+const EmpMaster = mongoose.model("EmpMaster", empMasterSchema);
 
 module.exports = EmpMaster;
