@@ -13,8 +13,7 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: "groupproject366@gmail.com", // Replace with your email
-    pass: "nmjx gxfs pxrb kobx", // Use app password if 2FA is enabled
-  },
+    pass: "qpes wpsv pcyc lkmc",},
 });
 
 const sendNoti = async (req, res) => {

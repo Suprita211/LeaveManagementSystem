@@ -17,36 +17,36 @@ router.put("/empID/:empID", updateEmployeeSingle);
 router.delete("/employee/empID/:empID", deleteEmployee);
 router.get("/all", getAllEmployee);
 
-router.get("/", async (req, res) => {
-  try {
-    const employees = await EmpMaster.find({}, "-_id -__v"); // Exclude MongoDB internal fields
+// router.get("/", async (req, res) => {
+//   try {
+//     const employees = await EmpMaster.find({}, "-_id -__v"); // Exclude MongoDB internal fields
 
-    const formattedEmployees = employees.map((emp) => ({
-      ...emp._doc,
-      DateOfJoining: emp.DateOfJoining
-        ? emp.DateOfJoining.toISOString().split("T")[0]
-        : "",
-      BirthDate: emp.BirthDate ? emp.BirthDate.toISOString().split("T")[0] : "",
-      RetirementDate: emp.RetirementDate
-        ? emp.RetirementDate.toISOString().split("T")[0]
-        : "",
-      CompanyName: emp.CompanyName || "N/A",
-      Department: emp.Department || "", // New field for Department
-      EmployeeEmailID: emp.EmployeeEmailID || "", // New field for Employee Email ID
-      AadharNumber: emp.AadharNumber || "", // New field for Aadhar Number
-      PANNumber: emp.PANNumber || "", // New field for PAN Number
-      CL: emp.CL || 0, // Default to 0 if undefined
-      ML: emp.ML || 0, // Default to 0 if undefined
-      PL_timesTaken: emp.PL ? emp.PL.timesTaken : 0, // Changed SL to PL (Privilege Leave)
-      PL_daysTaken: emp.PL ? emp.PL.daysTaken : 0, // Changed SL to PL (Privilege Leave)
-    }));
+//     const formattedEmployees = employees.map((emp) => ({
+//       ...emp._doc,
+//       DateOfJoining: emp.DateOfJoining
+//         ? emp.DateOfJoining.toISOString().split("T")[0]
+//         : "",
+//       BirthDate: emp.BirthDate ? emp.BirthDate.toISOString().split("T")[0] : "",
+//       RetirementDate: emp.RetirementDate
+//         ? emp.RetirementDate.toISOString().split("T")[0]
+//         : "",
+//       CompanyName: emp.CompanyName || "N/A",
+//       Department: emp.Department || "", // New field for Department
+//       EmployeeEmailID: emp.EmployeeEmailID || "", // New field for Employee Email ID
+//       AadharNumber: emp.AadharNumber || "", // New field for Aadhar Number
+//       PANNumber: emp.PANNumber || "", // New field for PAN Number
+//       CL: emp.CL || 0, // Default to 0 if undefined
+//       ML: emp.ML || 0, // Default to 0 if undefined
+//       PL_timesTaken: emp.PL ? emp.PL.timesTaken : 0, // Changed SL to PL (Privilege Leave)
+//       PL_daysTaken: emp.PL ? emp.PL.daysTaken : 0, // Changed SL to PL (Privilege Leave)
+//     }));
 
-    res.status(200).json(formattedEmployees);
-  } catch (error) {
-    console.error("Error fetching employees:", error);
-    res.status(500).json({ error: "Failed to fetch employees" });
-  }
-});
+//     res.status(200).json(formattedEmployees);
+//   } catch (error) {
+//     console.error("Error fetching employees:", error);
+//     res.status(500).json({ error: "Failed to fetch employees" });
+//   }
+// });
 
 // router.put('/empID/:empID', async (req, res) => {
 //   try {

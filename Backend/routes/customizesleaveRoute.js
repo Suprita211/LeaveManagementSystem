@@ -1,6 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const router = express.Router();
+const path = require("path");
 // Set up file storage using multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
