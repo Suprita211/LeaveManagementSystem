@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, CssB
 import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
-  { text: 'Add employee', path: '/empMaster' },
+  { text: 'Add employee', path: '/emp-master' },
   { text: 'See All employees', path: '/emplist' },
   { text: 'Update Employee', path: '/update-employee' },
   { text: 'Salary Details', path: '/emp-salary' },

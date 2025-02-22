@@ -65,7 +65,7 @@ function App() {
         <Routes>
         <Route path="/" element={<HomeLoginPage />} /> 
           <Route path="/emp-leaveform" element={<EmployeeForm />} />
-          {/* <Route path="/emp-master" element={<EmpMaster />} /> */}
+          <Route path="/emp-master" element={<EmpMaster />} />
           <Route path="/view-employee" element={<View_UpdateEmployee />} />
           <Route path="/update-employee" element={<EmployeeDetails />} />
           <Route path="/leave-records" element={<LeaveRecords />} />

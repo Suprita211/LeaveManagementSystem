@@ -16,7 +16,7 @@ const EmployeeDetails = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/employee/singleemployee/empID/${empID}`);
+      const response = await axios.get(`http://localhost:8080/api/singleemployee/empID/${empID}`);
       setEmployee(response.data);
       setUpdatedEmployee(response.data);
       setError("");
@@ -71,7 +71,7 @@ const EmployeeDetails = () => {
   const updateEmployee = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/employee/empID/${empID}`,
+        `http://localhost:8080/api/empID/${empID}`,
         updatedEmployee
       );
       setEmployee(response.data); // Updated response with new RetirementDate

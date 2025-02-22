@@ -7,6 +7,11 @@ const EmployeeManager = () => {
   const [formData, setFormData] = useState({
     EmpName: '',
     Designation: '',
+    Department: '',            // New field for Department
+    CompanyName: '',
+    EmployeeEmailID: '',       // New field for Employee Email ID
+    AadharNumber: '',         // New field for Aadhar Number
+    PANNumber: '',
     ResidenceAddress: '',
     PrimaryContactNumber: '',
     SecondaryContactNumber: '',
@@ -16,14 +21,12 @@ const EmployeeManager = () => {
     MarriedStatus: '',
     GuardianSpouseName: '',
     RetirementDate: '',
-    Department: '',            // New field for Department
-    EmployeeEmailID: '',       // New field for Employee Email ID
-    AadharNumber: '',         // New field for Aadhar Number
-    PANNumber: '',            // New field for PAN Number
+    UAN: '',              
+    basic:'',
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/employee')
+    axios.get('http://localhost:8080/api/all')
       .then(response => setEmployees(response.data))
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -54,12 +57,17 @@ const EmployeeManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/employee', formData)
+    axios.post('http://localhost:8080/api/', formData)
       .then(response => {
         setEmployees([...employees, response.data]);
         setFormData({
           EmpName: '',
           Designation: '',
+          Department: '',            // New field for Department
+          CompanyName : '',
+          EmployeeEmailID: '',       // New field for Employee Email ID
+          AadharNumber: '',         // New field for Aadhar Number
+          PANNumber: '', 
           ResidenceAddress: '',
           PrimaryContactNumber: '',
           SecondaryContactNumber: '',
@@ -69,12 +77,10 @@ const EmployeeManager = () => {
           MarriedStatus: '',
           GuardianSpouseName: '',
           RetirementDate: '',
-          Department: '',            // New field for Department
-          EmployeeEmailID: '',       // New field for Employee Email ID
-          AadharNumber: '',         // New field for Aadhar Number
-          PANNumber: '',            // New field for PAN Number
-        });
-      })
+          UAN: ''  ,         
+          basic:'',
+      });
+    })
       .catch(error => {
         console.error('Error submitting form:', error);
         alert('Error: ' + error.message);
@@ -160,6 +166,14 @@ const EmployeeManager = () => {
           <div className="mb-3">
             <label className="form-label">PAN Number</label>
             <input type="text" className="form-control" name="PANNumber" value={formData.PANNumber} onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">UAN Number</label>
+            <input type="text" className="form-control" name="UAN" value={formData.UAN} onChange={handleChange} required />
+          </div>
+          <div className="mb-3">
+            <label className="form-label">Basic pay</label>
+            <input type="text" className="form-control" name="basic" value={formData.basic} onChange={handleChange} required />
           </div>
           <button type="submit" className="btn btn-primary w-100">Add Employee</button>
         </form>
