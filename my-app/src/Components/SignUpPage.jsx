@@ -33,7 +33,7 @@ const SignUpPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8080/auth/register", {
+      const response = await axios.post("https://lms-be-0-0-3-release.onrender.com/auth/register", {
         email,
         password,
       });
