@@ -9,7 +9,8 @@ const menuItems = [
   { text: 'Salary Details', path: '/emp-salary' },
   { text: 'Apply For Leave', path: '/emp-leaveform' },
   { text: 'Leave Applications', path: '/leave-applications' },
-  // { text: 'Salary Details', path: '/emp-salary' },
+  { text: 'Download Salary', path: '/save-salaries' },
+
 ];
 
 const HomePage = () => {

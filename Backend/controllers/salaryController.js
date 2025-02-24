@@ -188,60 +188,46 @@ const deleteSalary = async (req, res) => {
 
 function numberToWords(num) {
   const ones = [
-    "",
-    "one",
-    "two",
-    "three",
-    "four",
-    "five",
-    "six",
-    "seven",
-    "eight",
-    "nine",
+    "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+    "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+    "seventeen", "eighteen", "nineteen"
   ];
   const tens = [
-    "",
-    "ten",
-    "twenty",
-    "thirty",
-    "forty",
-    "fifty",
-    "sixty",
-    "seventy",
-    "eighty",
-    "ninety",
+    "", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"
   ];
+  
+  if (num === 0) return "zero rupees only";
 
-  if (num === 0) return "Zero";
+  function convertToWords(n) {
+    let str = "";
 
-  let result = "";
+    if (n >= 1000) {
+      str += convertToWords(Math.floor(n / 1000)) + " thousand ";
+      n %= 1000;
+    }
 
-  // Handle thousands
-  if (num >= 1000) {
-    result += ones[Math.floor(num / 1000)] + " thousand ";
-    num %= 1000;
-  }
+    if (n >= 100) {
+      str += ones[Math.floor(n / 100)] + " hundred ";
+      n %= 100;
+    }
 
-  // Handle hundreds
-  if (num >= 100) {
-    result += ones[Math.floor(num / 100)] + " hundred ";
-    num %= 100;
-  }
-
-  // Handle tens and ones
-  if (num > 0) {
-    if (num < 10) {
-      result += ones[num];
-    } else {
-      result += tens[Math.floor(num / 10)];
-      if (num % 10 > 0) {
-        result += " " + ones[num % 10];
+    if (n > 0) {
+      if (n < 20) {
+        str += ones[n] + " ";
+      } else {
+        str += tens[Math.floor(n / 10)] + " ";
+        if (n % 10 > 0) {
+          str += ones[n % 10] + " ";
+        }
       }
     }
+
+    return str.trim();
   }
 
-  return result.trim() + " rupees only";
+  return `rupees. ${convertToWords(num)} rupees only`;
 }
+
 
 const formatDate = (dateString) => {
   if (!dateString) return "";
@@ -408,7 +394,7 @@ const generateSalary = async (req, res) => {
         <img src="https://pgssw.co.in/assets/admin-source/images/logo.png" alt="Pioneer Logo" style="width: 100px; height: 100px;">
             <div class="company-name">Pioneer Group</div>
             <br/>
-            <div class="subcompany-name">${employee.Company}</div>
+            <div class="subcompany-name">${employee.CompanyName}</div>
             <div class="address">
                 Pioneer Tower, Street No. 85, Opposite tank No. 2, 1st Floor,<br>
                 Action Area - 1, Plot - AB-109, Newtown,<br>
@@ -472,8 +458,8 @@ const generateSalary = async (req, res) => {
         </table>
 
         <div class="footer">
-            <div><strong>Leave Balance:</strong> SL:0 | CL:0 | ML:0</div>
-            <div><strong>Balance Amounts:</strong> Loan: $0 | Advance: $0</div>
+            <div><strong>Leave Balance:</strong> PL:${employee.PL ||0} | CL:${employee.CL ||0} | ML:${employee.ML || 0}</div>
+            <div><strong>Balance Amounts:</strong> Loan: ₹${Salary.others ||0} | Advance: ₹${Salary.advance || 0}</div>
         </div>
     </div>
 </body>
