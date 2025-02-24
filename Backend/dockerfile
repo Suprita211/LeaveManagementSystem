@@ -1,6 +1,6 @@
 # Use official Node.js 22.14 Alpine as a base image
-FROM node:22-slim
-FROM satantime/puppeteer-node:20.9.0-bookworm
+FROM node:22-bullseye
+# FROM satantime/puppeteer-node:20.9.0-bookworm
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -10,6 +10,43 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install --production
 
+# Install dependencies for Puppeteer & Chromium
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libgbm-dev \
+    libasound2 \
+    libpangocairo-1.0-0 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libpango-1.0-0 \
+    libcairo2 \
+    libxkbcommon0 \
+    libxshmfence1 \
+    libglib2.0-0 \
+    fonts-liberation \
+    libappindicator3-1 \
+    libx11-dev \
+    libgtk-3-0 \
+    libgbm1 \
+    libxcb1 \
+    ca-certificates \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Chromium manually (since Puppeteer won't auto-download in slim images)
+# Install Google Chrome (Stable version)
+# RUN wget -qO- https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor > /usr/share/keyrings/google-chrome-keyring.gpg && \
+#     echo 'deb [signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list && \
+#     apt-get update && apt-get install -y google-chrome-stable
+
+# Set environment variables for Puppeteer
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 # Copy the rest of the application code to the container
 COPY . .
 
