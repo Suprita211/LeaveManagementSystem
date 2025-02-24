@@ -501,9 +501,13 @@ const generateSalary = async (req, res) => {
 
     fs.writeFileSync(mergedPdfPath, await mergedPdf.save());
 
+    // Convert merged PDF to Base64
+    const mergedPdfBytes = await mergedPdf.save();
+    const base64Pdf = Buffer.from(mergedPdfBytes).toString("base64");
+
     res.status(200).json({
       message: "Salary slips generated successfully",
-      mergedPdfPath,
+      pdfBase64: base64Pdf,
     });
   } catch (error) {
     console.error("Error generating salary slips:", error);

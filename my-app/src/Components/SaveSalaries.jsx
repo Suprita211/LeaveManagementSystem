@@ -61,45 +61,51 @@ const SaveSalaries = () => {
 
   const handleDownload = async () => {
     setDownloading(true);
-
+  
     try {
-      const response = await axios.post("http://localhost:8080/api/employees/salaries/generate-salary", formData, {
-        responseType: "blob", // Important for file downloads
-      });
-      console.log(response);
-
-      if (response.data.size === 0) {
-        toast.error("Downloaded file is empty! Check backend.");
+      const response = await axios.post(
+        "http://localhost:8080/api/employees/salaries/generate-salary",
+        formData
+      );
+  
+      if (!response.data.pdfBase64) {
+        toast.error("No PDF data received from the server!");
         return;
-    }
-
-      // Create Blob URL and trigger download
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      }
+  
+      // Convert Base64 to a Blob
+      const byteCharacters = atob(response.data.pdfBase64);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const pdfBlob = new Blob([byteArray], { type: "application/pdf" });
+  
+      // Create a download link and trigger it
       const link = document.createElement("a");
-      link.href = url;
+      link.href = URL.createObjectURL(pdfBlob);
       link.setAttribute("download", "Salary_Slips.pdf");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // Success Toast (Green)
+  
       toast.success("Salary slips downloaded successfully!", {
         position: "top-right",
         theme: "colored",
         autoClose: 3000,
       });
-
     } catch (error) {
-      // Error Toast (Red)
       toast.error(error.response?.data?.message || "Failed to download salary slips!", {
         position: "top-right",
         theme: "colored",
         autoClose: 3000,
       });
     }
-
+  
     setDownloading(false);
   };
+  
 
   return (
     <Container maxWidth="sm">
