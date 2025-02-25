@@ -10,6 +10,7 @@ const menuItems = [
   { text: 'Apply For Leave', path: '/emp-leaveform' },
   { text: 'Leave Applications', path: '/leave-applications' },
   { text: 'Download Salary', path: '/save-salaries' },
+  { text: 'See all Rejected leaves', path: '/EmpLeaveStatus' },
 
 ];
 

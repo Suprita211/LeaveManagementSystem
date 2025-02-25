@@ -312,10 +312,28 @@ const adminApporRej = async (req, res) => {
   }
 };
 
+const leavestatus=  async (req, res) => {
+  try {
+    const approvedLeaves = await CustomizeLeave.find({ approvalStatus:  'Rejected' }).select(
+      "employeeId name designation leaveType numOfDays approvalStatus createdAt"
+    );
+
+    if (!approvedLeaves.length) {
+      return res.status(404).json({ message: "No approved leave applications found" });
+    }
+
+    res.json(approvedLeaves);
+  } catch (error) {
+    console.error("Error fetching approved leaves:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+}
+
 module.exports = {
   getAllLeaves,
   submitLeave,
   adminLeavePanel,
   updateLeave,
   adminApporRej,
+  leavestatus,
 };
