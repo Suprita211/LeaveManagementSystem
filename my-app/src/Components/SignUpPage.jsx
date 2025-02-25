@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const SignUpPage = () => {
-  const [email, setEmail] = useState("");
+  const [EmployeeEmailID, setEmployeeEmailID] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -33,10 +33,13 @@ const SignUpPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("https://lms-be-0-0-3-release.onrender.com/auth/register", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://lms-be-0-0-3-release.onrender.com/auth/register",
+        {
+          EmployeeEmailID,
+          password,
+        }
+      );
 
       setSuccessMessage("Account created successfully! Redirecting...");
       setTimeout(() => navigate("/signin"), 2000); // Redirect after success
@@ -74,14 +77,18 @@ const SignUpPage = () => {
               Sign Up
             </Typography>
 
-            <Box component="form" onSubmit={handleSubmit} sx={{ width: "100%" }}>
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              sx={{ width: "100%" }}
+            >
               <TextField
                 label="Email Address"
                 type="email"
                 fullWidth
                 required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={EmployeeEmailID}
+                onChange={(e) => setEmployeeEmailID(e.target.value)}
                 margin="normal"
               />
               <TextField
@@ -114,7 +121,13 @@ const SignUpPage = () => {
                 </Typography>
               )}
 
-              <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }} disabled={loading}>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 2 }}
+                disabled={loading}
+              >
                 {loading ? "Signing Up..." : "Sign Up"}
               </Button>
             </Box>

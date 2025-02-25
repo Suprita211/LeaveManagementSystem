@@ -20,6 +20,7 @@ exports.register = async (req, res) => {
     }
 
     // Create new user with EmpID fetched from EmpMaster
+    console.log(EmployeeEmailID, password, EmpID , usertype);
     const newUser = new User({
       EmployeeEmailID,
       EmpID: employee.EmpID, // Fetch and store EmpID
@@ -36,6 +37,8 @@ exports.register = async (req, res) => {
       EmpName: employee.EmpName
     });
   } catch (error) {
+    console.error("Error during registration:", error);
+
     res.status(500).json({ message: error.message });
   }
 };
