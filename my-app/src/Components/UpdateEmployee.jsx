@@ -21,7 +21,7 @@ const ViewSingleEmployee = () => {
       return;
     }
 
-    axios.get(`http://localhost:8080/api/employee/singleemployee/empID/${inputEmpID}`)
+    axios.get(`http://localhost:8080/api/singleemployee/empID/${inputEmpID}`)
       .then((response) => {
         setEmployee(response.data);
         setUpdatedEmployee(response.data); // Populate the form with current data
@@ -40,7 +40,7 @@ const ViewSingleEmployee = () => {
       return;
     }
 
-    axios.put(`http://localhost:8080/api/employee/empID/${updatedEmployee.EmpID}`, updatedEmployee)
+    axios.put(`http://localhost:8080/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
       .then((response) => {
         setEmployee(response.data);
         alert('Employee details updated successfully.');
@@ -76,22 +76,27 @@ const ViewSingleEmployee = () => {
 
   // Employee details to display in the table
   const employeeDetails = [
-    { key: 'ID', value: employee?.EmpID },
+    
     { key: 'Name', value: employee?.EmpName },
+    { key: 'Company Name', value: employee?.CompanyName },
+    { key: 'Department', value: employee?.Department },
     { key: 'Designation', value: employee?.Designation },
+    { key: 'Email', value: employee?.EmployeeEmailID },
+    { key: 'Aadhar No.', value: employee?.AadharNumber },
+    { key: 'PAN No.', value: employee?.PANNumber },
     { key: 'Residence Address', value: employee?.ResidenceAddress },
     { key: 'Primary Contact', value: employee?.PrimaryContactNumber },
     { key: 'Secondary Contact', value: employee?.SecondaryContactNumber },
     { key: 'Date of Joining', value: employee?.DateOfJoining?.slice(0, 10) },
     { key: 'Birth Date', value: employee?.BirthDate?.slice(0, 10) },
     { key: 'Retirement Date', value: employee?.RetirementDate?.slice(0, 10) },
-    { key: 'SL', value: employee?.SL },
-    { key: 'PL', value: employee?.PL },
-    { key: 'EOL', value: employee?.EOL },
+    { key: 'ML', value: employee?.ML },
     { key: 'CL', value: employee?.CL },
     { key: 'Gender', value: employee?.Gender },
     { key: 'Marital Status', value: employee?.MarriedStatus },
     { key: 'Guardian/Spouse Name', value: employee?.GuardianSpouseName },
+    { key: 'UAN No.', value: employee?.UAN },
+    { key: 'Basic Salary', value: employee?.basic },
   ];
 
   return (

@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 const menuItems = [
   { text: 'Add employee', path: '/emp-master' },
   { text: 'See All employees', path: '/emplist' },
-  { text: 'Update Employee', path: '/update-employee' },
+  { text: 'Update Employee', path: '/view-employee' },
   { text: 'Salary Details', path: '/emp-salary' },
   { text: 'Apply For Leave', path: '/emp-leaveform' },
   { text: 'Leave Applications', path: '/leave-applications' },
   { text: 'Download Salary', path: '/save-salaries' },
   { text: 'See all Rejected leaves', path: '/EmpLeaveStatus' },
+  { text: 'Add Holiday', path: '/AddHoliday' },
+
 
 ];
 

@@ -132,8 +132,8 @@ const AddEmployeeForm = () => {
             <label className="form-label">Marital Status</label>
             <select className="form-select" name="MarriedStatus" value={formData.MarriedStatus} onChange={handleChange} required>
               <option value="">Select Marital Status</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
+              <option value="Married">Married</option>
+              <option value="UnMarried">UnMarried</option>
             </select>
           </div>
         </div>

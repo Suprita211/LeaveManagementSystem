@@ -16,7 +16,7 @@ const SignInPage = () => {
     setError('');
 
     try {
-      const response = await axios.post('https://lms-be-0-0-3-release.onrender.com/auth/login', {
+      const response = await axios.post('http://localhost:8080/auth/login', {
         EmployeeEmailID,
         password
       });

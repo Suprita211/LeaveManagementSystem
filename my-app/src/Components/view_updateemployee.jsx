@@ -15,7 +15,7 @@ const EmployeeManager = () => {
 
   const fetchEmployees = () => {
     setLoading(true);
-    axios.get('http://localhost:8080/api/')
+    axios.get('http://localhost:8080/api/all')
       .then(response => {
         setEmployees(response.data);
         setLoading(false);
@@ -171,7 +171,7 @@ const EmployeeManager = () => {
               <input type="date" className="form-control" name="DateOfJoining" value={selectedEmployee.DateOfJoining.split('T')[0]} onChange={handleInputChange} required />
             </div>
             <div className="mb-3">
-              <label className="form-label">Birth Date</label>
+              <label className="form-label">Date Of Birth</label>
               <input type="date" className="form-control" name="BirthDate" value={selectedEmployee.BirthDate.split('T')[0]} onChange={handleInputChange} required />
             </div>
             <div className="mb-3">

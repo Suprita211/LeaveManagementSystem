@@ -22,7 +22,7 @@ const customizedLeaveRoute = require('./routes/customizesleaveRoute');
 
 const empRoutes  = require('./routes/EmpMasterRoutes');
 // const authRoutes = require('./routes/authRoutes');
-
+const absentRoutes = require('./routes/AbsentRoutes');
 //end
 
 const app = express();
@@ -48,6 +48,8 @@ app.use('/api/admin',adminRoutes);
 app.use('/api/leave', empLeaveRoutes);
 
 app.use('/api/leave1', customizedLeaveRoute);
+
+app.use('/api/abs', absentRoutes);
 
 
 app.get("/", (req, res) => {

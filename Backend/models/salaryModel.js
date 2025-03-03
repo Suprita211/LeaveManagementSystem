@@ -9,9 +9,9 @@ const salarySchema = new mongoose.Schema({
     hra: { type: Number, required: true },
     medical: { type: Number, required: true },
     convence: { type: Number, required: true },
-    incentive: { type: Number, required: true },
-    advance: { type: Number, required: true },
-    others: { type: Number, required: true },
+    incentive: { type: Number },
+    advance: { type: Number },
+    others: { type: Number },
   },
   deductions: {
     cpf: { type: Number, required: true },

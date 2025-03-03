@@ -32,6 +32,8 @@ import EmployeeManager from "./Components/EmployeeMaster";
 import EmployeeList from "./Components/EmployeeList copy";
 import SaveSalaries from "./Components/SaveSalaries"
 import ApprovedLeaveList from './Components/ApprovedLeaveList';
+import AbsentList from './Components/AbsentList';
+import AddHoliday from './Components/HolidayListEntry';
 
 const isAdmin = () => {
   const user = JSON.parse(localStorage.getItem("adminDetails"));
@@ -72,7 +74,7 @@ function App() {
           <Route path="/leave-records" element={<LeaveRecords />} />
           <Route path="/leave-details" element={<LeaveDetailsForm />} /> 
           <Route path="/employeeDetailsView" element={<EmployeeView />} /> 
-          {/* <Route path="/addEmployee" element={<AddEmployeeForm />} />  */}
+          <Route path="/addabsent" element={<AbsentList />} /> 
           {/* Admin */}
           <Route path="/AdminAuth" element={<AdminAuth />} /> 
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -89,13 +91,15 @@ function App() {
           <Route path="/home" element={<HomePage />} />
 
           {/* Protected Routes (Only Admins can access) */}
-          {/* <Route path="/update-employee" element={<UserRoute element={<UpdateEmployee />} />} /> */}
+          <Route path="/updateEmployee" element={<UserRoute element={<UpdateEmployee />} />} />
           <Route path="/emp-salary" element={<UserRoute element={<Payslip />} />} />
           <Route path="/add-salary" element={<UserRoute element={<AddSalaryForm />} />} />
           <Route path="/empMaster" element={<UserRoute element={<EmployeeManager />} />} />
           <Route path="/emplist" element={<UserRoute element={<EmployeeList />} />} />
           <Route path="/save-salaries" element={<UserRoute element={<SaveSalaries />} />} />
           <Route path="/EmpLeaveStatus" element={<UserRoute element= {<ApprovedLeaveList />}/>} />
+
+          <Route path="/AddHoliday" element={<UserRoute element={<AddHoliday />} />}/>
 
           {/* Redirect unknown routes to SignIn */}
           <Route path="*" element={<Navigate to="/signin" />} />

@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const router = express.Router();
 const path = require("path");
+const HolidayList = require("../models/Holiday_List"); 
 // Set up file storage using multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -19,7 +20,7 @@ const {
   adminLeavePanel,
   updateLeave,
   adminApporRej,
-  leavestatus,
+  leavestatus,getAbsentByEmpIDAndMonth,getHolidayList,Addholiday
 } = require("../controllers/leaveController");
 
 router.get("/admin/leave-requests", adminLeavePanel);
@@ -31,22 +32,14 @@ router.post("/admin/approve-reject/:id", adminApporRej);
 router.get("/employee/:employeeId/:leaveType", getAllLeaves);
 
 router.post("/submit-leave", upload.array("attachments"), submitLeave);
-// router.get("/leavestatus", async (req, res) => {
-//   try {
-//     const approvedLeaves = await CustomizeLeave.find({ approvalStatus: "Approved" }).select(
-//       "employeeId name designation leaveType numOfDays approvalStatus createdAt"
-//     );
 
-//     if (!approvedLeaves.length) {
-//       return res.status(404).json({ message: "No approved leave applications found" });
-//     }
-
-//     res.json(approvedLeaves);
-//   } catch (error) {
-//     console.error("Error fetching approved leaves:", error);
-//     res.status(500).json({ message: "Server error" });
-//   }
-// });
 router.get("/leavestatus", leavestatus);
+
+router.get("/leavestatus/:empId/:month", getAbsentByEmpIDAndMonth);
+router.get("/holidays/:year/:month", getHolidayList);
+
+router.post("/holidays", Addholiday);
+
+
 
 module.exports = router;
