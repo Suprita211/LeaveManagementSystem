@@ -48,7 +48,7 @@ const sendNoti = async (req, res) => {
     const mailOptions = {
       from: "groupproject366@gmail.com",
       to: "it.pioneergeoscience@gmail.com",
-      subject: "Leave Request Update Notification",
+      subject: "Pending Leave Request Notification",
       html: `
         <div style="max-width: 600px; margin: auto; padding: 10px; border: 1px solid #333; font-family: Arial, sans-serif; background-color: #f9f9f9;">
           <h2 style="text-align: center; color: #333; margin: 5px 0;">Leave Request Update</h2>
