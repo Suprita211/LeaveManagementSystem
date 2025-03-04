@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const {API_URL_PROD} = process.env;
 
 const SignUpPage = () => {
   const [EmployeeEmailID, setEmployeeEmailID] = useState("");
@@ -34,7 +35,7 @@ const SignUpPage = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://lms-be-0-0-3-release.onrender.com/auth/register",
+        `https://ems-be-v1.onrender.com/auth/register`,
         {
           EmployeeEmailID,
           password,

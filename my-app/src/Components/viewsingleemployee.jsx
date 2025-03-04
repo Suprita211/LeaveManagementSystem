@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+const {API_URL_PROD} = process.env;
 
 const EmployeeDetails = () => {
   const [empID, setEmpID] = useState("");
@@ -16,7 +17,7 @@ const EmployeeDetails = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/singleemployee/empID/${empID}`);
+      const response = await axios.get(`https://ems-be-v1.onrender.com/api/singleemployee/empID/${empID}`);
       setEmployee(response.data);
       setUpdatedEmployee(response.data);
       setError("");
@@ -71,7 +72,7 @@ const EmployeeDetails = () => {
   const updateEmployee = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:8080/api/empID/${empID}`,
+        `https://ems-be-v1.onrender.com/api/empID/${empID}`,
         updatedEmployee
       );
       setEmployee(response.data); // Updated response with new RetirementDate
@@ -86,7 +87,7 @@ const EmployeeDetails = () => {
   // Delete Employee
   const deleteEmployee = async () => {
     try {
-      await axios.delete(`http://localhost:8080/api/employee/empID/${empID}`);
+      await axios.delete(`https://ems-be-v1.onrender.com/api/employee/empID/${empID}`);
       setEmployee(null);
       setError("Employee deleted successfully.");
     } catch {

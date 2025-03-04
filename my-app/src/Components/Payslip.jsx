@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Container, Typography, Box } from '@mui/material';
 import SearchBar from '../Components/SearchBar';
 import SalaryForm from '../Components/SalaryForm';
-
+const {API_URL_PROD} = process.env;
 const Payslip = () => {
     const [empID, setEmpID] = useState(null);
 

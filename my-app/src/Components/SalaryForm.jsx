@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TextField, Button, Box, Grid, Typography, Paper } from '@mui/material';
 import axios from 'axios';
 import { toWords } from 'number-to-words';
+const {API_URL_PROD} = process.env;
 
 const SalaryForm = ({ empID, onDelete, onUpdate }) => {
     const [salary, setSalary] = useState(null);
@@ -13,7 +14,7 @@ const SalaryForm = ({ empID, onDelete, onUpdate }) => {
         if (empID && month) {
             setLoading(true);
             axios
-                .get(`http://localhost:8080/api/employees/salaries/${empID}/salary/${month}`)
+                .get(`https://ems-be-v1.onrender.com/api/employees/salaries/${empID}/salary/${month}`)
                 .then((response) => {
                     setSalary(response.data.salary);
                 })
@@ -36,7 +37,7 @@ const SalaryForm = ({ empID, onDelete, onUpdate }) => {
                 }
             };
     
-            axios.put(`http://localhost:8080/api/employees/salaries/${empID}/salary`, updatedSalary, {
+            axios.put(`https://ems-be-v1.onrender.com/api/employees/salaries/${empID}/salary`, updatedSalary, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
@@ -60,7 +61,7 @@ const SalaryForm = ({ empID, onDelete, onUpdate }) => {
             const isConfirmed = window.confirm('Are you sure you want to delete the salary record?');
             if (isConfirmed) {
                 axios
-                    .delete(`http://localhost:8080/api/employees/salaries/${empID}/salary/${month}`)
+                    .delete(`https://ems-be-v1.onrender.com/api/employees/salaries/${empID}/salary/${month}`)
                     .then((response) => {
                         onDelete();
                         alert('Salary record deleted');

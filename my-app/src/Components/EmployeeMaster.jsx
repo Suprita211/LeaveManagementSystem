@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Grid, Paper, Typography } from '@mui/material';
 import axios from 'axios';
-
+const {API_URL_PROD} = process.env;
 const EmployeeForm = () => {
   const [formData, setFormData] = useState({
     EmpName: '',
@@ -55,7 +55,7 @@ const EmployeeForm = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post('http://localhost:8080/api', formData);
+      const response = await axios.post(`https://ems-be-v1.onrender.com/api`, formData);
       
       if (response.status === 201) {
         console.log('Employee added:', formData);

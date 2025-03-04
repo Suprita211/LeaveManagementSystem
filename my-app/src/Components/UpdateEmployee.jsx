@@ -3,6 +3,7 @@ import axios from 'axios';
 import {
   Container, TextField, Button, Grid, Typography, Box, Alert, Table, TableBody, TableCell, TableContainer, TableRow, Paper
 } from '@mui/material';
+const {API_URL_PROD} = process.env;
 
 const ViewSingleEmployee = () => {
   const [empID, setEmpID] = useState('');
@@ -21,7 +22,7 @@ const ViewSingleEmployee = () => {
       return;
     }
 
-    axios.get(`http://localhost:8080/api/singleemployee/empID/${inputEmpID}`)
+    axios.get(`https://ems-be-v1.onrender.com/api/singleemployee/empID/${inputEmpID}`)
       .then((response) => {
         setEmployee(response.data);
         setUpdatedEmployee(response.data); // Populate the form with current data
@@ -40,7 +41,7 @@ const ViewSingleEmployee = () => {
       return;
     }
 
-    axios.put(`http://localhost:8080/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
+    axios.put(`https://ems-be-v1.onrender.com/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
       .then((response) => {
         setEmployee(response.data);
         alert('Employee details updated successfully.');
@@ -55,7 +56,7 @@ const ViewSingleEmployee = () => {
   // Delete Employee
   const deleteEmployee = () => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
-      axios.delete(`http://localhost:8080/api/employee/empID/${employee.EmpID}`)
+      axios.delete(`https://ems-be-v1.onrender.com/api/employee/empID/${employee.EmpID}`)
         .then(() => {
           setEmployee(null);
           setError('Employee deleted successfully.');

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+const {API_URL_PROD} = process.env;
+const API_URL = "http://localhost:8080/api/abs";
 const AddEmployeeForm = () => {
   const [formData, setFormData] = useState({
     EmpName: '',
@@ -45,7 +46,7 @@ const AddEmployeeForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    axios.post('http://localhost:8080/api/employee', formData)
+    axios.post(`https://ems-be-v1.onrender.com/api/employee`, formData)
       .then(response => {
         setSuccessMessage('Form submitted successfully!');
         

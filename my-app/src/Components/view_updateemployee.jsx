@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/employeemanager.css'; // Import the CSS file
+const {API_URL_PROD} = process.env;
 
 const EmployeeManager = () => {
   const [employees, setEmployees] = useState([]);
@@ -15,7 +16,7 @@ const EmployeeManager = () => {
 
   const fetchEmployees = () => {
     setLoading(true);
-    axios.get('http://localhost:8080/api/all')
+    axios.get(`https://ems-be-v1.onrender.com/api/all`)
       .then(response => {
         setEmployees(response.data);
         setLoading(false);
@@ -83,7 +84,7 @@ const EmployeeManager = () => {
 
   const handleUpdate = (empID) => {
     setLoading(true);
-    axios.get(`http://localhost:8080/api/singleemployee/empID/${empID}`)
+    axios.get(`https://ems-be-v1.onrender.com/api/singleemployee/empID/${empID}`)
       .then(response => {
         setSelectedEmployee(response.data);
         setFormVisible(true);
@@ -101,7 +102,7 @@ const EmployeeManager = () => {
     if (!selectedEmployee) return;
 
     setLoading(true);
-    axios.put(`http://localhost:8080/api/empID/${selectedEmployee.EmpID}`, selectedEmployee)
+    axios.put(`https://ems-be-v1.onrender.com/api/empID/${selectedEmployee.EmpID}`, selectedEmployee)
       .then(() => {
         alert('Employee updated successfully');
         fetchEmployees();
@@ -118,7 +119,7 @@ const EmployeeManager = () => {
   const handleDelete = (empID) => {
     if (window.confirm('Are you sure you want to delete this employee?')) {
       setLoading(true);
-      axios.delete(`http://localhost:8080/api/employee/empID/${empID}`)
+      axios.delete(`https://ems-be-v1.onrender.com/api/employee/empID/${empID}`)
         .then(() => {
           alert('Employee deleted successfully');
           fetchEmployees();

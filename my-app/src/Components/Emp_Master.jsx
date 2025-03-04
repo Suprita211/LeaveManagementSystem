@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './css/employeemanager.css'; // Import the CSS file
-
+const {API_URL_PROD} = process.env;
 const EmployeeManager = () => {
   const [employees, setEmployees] = useState([]);
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ const EmployeeManager = () => {
   });
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/all')
+    axios.get(`https://ems-be-v1.onrender.com/api/all`)
       .then(response => setEmployees(response.data))
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -57,7 +57,7 @@ const EmployeeManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/', formData)
+    axios.post(`https://ems-be-v1.onrender.com/api/`, formData)
       .then(response => {
         setEmployees([...employees, response.data]);
         setFormData({

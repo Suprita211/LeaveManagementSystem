@@ -19,6 +19,8 @@ import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { toWords } from "number-to-words";
 
+const {API_URL_PROD} = process.env;
+
 const currentYear = new Date().getFullYear();
 const months = Array.from({ length: 12 }, (_, index) => {
   const monthName = new Date(0, index).toLocaleString("en", { month: "long" });
@@ -133,7 +135,7 @@ const AddSalaryForm = () => {
 
     try {
       const { data } = await axios.get(
-        `http://localhost:5000/api/employee/empID/${empID}`
+        `https://ems-be-v1.onrender.com/api/employee/empID/${empID}`
       );
       console.log(data);
       setEmployeeDetails({
@@ -186,7 +188,7 @@ const AddSalaryForm = () => {
       };
 
       await axios.post(
-        `http://localhost:5000/api/employees/salaries/${EmpID}/salary`,
+        `https://ems-be-v1.onrender.com/api/employees/salaries/${EmpID}/salary`,
         salaryData
       );
       alert("Salary added successfully");

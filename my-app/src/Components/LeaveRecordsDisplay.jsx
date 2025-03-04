@@ -3,14 +3,14 @@ import axios from 'axios';
 import Header from './header';
 import Footer from './footer';
 import './css/employeeform.css';
-
+const {API_URL_PROD} = process.env;
 const LeaveRecords = () => {
   const [leaveRecords, setLeaveRecords] = useState([]);
   const [error, setError] = useState('');
 
   // Fetch leave balances from the backend
   useEffect(() => {
-    axios.get('http://localhost:8080/api/leave/leave-records')
+    axios.get(`https://ems-be-v1.onrender.com/api/leave/leave-records`)
       .then(response => {
         setLeaveRecords(response.data);
       })

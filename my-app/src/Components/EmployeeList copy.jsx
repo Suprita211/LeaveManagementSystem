@@ -14,7 +14,7 @@ import {
   Grid,
   Divider,
 } from "@mui/material";
-
+const {API_URL_PROD} = process.env;
 const EmployeeList = () => {
   const [employee, setEmployee] = useState([]);
   const [page, setPage] = useState(0);
@@ -23,7 +23,7 @@ const EmployeeList = () => {
   useEffect(() => {
     // Fetch employee data from the backend
     axios
-      .get("http://localhost:8080/api/all")
+      .get(`https://ems-be-v1.onrender.com/api/all`)
       .then((response) => {
         setEmployee(response.data);
       })

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+const {API_URL_PROD} = process.env;
 const AdminLogout = () => {
     const navigate = useNavigate();
 

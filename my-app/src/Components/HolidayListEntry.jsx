@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+const {API_URL_PROD} = process.env;
 const AddHoliday = () => {
   const [formData, setFormData] = useState({
     date: "",
@@ -25,7 +25,7 @@ const AddHoliday = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:8080/api/leave1/holidays", formData);
+      const response = await axios.post(`https://ems-be-v1.onrender.com/api/leave1/holidays`, formData);
       if (response.data.success) {
         alert("Holiday added successfully!");
         

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const {API_URL_PROD} = process.env;
 const AdminLogin = () => {
     const [formData, setFormData] = useState({
         email: "",
@@ -19,7 +19,7 @@ const AdminLogin = () => {
         setError(""); // Clear previous errors
 
         try {
-            const response = await fetch("http://localhost:8080/api/admin/login", {
+            const response = await fetch(`https://ems-be-v1.onrender.com/api/admin/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData),

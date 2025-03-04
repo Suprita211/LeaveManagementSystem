@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+const {API_URL_PROD} = process.env;
 const EmployeeView = () => {
   const [employees, setEmployees] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8080/api/all') // Adjust API URL if needed
+    axios.get(`https://ems-be-v1.onrender.com/api/all`) // Adjust API URL if needed
       .then(response => {
         setEmployees(response.data);
       })

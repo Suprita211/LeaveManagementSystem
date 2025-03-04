@@ -21,8 +21,9 @@ import {
 import { Delete, Edit } from "@mui/icons-material";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+const {API_URL_PROD} = process.env;
 
-const API_URL = "http://localhost:8080/api/abs";
+const API_URL = "${API_URL_PROD}/api/abs";
 
 const months = [
   "January",
@@ -61,7 +62,7 @@ const AbsentList = () => {
 
   const fetchAbsents = async () => {
     try {
-      const res = await axios.get(`${API_URL}/get/all`);
+      const res = await axios.get(`https://ems-be-v1.onrender.com/api/abs/get/all`);
       setAbsents(res.data);
     } catch (error) {
       toast.error("Error fetching absences");
@@ -76,10 +77,10 @@ const AbsentList = () => {
     e.preventDefault();
     try {
       if (editingId) {
-        await axios.put(`${API_URL}/absent/`, formData);
+        await axios.put(`https://ems-be-v1.onrender.com/api/abs/absent/`, formData);
         toast.success("Absent record updated!");
       } else {
-        await axios.post(`http://localhost:8080/api/abs/add`, formData);
+        await axios.post(`https://ems-be-v1.onrender.com/api/abs/add`, formData);
         toast.success("Absent record added!");
       }
       setFormData({ EmpID: "", EmpName: "", DaysAbsent: "", Month: "" });
@@ -97,7 +98,7 @@ const AbsentList = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${API_URL}/absent/${id}`);
+      await axios.delete(`https://ems-be-v1.onrender.com/api/abs/absent/${id}`);
       toast.success("Record deleted!");
       fetchAbsents();
     } catch (error) {

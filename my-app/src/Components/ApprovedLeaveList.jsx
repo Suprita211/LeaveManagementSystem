@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
+const {API_URL_PROD} = process.env;
 const ApprovedLeaveList = () => {
   const [approvedLeaves, setApprovedLeaves] = useState([]);
   const [error, setError] = useState("");
@@ -8,7 +8,7 @@ const ApprovedLeaveList = () => {
   useEffect(() => {
     const fetchApprovedLeaves = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/leave1/leavestatus");
+        const response = await axios.get(`https://ems-be-v1.onrender.com/api/leave1/leavestatus`);
 
         if (response.data.message) {
           setError(response.data.message);

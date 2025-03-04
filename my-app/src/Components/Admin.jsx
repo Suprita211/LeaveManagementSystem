@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+const {API_URL_PROD} = process.env;
 const AdminAuth = ({ isLogin, setIsLogin }) => {
     const [formData, setFormData] = useState({
         adminId: '',
@@ -14,8 +14,8 @@ const AdminAuth = ({ isLogin, setIsLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const API_BASE_URL = "http://localhost:8080/api/admin"; // Ensure correct backend URL
-        const endpoint = isLogin ? `${API_BASE_URL}/login` : `${API_BASE_URL}/signup`;
+        const API_BASE_URL = `${API_URL_PROD}`; // Ensure correct backend URL
+        const endpoint = isLogin ? `${API_URL_PROD}/api/admin/login` : `${API_BASE_URL}/api/admin/signup`;
 
         try {
             const response = await fetch(endpoint, {

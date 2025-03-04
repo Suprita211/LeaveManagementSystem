@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
-
+const {API_URL_PROD} = process.env;
 
 const LeaveDetailsForm = () => {
   const location = useLocation();
@@ -49,7 +49,7 @@ const LeaveDetailsForm = () => {
 
   const fetchEmployeeDetails = async (id, leaveType) => {
     try {
-      const response = await axios.get(`http://localhost:8080/api/leave1/employee/${id}/${leaveType}`);
+      const response = await axios.get(`https://ems-be-v1.onrender.com/api/leave1/employee/${id}/${leaveType}`);
       if (response.data.exists) {
         setEmployeeName(response.data.name);
         setDesignation(response.data.designation); // Set designation from the API
@@ -74,7 +74,7 @@ const LeaveDetailsForm = () => {
     const month = start.toLocaleString("default", { month: "long" });
   
     try {
-      const response = await axios.get(`http://localhost:8080/api/leave1/holidays/${year}/${month}`);
+      const response = await axios.get(`https://ems-be-v1.onrender.com/api/leave1/holidays/${year}/${month}`);
       if (response.data.success) {
         const formattedHolidays = response.data.holidays.length > 0
           ? response.data.holidays.map(h => new Date(h.date).toDateString())
@@ -221,7 +221,7 @@ const LeaveDetailsForm = () => {
     }
   
     try {
-      const response = await axios.post('http://localhost:8080/api/leave1/submit-leave', formData, {
+      const response = await axios.post(`https://ems-be-v1.onrender.com/api/leave1/submit-leave`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
   

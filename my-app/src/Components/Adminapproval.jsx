@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigatemport './css/AdminLeaveRequests.css';
 import './css/AdminLeaveRequests.css';
+const {API_URL_PROD} = process.env;
 const AdminLeaveRequests = () => {
   const navigate = useNavigate();
   const [leaveRequests, setLeaveRequests] = useState([]);
@@ -19,7 +20,7 @@ const AdminLeaveRequests = () => {
   // Fetch leave requests
   const fetchLeaveRequests = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/leave1/admin/leave-requests');
+      const response = await axios.get(`https://ems-be-v1.onrender.com/api/leave1/admin/leave-requests`);
       setLeaveRequests(response.data);
     } catch (error) {
       setMessage('Error fetching leave requests');
@@ -35,7 +36,7 @@ const AdminLeaveRequests = () => {
       return;
     }
     try {
-      await axios.post(`http://localhost:8080/api/leave1/admin/approve-reject/${id}`, {
+      await axios.post(`https://ems-be-v1.onrender.com/api/leave1/admin/approve-reject/${id}`, {
         status,
         reportingHeadSignature: updatedRequest.reportingHeadSignature,
         reportingHeadReason: updatedRequest.reportingHeadReason,
@@ -76,7 +77,7 @@ const AdminLeaveRequests = () => {
   
     try {
       // Update leave request in the backend
-      await axios.post(`http://localhost:8080/api/leave1/admin/update-leave/${selectedRequest._id}`, updatedRequest);
+      await axios.post(`https://ems-be-v1.onrender.com/api/leave1/admin/update-leave/${selectedRequest._id}`, updatedRequest);
   
       // Close modal and show success message
       setShowModal(false);
@@ -90,7 +91,7 @@ const AdminLeaveRequests = () => {
         updatedRequest.sanctioningAuthorityReason !== selectedRequest.sanctioningAuthorityReason;
   
       if (approvalChanged) {
-        axios.post('http://localhost:8080/api/admin/send-notification', {
+        axios.post(`https://ems-be-v1.onrender.com/api/admin/send-notification`, {
           employeeId: updatedRequest.employeeId,
           employeeName: updatedRequest.name,
           leaveType: updatedRequest.leaveType,
@@ -328,7 +329,7 @@ const AdminLeaveRequests = () => {
                     <ul>
                       {updatedRequest.attachments.map((attachment, index) => (
                         <li key={index}>
-                          <a href={`http://localhost:8080/${attachment}`} target="_blank" rel="noopener noreferrer">{attachment}</a>
+                          <a href={`${API_URL_PROD}/${attachment}`} target="_blank" rel="noopener noreferrer">{attachment}</a>
                         </li>
                       ))}
                     </ul>

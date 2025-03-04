@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+const {API_URL_PROD} = process.env;
 const AdminDashboard = () => {
     const adminDetails = JSON.parse(localStorage.getItem('adminDetails'));
     const navigate = useNavigate();
