@@ -270,7 +270,7 @@ const formatDate = (dateString) => {
 };
 
 const getDaysInMonth = (month, year) => {
-  return (new Date(year, month, 0).getDate());
+  return new Date(year, month, 0).getDate();
 };
 
 const calculatePT = (totalIncome) =>
@@ -284,54 +284,53 @@ const calculatePT = (totalIncome) =>
     ? 150
     : 200;
 
-    function getCurrentMonthName() {
-      return new Date().toLocaleString("default", { month: "long" });
+function getCurrentMonthName() {
+  return new Date().toLocaleString("default", { month: "long" });
+}
+
+function getCurrentYear() {
+  return new Date().getFullYear();
+}
+const getAbsentListByEmpIDAndMonth = async (empId, month) => {
+  try {
+    console.log(`🔍 Searching for EmpID: "${empId}", Month: "${month}"`);
+
+    // Ensure month includes year (e.g., "February 2026")
+    const absent = await Absent.findOne({
+      EmpID: empId.trim(),
+      Month: new RegExp(`^${month}\\s\\d{4}$`, "i"), // Match "February 2026" dynamically
+    });
+
+    if (!absent) {
+      console.log(
+        `❌ No absent record found for EmpID: "${empId}" and Month: "${month}"`
+      );
+      return { data: { DaysAbsent: 0 } };
     }
 
-    function getCurrentYear() {
-      return new Date().getFullYear();
-    }
-    const getAbsentListByEmpIDAndMonth = async (empId, month) => {
-      try {
-          console.log(`🔍 Searching for EmpID: "${empId}", Month: "${month}"`);
-          
-          // Ensure month includes year (e.g., "February 2026")
-          const absent = await Absent.findOne({ 
-              EmpID: empId.trim(), 
-              Month: new RegExp(`^${month}\\s\\d{4}$`, "i") // Match "February 2026" dynamically
-          });
-    
-          if (!absent) {
-              console.log(`❌ No absent record found for EmpID: "${empId}" and Month: "${month}"`);
-              return { data: { DaysAbsent: 0 } };
-          }
-    
-          console.log(`✅ Absent record found: ${JSON.stringify(absent)}`);
-          return { data: { DaysAbsent: absent.DaysAbsent } };
-    
-      } catch (error) {
-          console.error("❌ Error getting absent list:", error);
-          throw error;
-      }
-    };
-    
-    
+    console.log(`✅ Absent record found: ${JSON.stringify(absent)}`);
+    return { data: { DaysAbsent: absent.DaysAbsent } };
+  } catch (error) {
+    console.error("❌ Error getting absent list:", error);
+    throw error;
+  }
+};
 
 const calculateAbsentDays = async (empId, month) => {
   try {
     const AbsentDays = await getAbsentListByEmpIDAndMonth(empId, month);
-    console.log("absent days" ,AbsentDays.data.DaysAbsent);
+    console.log("absent days", AbsentDays.data.DaysAbsent);
     const TotalAbsentDays = AbsentDays.data.DaysAbsent || 0;
-    console.log(TotalAbsentDays)
+    console.log(TotalAbsentDays);
 
-    const Rejecteddays = await getLeaveByEmpIDAndMonth(empId , month);
-    console.log("rejected data" ,Rejecteddays);
+    const Rejecteddays = await getLeaveByEmpIDAndMonth(empId, month);
+    console.log("rejected data", Rejecteddays);
     const totalLeavesApplied = Rejecteddays || 0;
 
     // Calculate final absent days
     // Final = Absent days + Rejected leaves - Total leaves applied
-    const finalAbsentDays = Math.max(0,TotalAbsentDays - totalLeavesApplied);
-    console.log("final absent days" ,finalAbsentDays)
+    const finalAbsentDays = Math.max(0, TotalAbsentDays - totalLeavesApplied);
+    console.log("final absent days", finalAbsentDays);
 
     return Math.max(0, finalAbsentDays); // Ensure we don't return negative days
   } catch (error) {
@@ -343,8 +342,18 @@ const getLeaveByEmpIDAndMonth = async (empId, month) => {
   try {
     // Define month names
     const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
 
     // Log the input month
@@ -357,35 +366,32 @@ const getLeaveByEmpIDAndMonth = async (empId, month) => {
     // Fetch rejected leave requests for the employee
     const leaves = await CustomizeLeave.find({
       employeeId: empId,
-      approvalStatus: "Rejected"
+      approvalStatus: "Rejected",
     }).select("numOfDays createdAt");
 
     console.log("Fetched rejected leaves:", leaves);
 
     // Filter by month only (ignoring year)
-    const filteredLeaves = leaves.filter(leave => {
-      const leaveMonth = `"${monthNames[new Date(leave.createdAt).getMonth()]}"`; // Convert to string with double quotes
+    const filteredLeaves = leaves.filter((leave) => {
+      const leaveMonth = `"${
+        monthNames[new Date(leave.createdAt).getMonth()]
+      }"`; // Convert to string with double quotes
       console.log(`Leave Month from DB: ${leaveMonth}`);
 
       return leaveMonth === `"${month}"`;
     });
 
     // Extract numOfDays values
-    const rejectedDaysArray = filteredLeaves.map(leave => leave.numOfDays);
+    const rejectedDaysArray = filteredLeaves.map((leave) => leave.numOfDays);
 
     console.log("Filtered rejected days:", rejectedDaysArray);
 
     return rejectedDaysArray; // Returns an array of rejected numOfDays values
-
   } catch (error) {
     console.error("Error fetching rejected leaves:", error);
     throw error;
   }
 };
-
-
-
-
 
 // function getDaysInMonth(month, year) {
 //   // Months in JavaScript are 0-indexed (0 = January, 11 = December)
@@ -393,6 +399,37 @@ const getLeaveByEmpIDAndMonth = async (empId, month) => {
 //   return new Date(year, month, 0).getDate();
 // }
 
+const getMonthNumberAndDays = (monthName) => {
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  // Convert month name to the month index (0-based, so January is 0, May is 4, etc.)
+  const monthIndex = monthNames.findIndex(
+    (name) => name.toLowerCase() === monthName.toLowerCase()
+  );
+
+  if (monthIndex === -1) {
+    return `Invalid month name: ${monthName}`; // If the month is invalid
+  }
+
+  const year = new Date().getFullYear(); // Get the current year
+  const monthNumber = monthIndex + 1; // Month number (1-based, so January is 1, May is 5, etc.)
+  const daysInMonth = getDaysInMonth(monthNumber, year);
+
+  return { monthNumber, daysInMonth };
+};
 
 /**
  * @desc Generate salary slip PDF for an employee
@@ -400,7 +437,7 @@ const getLeaveByEmpIDAndMonth = async (empId, month) => {
  */
 const generateSalary = async (req, res) => {
   try {
-    const { startId, endId } = req.body;
+    const { startId, endId, month, year } = req.body;
 
     // Fetch employees within the given range
     const employees = await EmpMaster.find({
@@ -431,7 +468,7 @@ const generateSalary = async (req, res) => {
       fs.unlinkSync(mergedPdfPath);
     }
 
-    const calculatePT = (basic) => 
+    const calculatePT = (basic) =>
       basic <= 10000
         ? 0
         : basic > 10000 && basic <= 15000
@@ -441,36 +478,48 @@ const generateSalary = async (req, res) => {
         : basic > 25000 && basic <= 40000
         ? 150
         : 200;
-    
 
     for (let employee of employees) {
       // Salary calculations
-      const basic = employee.basic || 0;
-      const hra = parseInt(basic * 0.2);
-      const da = parseInt(basic * 0.4);
-      const convence = parseInt(basic * 0.2);
-      const medical = parseInt(basic * 0.08333);
-      let incentive=0;
-      let advance = 0;
-      let others = 0;
-      let grossSalary = parseInt(
-        basic + hra + da + convence + medical + incentive + advance + others
+      const monthYear = `${month} ${year}`;
+
+      const salaryData = await Salary.findOne(
+        { EmpID: employee.EmpID, month: monthYear },
+        { _id: 0 }
       );
-      const cpf = Math.min(parseInt((basic + da) * 0.12), 1800);
-      const esi = parseInt((basic + da + hra + convence + medical) * 0.0075);
-      let prof_tax = (calculatePT(basic));
-      let tds = 0;
-      let advance_deduction = 0;
-      let others_deduction = 0;
-      let totalDeductions = parseInt(
-        cpf + esi + prof_tax + tds + advance_deduction + others_deduction
-      );
-      let netSalary = parseInt(grossSalary - totalDeductions);
+      if (!salaryData) continue;
+
+      if (!employee) {
+        console.log(`No employee found with ID: ${empId}`);
+        return null;
+      }
 
       const pdfPath = path.join(
         pdfDirectory,
         `salary_slip_${employee.EmpID}.pdf`
       );
+
+      const grossSalary = parseInt(
+        salaryData.income.basic +
+          salaryData.income.da +
+          salaryData.income.hra +
+          salaryData.income.convence +
+          salaryData.income.medical +
+          salaryData.income.incentive +
+          salaryData.income.advance +
+          salaryData.income.others
+      );
+      const totalDeductions = parseInt(
+        salaryData.deductions.cpf +
+          salaryData.deductions.esi +
+          salaryData.deductions.prof_tax +
+          salaryData.deductions.others +
+          salaryData.deductions.tds +
+          salaryData.deductions.advance
+      );
+
+      const absentDays = await calculateAbsentDays(employee.EmpID, month);
+      // console.log("absent days total at last", absentDays);
 
       // Generate HTML for PDF
       const htmlContent = `
@@ -563,13 +612,16 @@ const generateSalary = async (req, res) => {
                 }</div>
             </div>
             <div class="info-row">
-                <div class="info-col"><strong>Pay Period:</strong> January 2025</div>
+                <div class="info-col"><strong>Pay Period:</strong>${month}
+                  ${getCurrentYear()}
+                </div>
                 <div class="info-col"><strong>Designation:</strong> ${
                   employee.Designation
                 }</div>
-                <div class="info-col"><strong>Days Worked:</strong> ${getDaysInMonth(
-                  getCurrentMonthName() , getCurrentYear()
-                )} days</div>
+                <div class="info-col"><strong>Days Worked:</strong> ${
+                  getMonthNumberAndDays(getCurrentMonthName()).daysInMonth -
+                  absentDays
+                } days</div>
                 <div class="info-col"><strong>UAN Number:</strong> ${
                   employee.UAN
                 }</div>
@@ -580,30 +632,52 @@ const generateSalary = async (req, res) => {
             <tr>
                 <th>Income</th><th>Amount</th><th>Deductions</th><th>Amount</th>
             </tr>
-            <tr><td>BASIC</td><td>${
-              employee.basic
-            }</td><td>CPF</td><td>${cpf}</td></tr>
-            <tr><td>DA</td><td>${da}</td><td>ESI</td><td>${esi}</td></tr>
-            <tr><td>HRA</td><td>${hra}</td><td>PROF_TAX</td><td>${prof_tax}</td></tr>
-            <tr><td>CONVEYENCE</td><td>${convence}</td><td>TDS</td><td>${tds}</td></tr>
-            <tr><td>MEDICAL</td><td>${medical}</td><td>ADVANCE</td><td>${advance_deduction}</td></tr>
-            <tr><td>INCENTIVE</td><td>${incentive}</td><td>OTHERS</td><td>${others_deduction}</td></tr>
-            <tr><td>ADVANCE</td><td>${advance}</td><td></td><td></td></tr>
-            <tr><td>OTHERS</td><td>${others}</td><td></td><td></td></tr>
+            <tr><td>BASIC</td><td>${employee.basic}</td><td>CPF</td><td>${
+        salaryData.deductions.cpf
+      }</td></tr>
+            <tr><td>DA</td><td>${salaryData.income.da}</td><td>ESI</td><td>${
+        salaryData.deductions.esi
+      }</td></tr>
+            <tr><td>HRA</td><td>${
+              salaryData.income.hra
+            }</td><td>PROF_TAX</td><td>${
+        salaryData.deductions.prof_tax
+      }</td></tr>
+            <tr><td>CONVEYENCE</td><td>${
+              salaryData.income.convence
+            }</td><td>TDS</td><td>${salaryData.deductions.tds || 0}</td></tr>
+            <tr><td>MEDICAL</td><td>${
+              salaryData.income.medical
+            }</td><td>ADVANCE</td><td>${
+        salaryData.deductions.advance || 0
+      }</td></tr>
+            <tr><td>INCENTIVE</td><td>${
+              salaryData.income.incentive || 0
+            }</td><td>OTHERS</td><td>${
+        salaryData.deductions.others || 0
+      }</td></tr>
+            <tr><td>ADVANCE</td><td>${
+              salaryData.income.advance || 0
+            }</td><td></td><td></td></tr>
+            <tr><td>OTHERS</td><td>${
+              salaryData.income.others || 0
+            }</td><td></td><td></td></tr>
             <tr>
                 <td><strong>Gross Salary</strong></td><td>₹${grossSalary}</td>
                 <td><strong>Total Deductions</strong></td><td>₹${totalDeductions}</td>
             </tr>
             <tr>
                 <td><strong>Net Salary</strong></td>
-                <td colspan="3">₹${netSalary} (${numberToWords(netSalary)})</td>
+                <td colspan="3">₹${salaryData.netIncome} (${numberToWords(
+        salaryData.netIncome
+      )})</td>
             </tr>
         </table>
 
         <div class="footer">
-            <div><strong>Leave Balance:</strong> PL:${employee.PL || 0} | CL:${
-        employee.CL || 0
-      } | ML:${employee.ML || 0}</div>
+            <div><strong>Leave Balance:</strong> CL : ${employee.CL || 0} | ML : ${
+        employee.ML || 0
+      }</div>
             <div><strong>Balance Amounts:</strong> Loan: ₹${
               Salary.others || 0
             } | Advance: ₹${Salary.advance || 0}</div>
@@ -683,26 +757,6 @@ const saveSalaries = async (req, res) => {
         .json({ message: "No employees found in the given range." });
     }
 
-    const getMonthNumberAndDays = (monthName) => {
-      const monthNames = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-      ];
-    
-      // Convert month name to the month index (0-based, so January is 0, May is 4, etc.)
-      const monthIndex = monthNames.findIndex(name => name.toLowerCase() === monthName.toLowerCase());
-    
-      if (monthIndex === -1) {
-        return `Invalid month name: ${monthName}`; // If the month is invalid
-      }
-    
-      const year = new Date().getFullYear(); // Get the current year
-      const monthNumber = monthIndex + 1; // Month number (1-based, so January is 1, May is 5, etc.)
-      const daysInMonth = getDaysInMonth(monthNumber, year);
-    
-      return { monthNumber, daysInMonth };
-    };
-
     const salaryRecords = [];
 
     for (let employee of employees) {
@@ -712,9 +766,9 @@ const saveSalaries = async (req, res) => {
       const da = parseInt(basic * 0.4);
       const convence = parseInt(basic * 0.2);
       const medical = parseInt(basic * 0.08333);
-      let incentive = 0,
-        advance = 0,
-        others = 0;
+      let incentive = null,
+        advance = null,
+        others = null;
       let grossSalary = parseInt(
         basic + hra + da + convence + medical + incentive + advance + others
       );
@@ -722,33 +776,35 @@ const saveSalaries = async (req, res) => {
       // Calculate deductions
       const cpf = Math.min(parseInt((basic + da) * 0.12), 1800);
       const esi = parseInt((basic + da + hra + convence + medical) * 0.0075);
-      let prof_tax = (calculatePT(basic));
-      let tds =0,
-        advance_deduction =0,
-        others_deduction=0;
+      let prof_tax = parseInt(calculatePT(basic));
+      let tds = null,
+        advance_deduction = null,
+        others_deduction = null;
       let totalDeductions = parseInt(
         cpf + esi + prof_tax + tds + advance_deduction + others_deduction
       );
       let netSalary = parseInt(grossSalary - totalDeductions);
-      console.log("console" , netSalary)
+      console.log("console", netSalary);
 
       const absentDays = await calculateAbsentDays(employee.EmpID, month);
-      console.log("absent days total at last" , absentDays);
+      console.log("absent days total at last", absentDays);
       if (absentDays > 0) {
-        console.log("absent days inside if block",absentDays)
-        const year =getCurrentYear();
-        const monthnum =  getMonthNumberAndDays(month).monthNumber;
-        console.log("month in number " ,monthnum)
-        console.log("get month days", typeof getDaysInMonth(monthnum ,year));
-        console.log("pased month" , month);
-        console.log("gross salary" , grossSalary)
-        console.log("net salary" , totalDeductions)
-        const singleDaySalary = grossSalary / getDaysInMonth(monthnum,year);
-        console.log("days deduct",singleDaySalary)
-        const absentDeduction = absentDays * (singleDaySalary);
-        console.log("total deduction :",absentDeduction)
-        others_deduction += absentDeduction;
+        console.log("absent days inside if block", absentDays);
+        const year = getCurrentYear();
+        const monthnum = getMonthNumberAndDays(month).monthNumber;
+        console.log("month in number ", monthnum);
+        console.log("get month days", typeof getDaysInMonth(monthnum, year));
+        console.log("pased month", month);
+        console.log("gross salary", grossSalary);
+        console.log("net salary", totalDeductions);
+        const singleDaySalary = grossSalary / getDaysInMonth(monthnum, year);
+        console.log("days deduct", singleDaySalary);
+        const absentDeduction = absentDays * singleDaySalary;
+        others_deduction += parseInt(absentDeduction);
+        console.log("other deduction :", others_deduction);
+        netSalary -= others_deduction;
         totalDeductions += others_deduction;
+        console.log("total deduction", totalDeductions);
       }
 
       // Create salary document
@@ -770,10 +826,10 @@ const saveSalaries = async (req, res) => {
           esi,
           prof_tax,
           tds,
-          advance: parseInt(advance_deduction),
-          others: parseInt(others_deduction),
+          advance: advance_deduction,
+          others: others_deduction,
         },
-        netIncome: parseInt(netSalary),
+        netIncome: netSalary,
       });
       console.log("salary details", salaryData);
       salaryRecords.push(salaryData);
@@ -859,5 +915,6 @@ module.exports = {
   deleteSalary,
   //   generateSalaryPDF,
   generateSalary,
-  saveSalaries,calculateAbsentDays
+  saveSalaries,
+  calculateAbsentDays,
 };
