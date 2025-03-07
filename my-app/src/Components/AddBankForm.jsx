@@ -19,7 +19,7 @@ const BankDetailsForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post("http://localhost:8080/api/bank/addbank", formData);
+            const response = await axios.post("https://ems-be-v1.onrender.com/api/bank/addbank", formData);
             alert("Bank details added successfully!");
             setFormData({ EmpID: "", EmpName: "", bankName: "", Acc_no: "", IFSC_no: "", paymentMode: "" });
         } catch (error) {

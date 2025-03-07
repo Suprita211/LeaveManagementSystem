@@ -27,7 +27,7 @@ const BankDetailsTable = () => {
     setLoading(true);
     try {
       const response = await axios.get(
-        "http://localhost:8080/api/bank/get/bank"
+        "https://ems-be-v1.onrender.com/api/bank/get/bank"
       );
       setBankDetails(response.data);
     } catch (error) {
