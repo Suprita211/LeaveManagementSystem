@@ -970,7 +970,7 @@ const saveSalaries = async (req, res) => {
       ).toFixed(2);
 
       // Calculate deductions
-      const cpf = Math.min(parseFloat(((basic + da) * 0.12), 1800));
+      const cpf = parseFloat(Math.min((((basic + da) * 0.12), 1800)));
       const esi = parseFloat(((basic + da + hra + convence + medical) * 0.0075));
       let prof_tax = parseFloat((calculatePT(basic)));
       let tds = 0,
