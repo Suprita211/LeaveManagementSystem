@@ -23,6 +23,8 @@ const customizedLeaveRoute = require('./routes/customizesleaveRoute');
 const empRoutes  = require('./routes/EmpMasterRoutes');
 // const authRoutes = require('./routes/authRoutes');
 const absentRoutes = require('./routes/AbsentRoutes');
+const bankroutes = require('./routes/bankRoutes');
+
 //end
 
 const app = express();
@@ -50,6 +52,8 @@ app.use('/api/leave', empLeaveRoutes);
 app.use('/api/leave1', customizedLeaveRoute);
 
 app.use('/api/abs', absentRoutes);
+
+app.use('/api/bank' , bankroutes);
 
 
 app.get("/", (req, res) => {

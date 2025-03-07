@@ -34,6 +34,8 @@ import SaveSalaries from "./Components/SaveSalaries"
 import ApprovedLeaveList from './Components/ApprovedLeaveList';
 import AbsentList from './Components/AbsentList';
 import AddHoliday from './Components/HolidayListEntry';
+import AddBankForm from './Components/AddBankForm';
+import BankDetails from './Components/BankDetails';
 
 const isAdmin = () => {
   const user = JSON.parse(localStorage.getItem("adminDetails"));
@@ -98,7 +100,8 @@ function App() {
           <Route path="/emplist" element={<UserRoute element={<EmployeeList />} />} />
           <Route path="/save-salaries" element={<UserRoute element={<SaveSalaries />} />} />
           <Route path="/EmpLeaveStatus" element={<UserRoute element= {<ApprovedLeaveList />}/>} />
-
+          <Route path='/addbank' element = {<UserRoute element={<AddBankForm />} />}/>
+          <Route path='/bankdetails' element = {<UserRoute element={<BankDetails />} />}/>
           <Route path="/AddHoliday" element={<UserRoute element={<AddHoliday />} />}/>
 
           {/* Redirect unknown routes to SignIn */}

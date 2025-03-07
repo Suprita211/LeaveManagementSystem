@@ -10,6 +10,8 @@ const axios = require("axios");
 const express = require("express");
 const app = express();
 const CustomizeLeave = require("../models/customizeLeave");
+const BankSchema = require('../models/BankModel'); // Adjust path as necessary
+
 
 // const {getAbsentByEmpIDAndMonth} = require("./leaveController");
 
@@ -228,8 +230,9 @@ function numberToWords(num) {
     "ninety",
   ];
 
-  if (num === 0) return "zero rupees only";
+  if (num === 0) return "Rupees zero only";
 
+  // Converts an integer number into words.
   function convertToWords(n) {
     let str = "";
 
@@ -257,7 +260,18 @@ function numberToWords(num) {
     return str.trim();
   }
 
-  return `rupees. ${convertToWords(num)} rupees only`;
+  // Separate integer and decimal parts
+  const integerPart = Math.floor(num);
+  const decimalPart = Math.round((num - integerPart) * 100);
+
+  // Build the final string
+  let words = `Rupees ${convertToWords(integerPart)}`;
+  if (decimalPart > 0) {
+    words += ` and ${convertToWords(decimalPart)} paise`;
+  }
+  words += " only";
+
+  return words;
 }
 
 const formatDate = (dateString) => {
@@ -499,7 +513,7 @@ const generateSalary = async (req, res) => {
         `salary_slip_${employee.EmpID}.pdf`
       );
 
-      const grossSalary = parseInt(
+      const grossSalary = parseFloat(
         salaryData.income.basic +
           salaryData.income.da +
           salaryData.income.hra +
@@ -508,183 +522,365 @@ const generateSalary = async (req, res) => {
           salaryData.income.incentive +
           salaryData.income.advance +
           salaryData.income.others
-      );
-      const totalDeductions = parseInt(
+      ).toFixed(2);
+      const totalDeductions = parseFloat(
         salaryData.deductions.cpf +
           salaryData.deductions.esi +
           salaryData.deductions.prof_tax +
           salaryData.deductions.others +
           salaryData.deductions.tds +
           salaryData.deductions.advance
-      );
+      ).toFixed(2);
 
       const absentDays = await calculateAbsentDays(employee.EmpID, month);
       // console.log("absent days total at last", absentDays);
 
+      const bankData = await BankSchema.findOne({ EmpID: employee.EmpID });
+
+
       // Generate HTML for PDF
       const htmlContent = `
-                               <html>
-<head>
+                               <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PaySlip</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; }
-        .container { width: 90%; margin: auto; border: 1px solid #000; padding: 15px; }
-        .header { text-align: center; margin-bottom: 10px; }
-        .company-name { font-size: 32px; font-weight: bold; margin: 5px 0; }
-                .subcompany-name{font-size: 20px; font-weight: bold; margin: 5px 0; margin-bottom: 20px;}
-        .address { font-size: 12px; margin: 5px 0; line-height: 1.4; }
-        .payslip-header { font-size: 16px; font-weight: bold; margin: 10px 0; margin-top:18px; }
-         .employee-info {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    width: 90%;
-    margin: 20px auto;
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 200px; /* Space between columns */
-}
+        body{
+            font-family: Arial, Helvetica, sans-serif;
+        }
 
-.info-row {
-    flex: 1 1 45%; /* Two columns with some spacing */
-    display: grid;
-    /* flex-direction: row; */
-    align-items: center;
-    margin-bottom: 12px;
-}
+      .container {
+        height: 90vh;
+        /* margin: 1rem; */
+        border: 1px solid #000;
+        
+      }
 
-.info-row strong {
-    display: inline-block;
-    width: 80px; /* Fixed width for labels */
-    color: #666;
-}
+      .header {
+        display: grid;
+        grid-template-columns: 1fr 6fr 1fr;
+        /* gap: 10px; */
+        align-items: center;
+        /* margin: 4vh */
+      }
 
-.info-row strong + :not(strong) {
-    flex: 1;
-    color: #333;
-}
+      .item {
+        text-align: center;
+      }
 
-/* Ensure only 2 rows on the left and 2 on the right */
-.employee-info .info-row:nth-child(1),
-.employee-info .info-row:nth-child(2) {
-    flex-basis: 100%; /* Left column */
-}
+      .item img {
+        width: 10vw;
+        height: auto;
+        margin-left: 4rem;
+      }
 
-.employee-info .info-row:nth-child(3),
-.employee-info .info-row:nth-child(4) {
-    flex-basis: 100%; /* Right column */
-}
+      .subhead {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+        margin-top: -1rem;
+      }
 
-.info-row span {
-    margin-left: 5px;
-}
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #000; padding: 6px; text-align: left; }
-        .footer { margin-top: 15px; line-height: 1.6; }
+      .grid-container {
+        display: grid;
+        grid-template-columns: 130px 280px 120px auto;
+        /* gap: 10px; */
+        margin-left: 4rem;
+        /* background-color: dodgerblue; */
+      }
+
+      .grid-container > div {
+        /* background-color: #f1f1f1; */
+        color: #000;
+        /* padding: 5px; */
+        font-size: 16px;
+        text-align: left;
+      }
+
+      .table {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Ensure only 2 rows on the left and 2 on the right */
+      .table .th:nth-child(1),
+      .table .th:nth-child(4) {
+        width: 24vw;
+        /* Left column */
+      }
+
+      .table .th:nth-child(3) {
+        width: 1vw;
+        /* Left column */
+      }
+
+      .table .th:nth-child(2),
+      .table .th:nth-child(5) {
+        width: 12vw;
+        text-align: right;
+        /* Right column */
+      }
+
+      table {
+        width: 85%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+      }
+
+      th,
+      td {
+        border: 0.5px solid #d3d3d3;
+        /* padding: 4px; */
+        text-align: left;
+      }
+
+      .bank-det {
+        margin: 3vw;
+        margin-left: 5vw;
+      }
+      .h3 {
+        margin-left: 1rem;
+      }
+
+      .banks {
+        display: grid;
+        grid-template-columns: 20vw 50vw;
+        padding: 1vw 0;
+        margin-bottom: -1rem;
+        margin-left: 1rem;
+      }
+
+      .footer {
+        /* margin-top: 15px; */
+        line-height: 1.6;
+        margin-left: 3.3rem;
+      }
+
+      .footer h4 {
+        margin-left: 35%;
+      }
+
+      #last {
+        margin-bottom: 4%;
+        margin-left: 35px;
+      }
+
+      .h5 {
+        margin-left: 5rem;
+      }
+
+      .signature-box {
+        text-align: right;
+        font-family: Arial, sans-serif;
+        margin-top: 50px;
+        margin-right: 4rem;
+      }
+
+      .signature-line {
+        display: inline-block;
+        width: 162px;
+        border-top: 1px dashed #000;
+        margin-bottom: 5px;
+      }
+
+      .signatory-text {
+        font-size: 16px;
+        font-weight: bold;
+        color: #000;
+      }
+      .h4 {
+        /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+        margin-top: 10rem;
+        font-weight: normal;
+      }
+
+      .tr{
+      margin-bottom : 10px;}
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <div class="container">
-        <div class="header">
-        <img src="https://pgssw.co.in/assets/admin-source/images/logo.png" alt="Pioneer Logo" style="width: 100px; height: 100px;">
-            <div class="company-name">Pioneer Group</div>
-            <br/>
-            <div class="subcompany-name">${employee.CompanyName}</div>
-            <div class="address">
-                Pioneer Tower, Street No. 85, Opposite tank No. 2, 1st Floor,<br>
-                Action Area - 1, Plot - AB-109, Newtown,<br>
-                West Bengal 700156
-            </div>
-            <div class="payslip-header">Payslip</div>
+      <div class="header">
+        <div class="item">
+          <img
+            src="https://pgssw.co.in/assets/admin-source/images/logo.png"
+            alt=""
+          />
         </div>
-
-           <div class="employee-info">
-            <div class="info-row">
-                <div class="info-col"><strong>Employee ID:</strong> ${
-                  employee.EmpID
-                }</div>
-                <div class="info-col"><strong>Date of Join:</strong> ${formatDate(
-                  employee.DateOfJoining
-                )}</div>
-                <div class="info-col"><strong>Employee Name:</strong> ${
-                  employee.EmpName
-                }</div>
-                <div class="info-col"><strong>Department:</strong> ${
-                  employee.Department
-                }</div>
-            </div>
-            <div class="info-row">
-                <div class="info-col"><strong>Pay Period:</strong>${month}
-                  ${getCurrentYear()}
-                </div>
-                <div class="info-col"><strong>Designation:</strong> ${
-                  employee.Designation
-                }</div>
-                <div class="info-col"><strong>Days Worked:</strong> ${
-                  getMonthNumberAndDays(getCurrentMonthName()).daysInMonth -
-                  absentDays
-                } days</div>
-                <div class="info-col"><strong>UAN Number:</strong> ${
-                  employee.UAN
-                }</div>
-            </div>
+        <div class="item">
+          <h2>${employee.CompanyName}</h2>
+          <p>
+            "Pioneer Tower", Premises No.20-085 <br />
+            Street No.85,AB-109, New Town, Kolkata-700163 <br />
+            Ph: 9007938111, email: pioneer.surveyors@gmail.com
+          </p>
         </div>
+        <div class="item"></div>
+      </div>
 
+      <div class="subhead">
+        <h3><u>Pay Slip</u></h3>
+      </div>
+
+      <div class="card">
+        <div class="grid-container">
+          <div>Employee ID</div>
+          <div>: &nbsp; ${employee.EmpID}</div>
+          <div>Date of Joining</div>
+          <div>: &nbsp; ${formatDate(employee.DateOfJoining)}</div>
+        </div>
+        <div class="grid-container">
+          <div>Employee Name</div>
+          <div>: &nbsp; ${employee.EmpName}</div>
+          <div>Pay period</div>
+          <div>: &nbsp; ${month}
+                  ${getCurrentYear()}</div>
+        </div>
+        <div class="grid-container">
+          <div>Designation</div>
+          <div>: &nbsp; ${employee.Designation}</div>
+          <div>Days Worked</div>
+          <div>: &nbsp; ${
+            getMonthNumberAndDays(getCurrentMonthName()).daysInMonth -
+            absentDays
+          }</div>
+        </div>
+        <div class="grid-container">
+          <div>Department</div>
+          <div>: &nbsp; ${employee.Department}</div>
+          <div>UAN Number</div>
+          <div>: &nbsp; ${employee.PANNumber}</div>
+        </div>
+      </div>
+
+      <div class="table">
         <table>
-            <tr>
-                <th>Income</th><th>Amount</th><th>Deductions</th><th>Amount</th>
+          <thead>
+            <tr class="tr">
+              <th class="th">&nbsp;Earnings</th>
+              <th class="th">Amount(₹)&nbsp;</th>
+              <th class="th"></th>
+              <th class="th">&nbsp;Deductions</th>
+              <th class="th">Amount(₹)&nbsp;</th>
             </tr>
-            <tr><td>BASIC</td><td>${employee.basic}</td><td>CPF</td><td>${
-        salaryData.deductions.cpf
-      }</td></tr>
-            <tr><td>DA</td><td>${salaryData.income.da}</td><td>ESI</td><td>${
-        salaryData.deductions.esi
-      }</td></tr>
-            <tr><td>HRA</td><td>${
-              salaryData.income.hra
-            }</td><td>PROF_TAX</td><td>${
-        salaryData.deductions.prof_tax
-      }</td></tr>
-            <tr><td>CONVEYENCE</td><td>${
-              salaryData.income.convence
-            }</td><td>TDS</td><td>${salaryData.deductions.tds || 0}</td></tr>
-            <tr><td>MEDICAL</td><td>${
-              salaryData.income.medical
-            }</td><td>ADVANCE</td><td>${
-        salaryData.deductions.advance || 0
-      }</td></tr>
-            <tr><td>INCENTIVE</td><td>${
-              salaryData.income.incentive || 0
-            }</td><td>OTHERS</td><td>${
-        salaryData.deductions.others || 0
-      }</td></tr>
-            <tr><td>ADVANCE</td><td>${
-              salaryData.income.advance || 0
-            }</td><td></td><td></td></tr>
-            <tr><td>OTHERS</td><td>${
-              salaryData.income.others || 0
-            }</td><td></td><td></td></tr>
-            <tr>
-                <td><strong>Gross Salary</strong></td><td>₹${grossSalary}</td>
-                <td><strong>Total Deductions</strong></td><td>₹${totalDeductions}</td>
-            </tr>
-            <tr>
-                <td><strong>Net Salary</strong></td>
-                <td colspan="3">₹${salaryData.netIncome} (${numberToWords(
-        salaryData.netIncome
-      )})</td>
-            </tr>
-        </table>
+          </thead>
+          <tr class="tr">
+            <td class="th">&nbsp;Basic Salary</td>
+            <td class="th">${(Math.round(salaryData.income.basic * 100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;Provident Fund (PF)</td>
+            <td class="th">${(Math.round(salaryData.deductions.cpf * 100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Dearness Allowance (DA)</td>
+            <td class="th">${(Math.round(salaryData.income.da *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;ESI</td>
+            <td class="th">${(Math.round(salaryData.deductions.esi *100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;House rent Allowance (HRA)</td>
+            <td class="th">${(Math.round(salaryData.income.hra *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;Professional Tax</td>
+            <td class="th">${(Math.round(salaryData.deductions.prof_tax*100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Conveyance Allowance</td>
+            <td class="th">${(Math.round(salaryData.income.convence *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;Income Tax (TDS)</td>
+            <td class="th">${(Math.round(salaryData.deductions.tds*100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Medical Allowance</td>
+            <td class="th">${(Math.round(salaryData.income.medical*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;Advance</td>
+            <td class="th">${(Math.max(salaryData.deductions.advance*100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Incentive</td>
+            <td class="th">${(Math.round(salaryData.income.incentive*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;Other deductions</td>
+            <td class="th">${(Math.round(salaryData.deductions.others*100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Advance</td>
+            <td class="th">${(Math.round(salaryData.income.advance*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;</td>
+            <td class="th">&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th">&nbsp;Other Allowances</td>
+            <td class="th">${(Math.round(salaryData.income.others*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th"></td>
+            <td class="th">&nbsp;</td>
+            <td class="th">&nbsp;</td>
+          </tr>
+          <tr class="tr">
+            <td class="th"><strong>&nbsp;Gross Salary</strong></td>
+            <td class="th">${(Math.round(grossSalary*100)/100).toFixed(2)}&nbsp;</td>
+            <td></td>
+            <td class="th"><strong>&nbsp;Total Deductions</strong></td>
+            <td class="th">${(Math.round(totalDeductions*100)/100).toFixed(2)}&nbsp;</td>
+          </tr>
+          <tr>
+          <tr class="tr">
+          <td></td><td></td><td></td><td></td><td></td></tr>
+            <td><strong>&nbsp;Net Salary(₹)</strong></td>
+            <td colspan="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(Math.round(salaryData.netIncome*100)/100)} 
+            </td>
+          </tr>
+          <tr>
+          <td>Amount in words:</td>
+          <td colspan="4">${numberToWords(
+        salaryData.netIncome)
+      }</td>
+          </tr>
 
-        <div class="footer">
-            <div><strong>Leave Balance:</strong> CL : ${employee.CL || 0} | ML : ${
-        employee.ML || 0
-      }</div>
-            <div><strong>Balance Amounts:</strong> Loan: ₹${
+        </table>
+      </div>
+
+      <div class="bank-det">
+        <h3 class="h3"><u>Employee's Bank Details:</u></h3>
+
+        <div class="banks">
+          <div class="pros">Name of the Bank</div>
+          <div class="pros">: &nbsp;${bankData.bankName}</div>
+          <div class="pros">Account No.</div>
+          <div class="pros">: &nbsp;${bankData.Acc_no}</div>
+          <div class="pros">IFSC Code</div>
+          <div class="pros">: &nbsp;${bankData.IFSC_no}</div>
+          <div class="pros">Mode of Payment</div>
+          <div class="pros">: &nbsp;${bankData.paymentMode}</div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div><strong>Leave Balance:</strong> CL: ${employee.CL} | ML: ${employee.ML}</div>
+        <div><strong>Balance Amounts:</strong>Loan: ₹${
               Salary.others || 0
             } | Advance: ₹${Salary.advance || 0}</div>
-        </div>
+      </div>
+
+      <div class="signature-box">
+        <div class="signature-line"></div>
+        <div class="signatory-text">Authorised Signatory</div>
+      </div>
+      <h5 class="h4" style="text-align: center">
+        A unit of Pioneer Group of Companies
+      </h5>
     </div>
-</body>
-</html>`;
+  </body>
+</html>
+`;
 
       await page.setContent(htmlContent);
       await page.pdf({ path: pdfPath, format: "A4" });
@@ -761,29 +957,29 @@ const saveSalaries = async (req, res) => {
 
     for (let employee of employees) {
       // Calculate income components
-      const basic = employee.basic || 0;
-      const hra = parseInt(basic * 0.2);
-      const da = parseInt(basic * 0.4);
-      const convence = parseInt(basic * 0.2);
-      const medical = parseInt(basic * 0.08333);
-      let incentive = null,
-        advance = null,
-        others = null;
-      let grossSalary = parseInt(
+      const basic = parseFloat(((employee.basic || 0 )));
+      const hra = parseFloat((basic * 0.2));
+      const da = parseFloat((basic * 0.4));
+      const convence = parseFloat((basic * 0.2));
+      const medical = parseFloat((basic * 0.08333));
+      let incentive = 0,
+        advance = 0,
+        others = 0;
+      let grossSalary = parseFloat(
         basic + hra + da + convence + medical + incentive + advance + others
-      );
+      ).toFixed(2);
 
       // Calculate deductions
-      const cpf = Math.min(parseInt((basic + da) * 0.12), 1800);
-      const esi = parseInt((basic + da + hra + convence + medical) * 0.0075);
-      let prof_tax = parseInt(calculatePT(basic));
-      let tds = null,
-        advance_deduction = null,
-        others_deduction = null;
-      let totalDeductions = parseInt(
+      const cpf = Math.min(parseFloat(((basic + da) * 0.12), 1800));
+      const esi = parseFloat(((basic + da + hra + convence + medical) * 0.0075));
+      let prof_tax = parseFloat((calculatePT(basic)));
+      let tds = 0,
+        advance_deduction = 0,
+        others_deduction = 0;
+      let totalDeductions = parseFloat(
         cpf + esi + prof_tax + tds + advance_deduction + others_deduction
-      );
-      let netSalary = parseInt(grossSalary - totalDeductions);
+      ).toFixed(2);
+      let netSalary = parseFloat(grossSalary - totalDeductions);
       console.log("console", netSalary);
 
       const absentDays = await calculateAbsentDays(employee.EmpID, month);
@@ -800,7 +996,7 @@ const saveSalaries = async (req, res) => {
         const singleDaySalary = grossSalary / getDaysInMonth(monthnum, year);
         console.log("days deduct", singleDaySalary);
         const absentDeduction = absentDays * singleDaySalary;
-        others_deduction += parseInt(absentDeduction);
+        others_deduction += parseFloat(absentDeduction);
         console.log("other deduction :", others_deduction);
         netSalary -= others_deduction;
         totalDeductions += others_deduction;
@@ -812,24 +1008,24 @@ const saveSalaries = async (req, res) => {
         EmpID: employee.EmpID,
         month: `${month} ${year}`,
         income: {
-          basic,
-          da,
-          hra,
-          medical,
-          convence,
-          incentive,
-          advance,
-          others,
+          basic: basic.toFixed(2),
+          da: da.toFixed(2),
+          hra: hra.toFixed(2),
+          medical: medical.toFixed(2),
+          convence: convence.toFixed(2),
+          incentive: incentive.toFixed(2),
+          advance: advance.toFixed(2),
+          others: others.toFixed(2),
         },
         deductions: {
-          cpf,
-          esi,
-          prof_tax,
-          tds,
-          advance: advance_deduction,
-          others: others_deduction,
+          cpf: cpf.toFixed(2),
+          esi: esi.toFixed(2),
+          prof_tax: prof_tax.toFixed(2),
+          tds: tds.toFixed(2),
+          advance: advance_deduction.toFixed(2),
+          others: others_deduction.toFixed(2),
         },
-        netIncome: netSalary,
+        netIncome: netSalary.toFixed(2),
       });
       console.log("salary details", salaryData);
       salaryRecords.push(salaryData);
@@ -850,70 +1046,11 @@ const saveSalaries = async (req, res) => {
 
 const router = express.Router();
 
-// Route to generate salary and PDF
-// const generateSalary= async (req, res) => {
-//     try {
-//         const { startId, endId } = req.body;
-//         const employees = await EmpMaster.find({
-//             EmpID: { $gte: startId, $lte: endId }
-//         });
-
-//         if (employees.length === 0) {
-//             return res.status(404).json({ message: "No employees found in the given range" });
-//         }
-
-//         let salarySlips = [];
-
-//         for (let emp of employees) {
-//             let { hra, da, convence, medical, incentive, grossSalary, cpf, esi, prof_tax, tds, totalDeductions, netSalary } = calculateSalary(emp.basicSalary);
-
-//             let salaryData = {
-//                 employeeId: emp.EmpID,
-//                 name: emp.EmpName,
-//                 designation: emp.Designation,
-//                 department: emp.Department,
-//                 basic: emp.basic,
-//                 hra,
-//                 da,
-//                 convence,
-//                 medical,
-//                 incentive,
-//                 // grossSalary,
-//                 cpf,
-//                 esi,
-//                 prof_tax,
-//                 tds,
-//                 // totalDeductions,
-//                 netSalary,
-//                 payPeriod: "January 2025",
-//                 daysWorked: 31
-//             };
-
-//             let pdfPath = await generateSalaryPDF(salaryData);
-//             salaryData.pdfPath = pdfPath;
-
-//             let newSlip = new salarySlip(salaryData);
-//             await newSlip.save();
-
-//             salarySlips.push(salaryData);
-//         }
-
-//         res.status(200).json({ message: "Salary slips generated and PDFs created", salarySlips });
-
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: "Server error" });
-//     }
-// };
-
-// Helper function to convert numbers to words (simplified version)
-
 module.exports = {
   addSalary,
   addOrUpdateSalary,
   getSalaryByEmpId,
   deleteSalary,
-  //   generateSalaryPDF,
   generateSalary,
   saveSalaries,
   calculateAbsentDays,

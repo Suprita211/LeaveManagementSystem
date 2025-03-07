@@ -13,6 +13,8 @@ const menuItems = [
   { text: 'See all Rejected leaves', path: '/EmpLeaveStatus' },
   { text: 'Add Absent', path: '/addabsent' },
   { text: 'Add Holiday', path: '/AddHoliday' },
+  { text: 'Add bank Details', path: '/addbank' },
+  { text: 'See bank Details', path: '/bankdetails' },
 
 
 ];
@@ -31,9 +33,9 @@ const HomePage = () => {
       <CssBaseline />
 
       {/* Sidebar */}
-      <Drawer variant="permanent" sx={{ width: 240, flexShrink: 0, '& .MuiDrawer-paper': { width: 240, boxSizing: 'border-box' } }}>
+      <Drawer variant="permanent" sx={{ marginTop : "-4rem"  ,width: 240, flexShrink: 0, '& .MuiDrawer-paper': { width: 240, boxSizing: 'border-box' } }}>
         <Toolbar />
-        <List>
+        <List >
           {menuItems.map((item) => (
             <ListItem button key={item.text} onClick={() => navigate(item.path)}>
               <ListItemText primary={item.text} />
@@ -52,7 +54,7 @@ const HomePage = () => {
         </AppBar>
 
         <Toolbar />
-        <Typography variant="h4">Welcome to the Dashboard</Typography>
+        <Typography marginTop="30px" variant="h4">Welcome to the Dashboard</Typography>
         <Typography variant="body1" sx={{ marginBottom: 3 }}>Select a menu from the sidebar to view details.</Typography>
 
         {/* Content Layout with Grid */}
@@ -74,9 +76,9 @@ const HomePage = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6">User Profile</Typography>
-                    <Typography variant="body2">Name: John Doe</Typography>
+                    <Typography variant="body2">Name: Admin</Typography>
                     <Typography variant="body2">Role: Administrator</Typography>
-                    <Typography variant="body2">Email: johndoe@example.com</Typography>
+                    <Typography variant="body2">Email: admin@pioneer.com</Typography>
                   </CardContent>
                 </Card>
               </Grid>
@@ -98,9 +100,9 @@ const HomePage = () => {
                 <Card>
                   <CardContent>
                     <Typography variant="h6">Quick Stats</Typography>
-                    <Typography variant="body2">Employees: 125</Typography>
-                    <Typography variant="body2">Leave Requests: 8 Pending</Typography>
-                    <Typography variant="body2">Salary Reports: 5 Generated</Typography>
+                    <Typography variant="body2">Employees: ♾</Typography>
+                    <Typography variant="body2">Leave Requests: ✔ Pending</Typography>
+                    <Typography variant="body2">Salary Reports: ✨ Generated</Typography>
                   </CardContent>
                 </Card>
               </Grid>
