@@ -6,7 +6,7 @@ const empMasterSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      maxlength: 4,
+      maxlength: 8,
     },
     EmpName: {
       type: String,
@@ -86,7 +86,7 @@ const empMasterSchema = new mongoose.Schema(
     },
     MarriedStatus: {
       type: String,
-      maxlength: 3,
+      maxlength: 10,
     },
     GuardianSpouseName: {
       type: String,

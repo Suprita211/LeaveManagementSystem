@@ -3,12 +3,13 @@ import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, CssB
 import { useNavigate } from 'react-router-dom';
 
 const menuItems = [
-  { text: 'Add employee', path: '/emp-master' },
+  { text: 'Add employee', path: '/empMaster' },
   { text: 'See All employees', path: '/emplist' },
-  { text: 'Update Employee', path: '/view-employee' },
+  { text: 'Update Employee From List', path: '/view-employee' },
+  { text: 'Update Single Employee', path: '/update-employee' },
   { text: 'Salary Details', path: '/emp-salary' },
   { text: 'Apply For Leave', path: '/emp-leaveform' },
-  { text: 'Leave Applications', path: '/leave-applications' },
+  // { text: 'Leave Applications', path: '/leave-applications' },
   { text: 'Download Salary', path: '/save-salaries' },
   { text: 'See all Rejected leaves', path: '/EmpLeaveStatus' },
   { text: 'Add Absent', path: '/addabsent' },

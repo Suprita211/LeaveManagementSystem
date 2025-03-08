@@ -5,6 +5,7 @@ const {API_URL_PROD} = process.env;
 const EmployeeManager = () => {
   const [employees, setEmployees] = useState([]);
   const [formData, setFormData] = useState({
+    EmpID : '',
     EmpName: '',
     Designation: '',
     Department: '',            // New field for Department
@@ -26,7 +27,7 @@ const EmployeeManager = () => {
   });
 
   useEffect(() => {
-    axios.get(`https://ems-be-v1.onrender.com/api/all`)
+    axios.get(`http://localhost:8080/api/all`)
       .then(response => setEmployees(response.data))
       .catch(error => console.error('Error fetching employees:', error));
   }, []);
@@ -57,10 +58,11 @@ const EmployeeManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`https://ems-be-v1.onrender.com/api/`, formData)
+    axios.post(`http://localhost:8080/api/`, formData)
       .then(response => {
         setEmployees([...employees, response.data]);
         setFormData({
+          EmpID : '',
           EmpName: '',
           Designation: '',
           Department: '',            // New field for Department
@@ -94,6 +96,10 @@ const EmployeeManager = () => {
       <div className="card p-4">
         <h2 className="text-center">Add New Employee</h2>
         <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+            <label className="form-label">Employee ID</label>
+            <input type="text" className="form-control" name="EmpID" value={formData.EmpID} onChange={handleChange} required />
+          </div>
           <div className="mb-3">
             <label className="form-label">Employee Name</label>
             <input type="text" className="form-control" name="EmpName" value={formData.EmpName} onChange={handleChange} required />

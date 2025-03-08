@@ -109,17 +109,17 @@ const addEmployee = async (req, res) => {
     console.log("Received employee data:", req.body);
 
     // Fetch and update the counter for EmpID generation
-    const counter = await Counter.findOneAndUpdate(
-      { name: "empID" },
-      { $inc: { value: 1 } }, // Increment the counter by 1
-      { new: true, upsert: true } // Create a new counter if it doesn't exist
-    );
+    // const counter = await Counter.findOneAndUpdate(
+    //   { name: "empID" },
+    //   { $inc: { value: 1 } }, // Increment the counter by 1
+    //   { new: true, upsert: true } // Create a new counter if it doesn't exist
+    // );
 
     // Generate the new EmpID based on the current counter value
-    const newEmpID = counter.value.toString().padStart(4, "0"); // Format as 4 digits
+    // const newEmpID = counter.value.toString().padStart(4, "0"); // Format as 4 digits
 
     // Prepare the employee data with the generated EmpID
-    const employeeData = { ...req.body, EmpID: newEmpID };
+    const employeeData = { ...req.body };
 
     // Create and save the new employee record in the database
     const newEmployee = new EmpMaster(employeeData);

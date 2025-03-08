@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { TextField, Button, Container, Typography, Box, Grid, Paper, Link } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTheme } from './ThemeContext';  
 // require('dotenv').config();
+import Navbar from './NavBar';
+import './css/Theme.css';
+
 const API_URL = process.env.API_URL_PROD;
 
 const SignInPage = () => {
+  const { theme } = useTheme();
+
   const [EmployeeEmailID, setEmployeeEmailID] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -42,7 +48,10 @@ const SignInPage = () => {
   };
 
   return (
-    <Grid container style={{ height: '100vh' }}>
+    <div>
+            {/* <Navbar /> */}
+
+    <Grid container style={{ height: '100vh' }} className={theme}>
       {/* Left side with the Logo */}
       <Grid item xs={6} container justifyContent="center" alignItems="center">
         <img
@@ -108,6 +117,7 @@ const SignInPage = () => {
         </Container>
       </Grid>
     </Grid>
+  </div>
   );
 };
 

@@ -4,6 +4,7 @@ import axios from 'axios';
 const {API_URL_PROD} = process.env;
 const EmployeeForm = () => {
   const [formData, setFormData] = useState({
+    EmpID:'',
     EmpName: '',
     Designation: '',
     CompanyName: '',
@@ -20,11 +21,11 @@ const EmployeeForm = () => {
     MarriedStatus: '',
     GuardianSpouseName: '',
     RetirementDate: '',
-    CL: 4,
+    CL: 8,
     SL: 0,
-    ML: 2,
+    ML: 4,
     UAN: '',
-    basic : 15000
+    basic : 0
   });
 
   const handleChange = (e) => {
@@ -55,12 +56,13 @@ const EmployeeForm = () => {
     e.preventDefault();
     
     try {
-      const response = await axios.post(`https://ems-be-v1.onrender.com/api`, formData);
+      const response = await axios.post(`http://localhost:8080/api`, formData);
       
       if (response.status === 201) {
         console.log('Employee added:', formData);
         alert('Employee added successfully');
         setFormData({
+          EmpID:'',
           EmpName: '',
           Designation: '',
           CompanyName: '',
@@ -77,9 +79,9 @@ const EmployeeForm = () => {
           MarriedStatus: '',
           GuardianSpouseName: '',
           RetirementDate: '',
-          CL: 4,
-          SL: 8,
-          ML: 2,
+          CL: 8,
+          SL: 0,
+          ML: 4,
           UAN: '',
           basic : 0,
         });
@@ -91,15 +93,29 @@ const EmployeeForm = () => {
   };
 
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px' }}>
+    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2px' }}>
       <Paper elevation={3} sx={{ padding: 3 }}>
         <Typography variant="h4" gutterBottom align="center" color="primary">
           Add New Employee
         </Typography>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} style={{minWidth: 1200 , marginLeft : "-11rem"}}>
           <Grid container spacing={3}>
+          {/* Employee ID */}
+          <Grid item xs={12} sm={3}>
+              <TextField
+                label="Employee ID"
+                variant="outlined"
+                fullWidth
+                name="EmpID"
+                value={formData.EmpID}
+                onChange={handleChange}
+                required
+                inputProps={{ maxLength: 25 }}
+                InputProps={{ style: { fontSize: 16 } }}
+              />
+            </Grid>
             {/* Employee Name */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={5}>
               <TextField
                 label="Employee Name"
                 variant="outlined"
@@ -114,7 +130,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Company */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <TextField
                 label="Company"
                 variant="outlined"
@@ -129,7 +145,7 @@ const EmployeeForm = () => {
             </Grid>
 
              {/* Designation */}
-             <Grid item xs={12} sm={6}>
+             <Grid item xs={12} sm={3}>
               <TextField
                 label="Designation"
                 variant="outlined"
@@ -144,7 +160,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Department */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Department"
                 variant="outlined"
@@ -159,7 +175,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Residence Address */}
-            <Grid item xs={12}>
+            <Grid item xs={6}>
               <TextField
                 label="Residence Address"
                 variant="outlined"
@@ -174,7 +190,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Primary Contact */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Primary Contact"
                 variant="outlined"
@@ -188,7 +204,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Secondary Contact */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Secondary Contact"
                 variant="outlined"
@@ -214,7 +230,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Aadhar */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Aadhar Number"
                 variant="outlined"
@@ -227,7 +243,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* PAN */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="PAN Number"
                 variant="outlined"
@@ -240,7 +256,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Date of Joining */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Date of Joining"
                 type="date"
@@ -256,7 +272,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Birth Date */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Birth Date"
                 type="date"
@@ -272,7 +288,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* UAN Number */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="UAN Number"
                 variant="outlined"
@@ -286,7 +302,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Gender Dropdown */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>Gender</InputLabel>
                 <Select
@@ -304,7 +320,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Marital Status Dropdown */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <FormControl fullWidth>
                 <InputLabel>Marital Status</InputLabel>
                 <Select
@@ -314,14 +330,14 @@ const EmployeeForm = () => {
                   variant="outlined"
                   sx={{ fontSize: 16, backgroundColor: '#F5F5F5' }}
                 >
-                  <MenuItem value="Yes">Yes</MenuItem>
-                  <MenuItem value="No">No</MenuItem>
+                  <MenuItem value="Married">Married</MenuItem>
+                  <MenuItem value="UnMarried">UnMarried</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
 
             {/* Guardian/Spouse Name */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Guardian/Spouse Name"
                 variant="outlined"
@@ -335,7 +351,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Basic */}
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Basic Salary"
                 variant="outlined"
@@ -348,7 +364,7 @@ const EmployeeForm = () => {
             </Grid>
 
             {/* Leave Balances */}
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Casual Leave (CL)"
                 type="number"
@@ -361,7 +377,7 @@ const EmployeeForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Special Leave (SL)"
                 type="number"
@@ -374,7 +390,7 @@ const EmployeeForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={4}>
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Medical Leave (ML)"
                 type="number"

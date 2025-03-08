@@ -10,8 +10,7 @@ const axios = require("axios");
 const express = require("express");
 const app = express();
 const CustomizeLeave = require("../models/customizeLeave");
-const BankSchema = require('../models/BankModel'); // Adjust path as necessary
-
+const BankSchema = require("../models/BankModel"); // Adjust path as necessary
 
 // const {getAbsentByEmpIDAndMonth} = require("./leaveController");
 
@@ -537,7 +536,6 @@ const generateSalary = async (req, res) => {
 
       const bankData = await BankSchema.findOne({ EmpID: employee.EmpID });
 
-
       // Generate HTML for PDF
       const htmlContent = `
                                <!DOCTYPE html>
@@ -716,7 +714,7 @@ const generateSalary = async (req, res) => {
           <p>
             "Pioneer Tower", Premises No.20-085 <br />
             Street No.85,AB-109, New Town, Kolkata-700163 <br />
-            Ph: 9007938111, email: pioneer.surveyors@gmail.com
+            Ph: 9007938111, email: pioneergroup.acct@gmail.com
           </p>
         </div>
         <div class="item"></div>
@@ -770,79 +768,112 @@ const generateSalary = async (req, res) => {
           </thead>
           <tr class="tr">
             <td class="th">&nbsp;Basic Salary</td>
-            <td class="th">${(Math.round(salaryData.income.basic * 100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.basic * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;Provident Fund (PF)</td>
-            <td class="th">${(Math.round(salaryData.deductions.cpf * 100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.deductions.cpf * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;Dearness Allowance (DA)</td>
-            <td class="th">${(Math.round(salaryData.income.da *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.da * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
-            <td class="th">&nbsp;ESI</td>
-            <td class="th">${(Math.round(salaryData.deductions.esi *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">&nbsp;Emp's State Insurance(ESI)</td>
+            <td class="th">${(
+              Math.round(salaryData.deductions.esi * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;House rent Allowance (HRA)</td>
-            <td class="th">${(Math.round(salaryData.income.hra *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.hra * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;Professional Tax</td>
-            <td class="th">${(Math.round(salaryData.deductions.prof_tax*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.deductions.prof_tax * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;Conveyance Allowance</td>
-            <td class="th">${(Math.round(salaryData.income.convence *100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.convence * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;Income Tax (TDS)</td>
-            <td class="th">${(Math.round(salaryData.deductions.tds*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.deductions.tds * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;Medical Allowance</td>
-            <td class="th">${(Math.round(salaryData.income.medical*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.medical * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
-            <td class="th">&nbsp;Advance</td>
-            <td class="th">${(Math.max(salaryData.deductions.advance*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">&nbsp;Advance Deducted</td>
+            <td class="th">${(
+              Math.max(salaryData.deductions.advance * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;Incentive</td>
-            <td class="th">${(Math.round(salaryData.income.incentive*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.incentive * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;Other deductions</td>
-            <td class="th">${(Math.round(salaryData.deductions.others*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.deductions.others * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
-            <td class="th">&nbsp;Advance</td>
-            <td class="th">${(Math.round(salaryData.income.advance*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">&nbsp;Advance Taken</td>
+            <td class="th">${(
+              Math.round(salaryData.income.advance * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;</td>
             <td class="th">&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th">&nbsp;Other Allowances</td>
-            <td class="th">${(Math.round(salaryData.income.others*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(
+              Math.round(salaryData.income.others * 100) / 100
+            ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
             <td class="th">&nbsp;</td>
             <td class="th">&nbsp;</td>
           </tr>
           <tr class="tr">
             <td class="th"><strong>&nbsp;Gross Salary</strong></td>
-            <td class="th">${(Math.round(grossSalary*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(Math.round(grossSalary * 100) / 100).toFixed(
+              2
+            )}&nbsp;</td>
             <td></td>
             <td class="th"><strong>&nbsp;Total Deductions</strong></td>
-            <td class="th">${(Math.round(totalDeductions*100)/100).toFixed(2)}&nbsp;</td>
+            <td class="th">${(Math.round(totalDeductions * 100) / 100).toFixed(
+              2
+            )}&nbsp;</td>
           </tr>
           <tr>
           <tr class="tr">
           <td></td><td></td><td></td><td></td><td></td></tr>
             <td><strong>&nbsp;Net Salary(₹)</strong></td>
-            <td colspan="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${(Math.round(salaryData.netIncome*100)/100)} 
+            <td colspan="4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;${
+              Math.round(salaryData.netIncome * 100) / 100
+            } 
             </td>
           </tr>
           <tr>
-          <td>Amount in words:</td>
-          <td colspan="4">${numberToWords(
-        salaryData.netIncome)
-      }</td>
+          <td colspan="5">Amount in words: ${numberToWords(
+            salaryData.netIncome
+          )}</td>
           </tr>
 
         </table>
@@ -864,10 +895,12 @@ const generateSalary = async (req, res) => {
       </div>
 
       <div class="footer">
-        <div><strong>Leave Balance:</strong> CL: ${employee.CL} | ML: ${employee.ML}</div>
-        <div><strong>Balance Amounts:</strong>Loan: ₹${
-              Salary.others || 0
-            } | Advance: ₹${Salary.advance || 0}</div>
+        <div><strong>Leave Balance:</strong> CL: ${employee.CL} | ML: ${
+        employee.ML
+      }</div>
+        <div><strong>Remaining Adjusted Balance:</strong> Advance: ₹${(
+          salaryData.income.advance - salaryData.deductions.advance) || 0
+        }</div>
       </div>
 
       <div class="signature-box">
@@ -957,11 +990,11 @@ const saveSalaries = async (req, res) => {
 
     for (let employee of employees) {
       // Calculate income components
-      const basic = parseFloat(((employee.basic || 0 )));
-      const hra = parseFloat((basic * 0.2));
-      const da = parseFloat((basic * 0.4));
-      const convence = parseFloat((basic * 0.2));
-      const medical = parseFloat((basic * 0.08333));
+      const basic = parseFloat(employee.basic || 0);
+      const hra = parseFloat(basic * 0.2);
+      const da = parseFloat(basic * 0.4);
+      const convence = parseFloat(basic * 0.2);
+      const medical = parseFloat(basic * 0.08333);
       let incentive = 0,
         advance = 0,
         others = 0;
@@ -970,9 +1003,9 @@ const saveSalaries = async (req, res) => {
       ).toFixed(2);
 
       // Calculate deductions
-      const cpf = parseFloat(Math.min((((basic + da) * 0.12), 1800)));
-      const esi = parseFloat(((basic + da + hra + convence + medical) * 0.0075));
-      let prof_tax = parseFloat((calculatePT(basic)));
+      const cpf = parseFloat(Math.min(((basic + da) * 0.12, 1800)));
+      const esi = parseFloat((basic + da + hra + convence + medical) * 0.0075);
+      let prof_tax = parseFloat(calculatePT(basic));
       let tds = 0,
         advance_deduction = 0,
         others_deduction = 0;
