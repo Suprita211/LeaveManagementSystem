@@ -127,12 +127,12 @@ const ViewSingleEmployee = () => {
                 <Grid item xs={12}>
                   <TextField label="Secondary Contact" name="SecondaryContactNumber" value={updatedEmployee.SecondaryContactNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
                 </Grid>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                   <TextField label="Date of Joining" name="DateOfJoining" value={updatedEmployee.DateOfJoining?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
                 </Grid>
                 <Grid item xs={12}>
                   <TextField label="Birth Date" name="BirthDate" value={updatedEmployee.BirthDate?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
-                </Grid>
+                </Grid> */}
                 {/* <Grid item xs={12}>
                   <TextField label="Retirement Date" name="RetirementDate" value={updatedEmployee.RetirementDate?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
                 </Grid> */}
