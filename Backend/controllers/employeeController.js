@@ -53,6 +53,11 @@ const updateEmployeeSingle = async (req, res) => {
   }
 };
 
+
+
+
+
+
 const getAllEmployee = async (req, res) => {
   try {
     const employees = await EmpMaster.find({}, "-_id -__v"); // Exclude MongoDB internal fields

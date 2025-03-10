@@ -16,7 +16,7 @@ const empMasterSchema = new mongoose.Schema(
     Designation: {
       type: String,
       required: true,
-      maxlength: 10,
+      maxlength: 20,
     },
     Department: {
       type: String,
@@ -51,7 +51,7 @@ const empMasterSchema = new mongoose.Schema(
     ResidenceAddress: {
       type: String,
       required: true,
-      maxlength: 40,
+      maxlength: 180,
     },
     PrimaryContactNumber: {
       type: String,
@@ -97,7 +97,8 @@ const empMasterSchema = new mongoose.Schema(
     },
     UAN: {
       type: String,
-      required: true,
+      // required: true,
+      // match: [/^\d{12}$/, "Aadhar number must be 12 digits"],
     },
     basic: {
       type: Number,

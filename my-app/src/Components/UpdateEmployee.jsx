@@ -3,7 +3,6 @@ import axios from 'axios';
 import {
   Container, TextField, Button, Grid, Typography, Box, Alert, Table, TableBody, TableCell, TableContainer, TableRow, Paper
 } from '@mui/material';
-const {API_URL_PROD} = process.env;
 
 const ViewSingleEmployee = () => {
   const [empID, setEmpID] = useState('');
@@ -15,7 +14,6 @@ const ViewSingleEmployee = () => {
   // Fetch Employee by EmpID
   const fetchEmployee = () => {
     const inputEmpID = empID.trim();
-
     if (!inputEmpID) {
       setError('Please enter a valid Employee ID.');
       setEmployee(null);
@@ -25,7 +23,7 @@ const ViewSingleEmployee = () => {
     axios.get(`https://ems-be-v1.onrender.com/api/singleemployee/empID/${inputEmpID}`)
       .then((response) => {
         setEmployee(response.data);
-        setUpdatedEmployee(response.data); // Populate the form with current data
+        setUpdatedEmployee(response.data);
         setError('');
       })
       .catch(() => {
@@ -36,16 +34,11 @@ const ViewSingleEmployee = () => {
 
   // Update Employee Details
   const updateEmployee = () => {
-    if (Object.values(updatedEmployee).includes('')) {
-      setError('All fields are required for updating.');
-      return;
-    }
-
-    axios.put(`https://ems-be-v1.onrender.com/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
+    axios.put(`http://localhost:8080/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
       .then((response) => {
         setEmployee(response.data);
         alert('Employee details updated successfully.');
-        setError('Employee details updated successfully.');
+        setError('');
         setIsEditable(false);
       })
       .catch(() => {
@@ -75,31 +68,6 @@ const ViewSingleEmployee = () => {
     }));
   };
 
-  // Employee details to display in the table
-  const employeeDetails = [
-    
-    { key: 'Name', value: employee?.EmpName },
-    { key: 'Company Name', value: employee?.CompanyName },
-    { key: 'Department', value: employee?.Department },
-    { key: 'Designation', value: employee?.Designation },
-    { key: 'Email', value: employee?.EmployeeEmailID },
-    { key: 'Aadhar No.', value: employee?.AadharNumber },
-    { key: 'PAN No.', value: employee?.PANNumber },
-    { key: 'Residence Address', value: employee?.ResidenceAddress },
-    { key: 'Primary Contact', value: employee?.PrimaryContactNumber },
-    { key: 'Secondary Contact', value: employee?.SecondaryContactNumber },
-    { key: 'Date of Joining', value: employee?.DateOfJoining?.slice(0, 10) },
-    { key: 'Birth Date', value: employee?.BirthDate?.slice(0, 10) },
-    { key: 'Retirement Date', value: employee?.RetirementDate?.slice(0, 10) },
-    { key: 'ML', value: employee?.ML },
-    { key: 'CL', value: employee?.CL },
-    { key: 'Gender', value: employee?.Gender },
-    { key: 'Marital Status', value: employee?.MarriedStatus },
-    { key: 'Guardian/Spouse Name', value: employee?.GuardianSpouseName },
-    { key: 'UAN No.', value: employee?.UAN },
-    { key: 'Basic Salary', value: employee?.basic },
-  ];
-
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" align="center" gutterBottom>
@@ -125,54 +93,89 @@ const ViewSingleEmployee = () => {
           <Typography variant="h5" gutterBottom>
             Employee Details
           </Typography>
+          
           {isEditable ? (
             <form>
-              <Grid container spacing={2}>
-                {employeeDetails.map((detail, index) => (
-                  <Grid item xs={12} key={index}>
-                    <TextField
-                      label={detail.key}
-                      name={detail.key.replace(/\s+/g, '')} // Remove spaces for field names
-                      value={updatedEmployee[detail.key.replace(/\s+/g, '')] || ''}
-                      fullWidth
-                      onChange={handleChange}
-                      variant="outlined"
-                      type={detail.key.includes('Date') ? 'date' : 'text'}
-                      InputLabelProps={{ shrink: true }}
-                    />
-                  </Grid>
-                ))}
+              <Grid container spacing={2} sx={6}>
+                <Grid item xs={12}>
+                  <TextField label="Name" name="EmpName" value={updatedEmployee.EmpName || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Company Name" name="CompanyName" value={updatedEmployee.CompanyName || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Department" name="Department" value={updatedEmployee.Department || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Designation" name="Designation" value={updatedEmployee.Designation || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Email" name="EmployeeEmailID" value={updatedEmployee.EmployeeEmailID || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Aadhar No." name="AadharNumber" value={updatedEmployee.AadharNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="PAN No." name="PANNumber" value={updatedEmployee.PANNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Residence Address" name="ResidenceAddress" value={updatedEmployee.ResidenceAddress || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Primary Contact" name="PrimaryContactNumber" value={updatedEmployee.PrimaryContactNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Secondary Contact" name="SecondaryContactNumber" value={updatedEmployee.SecondaryContactNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Date of Joining" name="DateOfJoining" value={updatedEmployee.DateOfJoining?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Birth Date" name="BirthDate" value={updatedEmployee.BirthDate?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                {/* <Grid item xs={12}>
+                  <TextField label="Retirement Date" name="RetirementDate" value={updatedEmployee.RetirementDate?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
+                </Grid> */}
+
+                {/* added */}
+                <Grid item xs={12}>
+                  <TextField label="Gender" name="Gender" value={updatedEmployee.Gender || ''} fullWidth onChange={handleChange} variant="outlined" type="text" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Marrital Status" name="MarriedStatus" value={updatedEmployee.MarriedStatus || ''} fullWidth onChange={handleChange} variant="outlined" type="text" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Guardian Name" name="GuardianSpouseName" value={updatedEmployee.GuardianSpouseName || ''} fullWidth onChange={handleChange} variant="outlined" type="text" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="UAN Number" name="UAN" value={updatedEmployee.UAN || ''} fullWidth onChange={handleChange} variant="outlined" type="text" InputLabelProps={{ shrink: true }} />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Basic Salary" name="basic" value={updatedEmployee.basic || ''} fullWidth onChange={handleChange} variant="outlined" type="text" InputLabelProps={{ shrink: true }} />
+                </Grid>
               </Grid>
+
               <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
-                <Button variant="contained" color="primary" onClick={updateEmployee}>
-                  Update
-                </Button>
-                <Button variant="outlined" color="secondary" onClick={() => setIsEditable(false)}>
-                  Cancel
-                </Button>
+                <Button variant="contained" color="primary" onClick={updateEmployee}>Update</Button>
+                <Button variant="outlined" color="secondary" onClick={() => setIsEditable(false)}>Cancel</Button>
               </Box>
             </form>
           ) : (
             <TableContainer component={Paper} elevation={3}>
               <Table>
                 <TableBody>
-                  {employeeDetails.map((detail, index) => (
-                    <TableRow key={index}>
-                      <TableCell sx={{ fontWeight: 'bold' }}>{detail.key}</TableCell>
-                      <TableCell>{detail.value}</TableCell>
-                    </TableRow>
-                  ))}
+                  <TableRow><TableCell sx={{ fontWeight: 'bold' }}>Name</TableCell><TableCell>{employee.EmpName}</TableCell></TableRow>
+                  <TableRow><TableCell sx={{ fontWeight: 'bold' }}>Company Name</TableCell><TableCell>{employee.CompanyName}</TableCell></TableRow>
+                  <TableRow><TableCell sx={{ fontWeight: 'bold' }}>Department</TableCell><TableCell>{employee.Department}</TableCell></TableRow>
+                  <TableRow><TableCell sx={{ fontWeight: 'bold' }}>Designation</TableCell><TableCell>{employee.Designation}</TableCell></TableRow>
                 </TableBody>
               </Table>
             </TableContainer>
           )}
+          
           <Box sx={{ display: 'flex', gap: 2, marginTop: 2 }}>
-            <Button variant="contained" color="primary" onClick={() => setIsEditable(true)}>
-              Edit
-            </Button>
-            <Button variant="outlined" color="secondary" onClick={deleteEmployee}>
-              Delete
-            </Button>
+            <Button variant="contained" color="primary" onClick={() => setIsEditable(true)}>Edit</Button>
+            <Button variant="outlined" color="secondary" onClick={deleteEmployee}>Delete</Button>
           </Box>
         </Box>
       )}

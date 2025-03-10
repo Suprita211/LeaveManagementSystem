@@ -37,7 +37,7 @@ const SaveSalaries = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post(`https://ems-be-v1.onrender.com/api/employees/salaries/add-salary`, formData);
+      const response = await axios.post(`http://localhost:8080/api/employees/salaries/add-salary`, formData);
       console.log(response.data);
 
       // Success Toast (Green)
@@ -46,6 +46,7 @@ const SaveSalaries = () => {
         theme: "colored",
         autoClose: 3000,
       });
+      alert(response.data.message);
 
     } catch (error) {
       // Error Toast (Red)
@@ -54,8 +55,8 @@ const SaveSalaries = () => {
         theme: "colored",
         autoClose: 3000,
       });
+      alert(error.response.data.message);
     }
-
     setLoading(false);
   };
 
@@ -64,7 +65,7 @@ const SaveSalaries = () => {
   
     try {
       const response = await axios.post(
-        `https://ems-be-v1.onrender.com/api/employees/salaries/generate-salary`,
+        `http://localhost:8080/api/employees/salaries/generate-salary`,
         formData
       );
   
@@ -101,6 +102,7 @@ const SaveSalaries = () => {
         theme: "colored",
         autoClose: 3000,
       });
+      alert(error.response.data.message)
     }
   
     setDownloading(false);

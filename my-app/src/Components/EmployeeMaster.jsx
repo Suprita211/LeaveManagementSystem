@@ -1,40 +1,72 @@
-import React, { useState } from 'react';
-import { TextField, Button, MenuItem, Select, InputLabel, FormControl, Grid, Paper, Typography } from '@mui/material';
-import axios from 'axios';
-const {API_URL_PROD} = process.env;
+import React, { useState, useMemo } from "react";
+import {
+  TextField,
+  Button,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+const { API_URL_PROD } = process.env;
 const EmployeeForm = () => {
   const [formData, setFormData] = useState({
-    EmpID:'',
-    EmpName: '',
-    Designation: '',
-    CompanyName: '',
-    Department: '',
-    ResidenceAddress: '',
-    PrimaryContactNumber: '',
-    SecondaryContactNumber: '',
-    EmployeeEmailID: '',
-    AadharNumber : '',
-    PANNumber : '',
-    DateOfJoining: '',
-    BirthDate: '',
-    Gender: '',
-    MarriedStatus: '',
-    GuardianSpouseName: '',
-    RetirementDate: '',
+    EmpID: "",
+    EmpName: "",
+    Designation: "",
+    CompanyName: "",
+    Department: "",
+    ResidenceAddress: "",
+    PrimaryContactNumber: "",
+    SecondaryContactNumber: "",
+    EmployeeEmailID: "",
+    AadharNumber: "",
+    PANNumber: "",
+    DateOfJoining: "",
+    BirthDate: "",
+    Gender: "",
+    MarriedStatus: "",
+    GuardianSpouseName: "",
+    RetirementDate: "",
     CL: 8,
     SL: 0,
     ML: 4,
-    UAN: '',
-    basic : 0
+    UAN: "",
+    basic: 0,
   });
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState("");
+
+  const validateNumber = (value) => {
+    const numberRegex = /^[0-9]{6}$/; // Example: Exactly 6-digit number
+
+    if (!numberRegex.test(value)) {
+      setError(true);
+      setHelperText("Number must be exactly 6 digits.");
+    } else {
+      setError(false);
+      setHelperText("");
+    }
+  };
+
+  // const handleBlur = () => {
+  //   validateNumber(number);
+  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    if (name === 'BirthDate') {
+    if (name === "BirthDate") {
       calculateRetirementDate(value);
     }
+
+    // if(name !== 'PANNumber' || name !== 'AadharNumber'){
+    //   alert('enter valid pan or aadhar details')
+    // }
   };
 
   const calculateRetirementDate = (birthDate) => {
@@ -44,64 +76,86 @@ const EmployeeForm = () => {
       const retirementDate = new Date(birth);
       retirementDate.setFullYear(retirementYear);
 
-      const lastDayOfMonth = new Date(retirementDate.getFullYear(), retirementDate.getMonth() + 1, 0);
+      const lastDayOfMonth = new Date(
+        retirementDate.getFullYear(),
+        retirementDate.getMonth() + 1,
+        0
+      );
       setFormData((prevData) => ({
         ...prevData,
-        RetirementDate: lastDayOfMonth.toISOString().split('T')[0]
+        RetirementDate: lastDayOfMonth.toISOString().split("T")[0],
       }));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     try {
       const response = await axios.post(`http://localhost:8080/api`, formData);
-      
+
       if (response.status === 201) {
-        console.log('Employee added:', formData);
-        alert('Employee added successfully');
+        console.log("Employee added:", formData);
+        alert("Employee added successfully");
         setFormData({
-          EmpID:'',
-          EmpName: '',
-          Designation: '',
-          CompanyName: '',
-          Department: '',
-          ResidenceAddress: '',
-          PrimaryContactNumber: '',
-          SecondaryContactNumber: '',
-          EmployeeEmailID: '',
-          AadharNumber: '',
-          PANNumber : '',
-          DateOfJoining: '',
-          BirthDate: '',
-          Gender: '',
-          MarriedStatus: '',
-          GuardianSpouseName: '',
-          RetirementDate: '',
-          CL: 8,
+          EmpID: "",
+          EmpName: "",
+          Designation: "",
+          CompanyName: "",
+          Department: "",
+          ResidenceAddress: "",
+          PrimaryContactNumber: "",
+          SecondaryContactNumber: "",
+          EmployeeEmailID: "",
+          AadharNumber: "",
+          PANNumber: "",
+          DateOfJoining: "",
+          BirthDate: "",
+          Gender: "",
+          MarriedStatus: "",
+          GuardianSpouseName: "",
+          RetirementDate: "",
+          CL: 12,
           SL: 0,
-          ML: 4,
-          UAN: '',
-          basic : 0,
+          ML: 0,
+          UAN: "",
+          basic: 0,
         });
       }
     } catch (error) {
-      console.error('Error adding employee:', error);
-      alert('There was an error adding the employee.');
+      console.error("Error adding employee:", error);
+      alert(
+        "There was an error adding the employee. Please check all the fields\n Email should be name@domain.com \n Aadhar number should be 12 digits \n Pan number should be in 10 digit format"
+      );
     }
   };
 
+  // const hasError = useMemo(() => value === "error", [value]);
+
+  // Memo that returns a helper message if value is "error" or a blank string if not
+  const getHelperText = React.useMemo(
+    () =>
+      formData.PrimaryContactNumber === "error"
+        ? "Value cannot be 'error'"
+        : "",
+    [formData.PrimaryContactNumber]
+  );
+
+  // updated
+
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2px' }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", padding: "2px" }}>
       <Paper elevation={3} sx={{ padding: 3 }}>
         <Typography variant="h4" gutterBottom align="center" color="primary">
           Add New Employee
         </Typography>
-        <form onSubmit={handleSubmit} style={{minWidth: 1200 , marginLeft : "-11rem"}}>
+        <form
+          onSubmit={handleSubmit}
+          style={{ minWidth: 1200, marginLeft: "-11rem" }}
+        >
           <Grid container spacing={3}>
-          {/* Employee ID */}
-          <Grid item xs={12} sm={3}>
+            {/* Employee ID */}
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Employee ID"
                 variant="outlined"
@@ -144,8 +198,8 @@ const EmployeeForm = () => {
               />
             </Grid>
 
-             {/* Designation */}
-             <Grid item xs={12} sm={3}>
+            {/* Designation */}
+            <Grid item xs={12} sm={3}>
               <TextField
                 label="Designation"
                 variant="outlined"
@@ -199,6 +253,9 @@ const EmployeeForm = () => {
                 value={formData.PrimaryContactNumber}
                 onChange={handleChange}
                 required
+                // onBlur={handleBlur}
+                // error={hasError}
+                // helperText={getHelperText}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -251,6 +308,9 @@ const EmployeeForm = () => {
                 name="PANNumber"
                 value={formData.PANNumber}
                 onChange={handleChange}
+                // onBlur={handleBlur(formData.PANNumber)}
+                // error={error}
+                // helperText={helperText}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -296,7 +356,6 @@ const EmployeeForm = () => {
                 name="UAN"
                 value={formData.UAN}
                 onChange={handleChange}
-                required
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -310,7 +369,7 @@ const EmployeeForm = () => {
                   value={formData.Gender}
                   onChange={handleChange}
                   variant="outlined"
-                  sx={{ fontSize: 16, backgroundColor: '#F5F5F5' }}
+                  sx={{ fontSize: 16, backgroundColor: "#F5F5F5" }}
                 >
                   <MenuItem value="Male">Male</MenuItem>
                   <MenuItem value="Female">Female</MenuItem>
@@ -328,7 +387,7 @@ const EmployeeForm = () => {
                   value={formData.MarriedStatus}
                   onChange={handleChange}
                   variant="outlined"
-                  sx={{ fontSize: 16, backgroundColor: '#F5F5F5' }}
+                  sx={{ fontSize: 16, backgroundColor: "#F5F5F5" }}
                 >
                   <MenuItem value="Married">Married</MenuItem>
                   <MenuItem value="UnMarried">UnMarried</MenuItem>
@@ -411,11 +470,11 @@ const EmployeeForm = () => {
                 type="submit"
                 fullWidth
                 sx={{
-                  padding: '10px 0',
+                  padding: "10px 0",
                   fontSize: 16,
-                  fontWeight: 'bold',
-                  backgroundColor: '#3f51b5',
-                  '&:hover': { backgroundColor: '#303f9f' },
+                  fontWeight: "bold",
+                  backgroundColor: "#3f51b5",
+                  "&:hover": { backgroundColor: "#303f9f" },
                 }}
               >
                 Add Employee

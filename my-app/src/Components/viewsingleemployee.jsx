@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-const {API_URL_PROD} = process.env;
+const { API_URL_PROD } = process.env;
 
 const EmployeeDetails = () => {
   const [empID, setEmpID] = useState("");
@@ -17,7 +17,9 @@ const EmployeeDetails = () => {
     }
 
     try {
-      const response = await axios.get(`https://ems-be-v1.onrender.com/api/singleemployee/empID/${empID}`);
+      const response = await axios.get(
+        `https://ems-be-v1.onrender.com/api/singleemployee/empID/${empID}`
+      );
       setEmployee(response.data);
       setUpdatedEmployee(response.data);
       setError("");
@@ -63,8 +65,15 @@ const EmployeeDetails = () => {
 
     // Ensure retirement date is set to the LAST day of the month
     if (newRetirementDate) {
-      newRetirementDate = new Date(newRetirementDate.getFullYear(), newRetirementDate.getMonth() + 1, 0);
-      setUpdatedEmployee((prevState) => ({ ...prevState, RetirementDate: newRetirementDate }));
+      newRetirementDate = new Date(
+        newRetirementDate.getFullYear(),
+        newRetirementDate.getMonth() + 1,
+        0
+      );
+      setUpdatedEmployee((prevState) => ({
+        ...prevState,
+        RetirementDate: newRetirementDate,
+      }));
     }
   };
 
@@ -87,7 +96,9 @@ const EmployeeDetails = () => {
   // Delete Employee
   const deleteEmployee = async () => {
     try {
-      await axios.delete(`https://ems-be-v1.onrender.com/api/employee/empID/${empID}`);
+      await axios.delete(
+        `https://ems-be-v1.onrender.com/api/employee/empID/${empID}`
+      );
       setEmployee(null);
       setError("Employee deleted successfully.");
     } catch {
@@ -103,7 +114,14 @@ const EmployeeDetails = () => {
   }, [updatedEmployee.BirthDate, updatedEmployee.DateOfJoining]);
 
   return (
-    <div style={{ maxWidth: "500px", margin: "auto", padding: "20px", textAlign: "center" }}>
+    <div
+      style={{
+        maxWidth: "500px",
+        margin: "auto",
+        padding: "20px",
+        textAlign: "center",
+      }}
+    >
       <h2>Employee Details</h2>
 
       {/* Employee ID Input */}
@@ -114,7 +132,10 @@ const EmployeeDetails = () => {
         onChange={(e) => setEmpID(e.target.value)}
         style={{ padding: "8px", width: "70%", marginBottom: "10px" }}
       />
-      <button onClick={fetchEmployee} style={{ marginLeft: "10px", padding: "8px 15px" }}>
+      <button
+        onClick={fetchEmployee}
+        style={{ marginLeft: "10px", padding: "8px 15px" }}
+      >
         Submit
       </button>
 
@@ -122,15 +143,28 @@ const EmployeeDetails = () => {
 
       {/* Employee Details */}
       {employee && (
-        <div style={{ border: "1px solid #ccc", padding: "20px", marginTop: "20px" }}>
+        <div
+          style={{
+            border: "1px solid #ccc",
+            padding: "20px",
+            marginTop: "20px",
+          }}
+        >
           <h3>Employee Information</h3>
 
-          <p><strong>EmpID:</strong> {employee.EmpID}</p>
+          <p>
+            <strong>EmpID:</strong> {employee.EmpID}
+          </p>
 
           <p>
             <strong>Name:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="EmpName" value={updatedEmployee.EmpName} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="EmpName"
+                value={updatedEmployee.EmpName}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.EmpName
             )}
@@ -139,7 +173,12 @@ const EmployeeDetails = () => {
           <p>
             <strong>Designation:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="Designation" value={updatedEmployee.Designation} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="Designation"
+                value={updatedEmployee.Designation}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.Designation
             )}
@@ -148,7 +187,12 @@ const EmployeeDetails = () => {
           <p>
             <strong>Department:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="Department" value={updatedEmployee.Department} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="Department"
+                value={updatedEmployee.Department}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.Department
             )}
@@ -157,7 +201,12 @@ const EmployeeDetails = () => {
           <p>
             <strong>Company Name:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="CompanyName" value={updatedEmployee.CompanyName} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="CompanyName"
+                value={updatedEmployee.CompanyName}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.CompanyName
             )}
@@ -166,7 +215,12 @@ const EmployeeDetails = () => {
           <p>
             <strong>Employee Email:</strong>{" "}
             {isEditable ? (
-              <input type="email" name="EmployeeEmailID" value={updatedEmployee.EmployeeEmailID} onChange={handleInputChange} />
+              <input
+                type="email"
+                name="EmployeeEmailID"
+                value={updatedEmployee.EmployeeEmailID}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.EmployeeEmailID
             )}
@@ -183,7 +237,12 @@ const EmployeeDetails = () => {
           <p>
             <strong>Residence Address:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="ResidenceAddress" value={updatedEmployee.ResidenceAddress} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="ResidenceAddress"
+                value={updatedEmployee.ResidenceAddress}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.ResidenceAddress
             )}
@@ -192,23 +251,47 @@ const EmployeeDetails = () => {
           <p>
             <strong>Primary Contact Number:</strong>{" "}
             {isEditable ? (
-              <input type="text" name="PrimaryContactNumber" value={updatedEmployee.PrimaryContactNumber} onChange={handleInputChange} />
+              <input
+                type="text"
+                name="PrimaryContactNumber"
+                value={updatedEmployee.PrimaryContactNumber}
+                onChange={handleInputChange}
+              />
             ) : (
               employee.PrimaryContactNumber
             )}
           </p>
-
+          {/* Added UAN field */}
+          <p>
+            <strong>UAN Number:</strong>{" "}
+            {isEditable ? (
+              <input
+                type="text"
+                name="EmpName"
+                value={updatedEmployee.UAN}
+                onChange={handleInputChange}
+              />
+            ) : (
+              employee.EmpName
+            )}
+          </p>
+          {/* doj */}
           <p>
             <strong>Date of Joining:</strong>{" "}
             {isEditable ? (
               <input
                 type="date"
                 name="DateOfJoining"
-                value={updatedEmployee.DateOfJoining ? updatedEmployee.DateOfJoining.split("T")[0] : ""}
+                value={
+                  updatedEmployee.DateOfJoining
+                    ? updatedEmployee.DateOfJoining.split("T")[0]
+                    : ""
+                }
                 onChange={handleInputChange}
               />
             ) : (
-              employee.DateOfJoining && new Date(employee.DateOfJoining).toLocaleDateString()
+              employee.DateOfJoining &&
+              new Date(employee.DateOfJoining).toLocaleDateString()
             )}
           </p>
 
@@ -218,11 +301,16 @@ const EmployeeDetails = () => {
               <input
                 type="date"
                 name="BirthDate"
-                value={updatedEmployee.BirthDate ? updatedEmployee.BirthDate.split("T")[0] : ""}
+                value={
+                  updatedEmployee.BirthDate
+                    ? updatedEmployee.BirthDate.split("T")[0]
+                    : ""
+                }
                 onChange={handleInputChange}
               />
             ) : (
-              employee.BirthDate && new Date(employee.BirthDate).toLocaleDateString()
+              employee.BirthDate &&
+              new Date(employee.BirthDate).toLocaleDateString()
             )}
           </p>
 
@@ -232,31 +320,55 @@ const EmployeeDetails = () => {
               <input
                 type="date"
                 name="RetirementDate"
-                value={updatedEmployee.RetirementDate ? new Date(updatedEmployee.RetirementDate).toISOString().split("T")[0] : ""}
+                value={
+                  updatedEmployee.RetirementDate
+                    ? new Date(updatedEmployee.RetirementDate)
+                        .toISOString()
+                        .split("T")[0]
+                    : ""
+                }
                 onChange={handleInputChange}
               />
+            ) : updatedEmployee.RetirementDate ? (
+              new Date(updatedEmployee.RetirementDate).toLocaleDateString()
             ) : (
-              updatedEmployee.RetirementDate ? new Date(updatedEmployee.RetirementDate).toLocaleDateString() : ""
+              ""
             )}
           </p>
 
           {/* Edit and Delete Buttons */}
           {isEditable ? (
             <>
-              <button onClick={updateEmployee} style={{ padding: "8px 15px", marginRight: "10px" }}>
+              <button
+                onClick={updateEmployee}
+                style={{ padding: "8px 15px", marginRight: "10px" }}
+              >
                 Save
               </button>
-              <button onClick={() => setIsEditable(false)} style={{ padding: "8px 15px" }}>
+              <button
+                onClick={() => setIsEditable(false)}
+                style={{ padding: "8px 15px" }}
+              >
                 Cancel
               </button>
             </>
           ) : (
-            <button onClick={() => setIsEditable(true)} style={{ padding: "8px 15px", marginRight: "10px" }}>
+            <button
+              onClick={() => setIsEditable(true)}
+              style={{ padding: "8px 15px", marginRight: "10px" }}
+            >
               Edit
             </button>
           )}
 
-          <button onClick={deleteEmployee} style={{ padding: "8px 15px", backgroundColor: "red", color: "white" }}>
+          <button
+            onClick={deleteEmployee}
+            style={{
+              padding: "8px 15px",
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
             Delete
           </button>
         </div>
