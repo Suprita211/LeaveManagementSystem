@@ -109,13 +109,13 @@ const AbsentList = () => {
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
       <Typography variant="h4" gutterBottom align="center">
-        Absent Management
+        Absent Record
       </Typography>
 
       {/* Form */}
-      <Paper sx={{ p: 3, mb: 3 }}>
+      <Paper sx={{ p: 1, mb: 1 , textAlign: "center" }}>
         <Typography variant="h6">
-          {editingId ? "Edit" : "Add"} Absent Record
+          {editingId ? "Edit" : "Add"} Absent days
         </Typography>
         <form onSubmit={handleSubmit}>
           <TextField

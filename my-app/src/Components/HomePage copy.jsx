@@ -22,15 +22,15 @@ const menuItems = [
   { text: "View All employees", path: "/emplist" },
   { text: "Add bank Details", path: "/addbank" },
   { text: "View bank Details", path: "/bankdetails" },
-  { text: "Update Employee From List", path: "/view-employee" },
+  { text: "Update Employee", path: "/view-employee" },
   { text: "Update Single Employee", path: "/updateEmployee" },
   { text: "Update Salary Details", path: "/emp-salary" },
   { text: "Apply For Leave", path: "/emp-leaveform" },
   // { text: 'Leave Applications', path: '/leave-applications' },
-  { text: "Download Salary", path: "/save-salaries" },
-  { text: "See all Rejected leaves", path: "/EmpLeaveStatus" },
-  { text: "Add Absent", path: "/addabsent" },
-  { text: "Add Holiday", path: "/AddHoliday" },
+  { text: "Download Salary Slip", path: "/save-salaries" },
+  { text: "View Rejected leaves", path: "/EmpLeaveStatus" },
+  { text: "Add Absent days", path: "/addabsent" },
+  { text: "Add Holidays", path: "/AddHoliday" },
 ];
 
 const HomePage = () => {
@@ -50,7 +50,9 @@ const HomePage = () => {
       <Drawer
         variant="permanent"
         sx={{
-          marginTop: "-4rem",
+          cursor : "pointer",
+          marginTop: "-6rem",
+          // border : "2px solid grey",
           width: 240,
           flexShrink: 0,
           "& .MuiDrawer-paper": { width: 240, boxSizing: "border-box" },
@@ -60,7 +62,7 @@ const HomePage = () => {
         <List>
           {menuItems.map((item) => (
             <ListItem
-              button
+              button cursor
               key={item.text}
               onClick={() => navigate(item.path)}
             >

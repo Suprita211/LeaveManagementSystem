@@ -12,10 +12,10 @@ const HomePage = () => {
       <div className="row vh-100">
         {/* Left Section - Admin Login */}
         <div className="col-md-6 admin-section d-flex flex-column justify-content-center align-items-center">
-          <h2 className="mb-4">Admin Panel</h2>
-          <p className="text-center">Manage employee records and leave requests.</p>
+          <h2 className="mb-4">Leave Management</h2>
+          <p className="text-center">Manage and update employee leave requests.</p>
           <button
-            className="btn btn-danger mt-3 px-4 py-2"
+            className="btn btn-success mt-3 px-4 py-2"
             onClick={() => navigate("/admin/login")}
           >
             Admin Login
@@ -24,20 +24,20 @@ const HomePage = () => {
 
         {/* Right Section - Employee Login & Signup */}
         <div className="col-md-6 employee-section d-flex flex-column justify-content-center align-items-center">
-          <h2 className="mb-4">Employee Portal</h2>
-          <p className="text-center">Access your leave details, salary, and more.</p>
+          <h2 className="mb-4">Salary Management</h2>
+          <p className="text-center">Manage leave , salary and Employees</p>
           <div className="d-flex gap-3">
             <button
               className="btn btn-primary px-4 py-2"
               onClick={() => navigate("/employee/login")}
             >
-              Employee Login
+              Login
             </button>
             <button
               className="btn btn-success px-4 py-2"
               onClick={() => navigate("/employee/signup")}
             >
-              Employee Signup
+              Signup
             </button>
           </div>
         </div>

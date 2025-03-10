@@ -65,7 +65,7 @@ const SignInPage = () => {
       <Grid item xs={6} container justifyContent="center" alignItems="center">
         <Container component="main" maxWidth="xs">
           <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h5" gutterBottom>Employee Sign In</Typography>
+            <Typography variant="h5" gutterBottom>Employee/Admin Sign In</Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
                 label="Email"
@@ -102,13 +102,13 @@ const SignInPage = () => {
               </Button>
             </Box>
             <Grid container justifyContent="space-between" sx={{ mt: 2 }}>
-              <Grid item>
+              {/* <Grid item>
                 <Typography variant="body2" color="text.secondary">
                   Default user type: <strong>user</strong>
                 </Typography>
-              </Grid>
+              </Grid> */}
               <Grid item>
-                <Link href="/signup" variant="body2">
+                <Link href="/employee/signup" variant="body2">
                   Don't have an account? Sign Up
                 </Link>
               </Grid>

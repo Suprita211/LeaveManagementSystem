@@ -75,7 +75,7 @@ const SignUpPage = () => {
             }}
           >
             <Typography variant="h5" gutterBottom>
-              Sign Up
+               Employee Sign Up
             </Typography>
 
             <Box
@@ -136,7 +136,7 @@ const SignUpPage = () => {
             <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
               <Grid item>
                 <Typography variant="body2" color="text.secondary">
-                  Already have an account? <a href="/signin">Sign In</a>
+                  Already have an account? <a href="/employee/login">Sign In</a>
                 </Typography>
               </Grid>
             </Grid>
