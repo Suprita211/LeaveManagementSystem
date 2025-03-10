@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
   EmpID: {
     type: String,
     required: true, // Ensure EmpID is stored
-    ref: 'EmpMaster' // Reference to EmpMaster collection
+    // ref: 'EmpMaster' // Reference to EmpMaster collection
   },
   password: {
     type: String,

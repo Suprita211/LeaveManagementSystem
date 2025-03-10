@@ -7,41 +7,53 @@ exports.register = async (req, res) => {
   const { EmployeeEmailID, password, usertype } = req.body;
 
   try {
-    // Check if the employee exists in EmpMaster
-    const employee = await EmpMaster.findOne({ EmployeeEmailID });
+    // Check if EmployeeEmailID is provided
+    if (!EmployeeEmailID || !password) {
+      return res.status(400).json({ message: 'EmployeeEmailID and password are required' });
+    }
+
+    // Find employee in EmpMaster
+    let employee = await EmpMaster.findOne({  EmployeeEmailID });
+    console.log(employee);
+
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found in master records' });
     }
 
+    // Ensure EmpID exists in the employee record
+    if (!employee.EmpID) {
+      console.error(`EmpID not found for EmployeeEmailID: ${EmployeeEmailID}`);
+      return res.status(500).json({ message: 'EmpID not found for the employee' });
+    }
+
     // Check if the user is already registered
-    const existingUser = await User.findOne({ EmployeeEmailID });
+    const existingUser = await User.findOne({ where: { EmployeeEmailID } });
+
     if (existingUser) {
       return res.status(400).json({ message: 'User already registered' });
     }
 
-    // Create new user with EmpID fetched from EmpMaster
-    console.log(EmployeeEmailID, password, EmpID , usertype);
-    const newUser = new User({
+    // Create new user with EmpID
+    const newUser = await User.create({
       EmployeeEmailID,
       EmpID: employee.EmpID, // Fetch and store EmpID
       password,
       usertype: usertype || 'user' // Default usertype is 'user'
     });
 
-    await newUser.save();
-
-    res.status(201).json({ 
+    return res.status(201).json({
       message: 'User registered successfully',
       EmployeeEmailID,
       EmpID: employee.EmpID,
       EmpName: employee.EmpName
     });
+
   } catch (error) {
     console.error("Error during registration:", error);
-
-    res.status(500).json({ message: error.message });
+    return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
 
 
 exports.login = async (req, res) => {

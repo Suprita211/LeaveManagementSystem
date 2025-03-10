@@ -35,7 +35,7 @@ const SignUpPage = () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        `https://ems-be-v1.onrender.com/auth/register`,
+        `http://localhost:8080/auth/register`,
         {
           EmployeeEmailID,
           password,

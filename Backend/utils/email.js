@@ -1459,7 +1459,7 @@ const sanctionStartY = fieldsStartY + 165; // Move sanctioning section higher
   writeStream.on('finish', async () => {
     const mailOptions = {
       from: 'suprita213@gmail.com',
-      to: [employeeEmail, 'it.pioneergeoscience@gmail.com'],
+      to: [employeeEmail, 'it.pioneergeoscience@gmail.com','pioneergroup.acct@gmail.com'],
       subject: `Leave Request ${leaveRequest.approvalStatus}`,
       text: `Your leave request has been ${leaveRequest.approvalStatus}. See attached PDF.`,
       attachments: [
