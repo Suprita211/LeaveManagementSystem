@@ -34,7 +34,7 @@ const ViewSingleEmployee = () => {
 
   // Update Employee Details
   const updateEmployee = () => {
-    axios.put(`http://localhost:8080/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
+    axios.put(`https://ems-be-v1.onrender.com/api/empID/${updatedEmployee.EmpID}`, updatedEmployee)
       .then((response) => {
         setEmployee(response.data);
         alert('Employee details updated successfully.');
