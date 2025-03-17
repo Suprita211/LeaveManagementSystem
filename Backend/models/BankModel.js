@@ -27,7 +27,7 @@ const BankModelSchema = new mongoose.Schema({
     paymentMode:{
         type : String,
         required : false,
-        enum: ['NEFT', 'RTGS', 'IMPS'],
+        enum: ['NEFT', 'RTGS', 'IMPS' , 'CHEQUE' , 'CASH'],
     },
 });
 

@@ -6,27 +6,27 @@ const empMasterSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      maxlength: 8,
+      maxlength: 10,
     },
     EmpName: {
       type: String,
       required: true,
-      maxlength: 21,
+      maxlength: 40,
     },
     Designation: {
       type: String,
       required: true,
-      maxlength: 20,
+      maxlength: 45,
     },
     Department: {
       type: String,
       required: true,
-      maxlength: 20, // Adjust as needed
+      maxlength: 45, // Adjust as needed
     },
     CompanyName: {
       type: String,
       required: true,
-      maxlength: 50,
+      maxlength: 70,
     },
     EmployeeEmailID: {
       type: String,
@@ -90,7 +90,7 @@ const empMasterSchema = new mongoose.Schema(
     },
     GuardianSpouseName: {
       type: String,
-      maxlength: 21,
+      maxlength: 40,
     },
     RetirementDate: {
       type: Date,

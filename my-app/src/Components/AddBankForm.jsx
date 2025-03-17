@@ -42,6 +42,8 @@ const BankDetailsForm = () => {
                     <MenuItem value="NEFT">NEFT</MenuItem>
                     <MenuItem value="RTGS">RTGS</MenuItem>
                     <MenuItem value="IMPS">IMPS</MenuItem>
+                    <MenuItem value="CHEQUE">CHEQUE</MenuItem>
+                    <MenuItem value="CASH">CASH</MenuItem>
                 </TextField>
                 <Button type="submit" variant="contained" color="primary" fullWidth>
                     Submit

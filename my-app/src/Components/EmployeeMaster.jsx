@@ -92,7 +92,7 @@ const EmployeeForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`https://ems-be-v1.onrender.com/api`, formData);
+      const response = await axios.post(`http://localhost:8080/api`, formData);
       
       if (response.status === 201) {
         console.log("Employee added:", formData);
@@ -178,7 +178,7 @@ const EmployeeForm = () => {
                 value={formData.EmpName}
                 onChange={handleChange}
                 required
-                inputProps={{ maxLength: 21 }}
+                inputProps={{ maxLength: 40 }}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -193,7 +193,7 @@ const EmployeeForm = () => {
                 value={formData.CompanyName}
                 onChange={handleChange}
                 required
-                inputProps={{ maxLength: 20 }}
+                inputProps={{ maxLength: 70 }}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -208,7 +208,7 @@ const EmployeeForm = () => {
                 value={formData.Designation}
                 onChange={handleChange}
                 required
-                inputProps={{ maxLength: 6 }}
+                inputProps={{ maxLength: 45 }}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -223,7 +223,7 @@ const EmployeeForm = () => {
                 value={formData.Department}
                 onChange={handleChange}
                 required
-                inputProps={{ maxLength: 10 }}
+                inputProps={{ maxLength: 45 }}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
@@ -238,7 +238,7 @@ const EmployeeForm = () => {
                 value={formData.ResidenceAddress}
                 onChange={handleChange}
                 required
-                inputProps={{ maxLength: 40 }}
+                inputProps={{ maxLength: 180 }}
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
