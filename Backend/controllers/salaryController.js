@@ -301,6 +301,12 @@ function getCurrentMonthName() {
   return new Date().toLocaleString("default", { month: "long" });
 }
 
+function getLastMonthName() {
+  const date = new Date();
+  date.setMonth(date.getMonth() - 1);
+  return date.toLocaleString("default", { month: "long" });
+}
+
 function getCurrentYear() {
   return new Date().getFullYear();
 }
@@ -629,7 +635,7 @@ const generateSalary = async (req, res) => {
       /* Ensure only 2 rows on the left and 2 on the right */
       .table .th:nth-child(1),
       .table .th:nth-child(4) {
-        width: 24vw;
+        width: 26vw;
         /* Left column */
       }
 
@@ -757,7 +763,7 @@ const generateSalary = async (req, res) => {
         <div class="grid-container">
           <div>Employee Name</div>
           <div>: &nbsp; ${employee.EmpName}</div>
-          <div>Pay period</div>
+          <div>Pay Period</div>
           <div>: &nbsp; ${month}
                   ${getCurrentYear()}</div>
         </div>
@@ -766,14 +772,14 @@ const generateSalary = async (req, res) => {
           <div>: &nbsp; ${employee.Designation}</div>
           <div>Days Worked</div>
           <div>: &nbsp; ${
-            getMonthNumberAndDays(getCurrentMonthName()).daysInMonth -
+            (getMonthNumberAndDays(getLastMonthName()).daysInMonth) -
             absentDays
           }</div>
         </div>
         <div class="grid-container">
           <div>Department</div>
           <div>: &nbsp; ${employee.Department}</div>
-          <div>UAN Number</div>
+          <div>PAN Number</div>
           <div>: &nbsp; ${employee.PANNumber}</div>
         </div>
       </div>
@@ -812,7 +818,7 @@ const generateSalary = async (req, res) => {
             ).toFixed(2)}&nbsp;</td>
           </tr>
           <tr class="tr">
-            <td class="th">&nbsp;House rent Allowance (HRA)</td>
+            <td class="th">&nbsp;House Rent Allowance (HRA)</td>
             <td class="th">${(
               Math.round(salaryData.income.hra * 100) / 100
             ).toFixed(2)}&nbsp;</td>
@@ -850,7 +856,7 @@ const generateSalary = async (req, res) => {
               Math.round(salaryData.income.incentive * 100) / 100
             ).toFixed(2)}&nbsp;</td>
             <td class="th"></td>
-            <td class="th">&nbsp;Other deductions</td>
+            <td class="th">&nbsp;Other Deductions</td>
             <td class="th">${(
               Math.round(salaryData.deductions.others * 100) / 100
             ).toFixed(2)}&nbsp;</td>
@@ -1026,10 +1032,11 @@ const saveSalaries = async (req, res) => {
         basic + hra + da + convence + medical + incentive + advance + others
       ).toFixed(2);
 
+      esicalculate = basic + da + hra + convence + medical;
       // Calculate deductions
-      const cpf = parseFloat(Math.min(((basic + da) * 0.12, 1800)));
-      const esi = parseFloat((basic + da + hra + convence + medical) * 0.0075);
-      let prof_tax = parseFloat(calculatePT(basic));
+      const cpf = Math.min(((basic + da) * 0.12),1800);
+      const esi = esicalculate > 20000 ? 0 : parseFloat(esicalculate * 0.0075);
+      let prof_tax = parseFloat(calculatePT(grossSalary));
       let tds = 0,
         advance_deduction = 0,
         others_deduction = 0;

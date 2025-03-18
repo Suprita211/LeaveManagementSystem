@@ -30,7 +30,7 @@ const empMasterSchema = new mongoose.Schema(
     },
     EmployeeEmailID: {
       type: String,
-      match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
+      // match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
 
     AadharNumber: {
