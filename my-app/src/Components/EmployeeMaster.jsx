@@ -36,7 +36,7 @@ const EmployeeForm = () => {
     ML: 4,
     UAN: "",
     basic: 0,
-    EmploymentType : ""
+    EmploymentType: "",
   });
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
@@ -94,7 +94,7 @@ const EmployeeForm = () => {
 
     try {
       const response = await axios.post(`http://localhost:8080/api`, formData);
-      
+
       if (response.status === 201) {
         console.log("Employee added:", formData);
         alert("Employee added successfully");
@@ -121,13 +121,13 @@ const EmployeeForm = () => {
           ML: 0,
           UAN: "",
           basic: 0,
-          EmploymentType : ""
+          EmploymentType: "",
         });
       }
     } catch (error) {
       console.error("Error adding employee:", error);
       alert(
-        "There was an error adding the employee. Please check all the fields\n Email should be name@domain.com \n Aadhar number should be 12 digits \n Pan number should be in 10 digit format"
+        "There was an error adding the employee. Please check all the fields\n Mobile number should be of 10 digits \n Email should be name@domain.com \n Aadhar number should be 12 digits \n Pan number should be in 10 digit with proper format"
       );
     }
   };
@@ -413,20 +413,19 @@ const EmployeeForm = () => {
 
             {/* Employment Type */}
             <Grid item xs={12} sm={3}>
-  <FormControl variant="outlined" fullWidth>
-    <InputLabel>Employment Type</InputLabel>
-    <Select
-      name="EmploymentType"
-      value={formData.EmploymentType}
-      onChange={handleChange}
-      label="Employment Type"
-    >
-      <MenuItem value="Contractual">Contractual</MenuItem>
-      <MenuItem value="Permanent">Permanent</MenuItem>
-    </Select>
-  </FormControl>
-</Grid>
-
+              <FormControl variant="outlined" fullWidth>
+                <InputLabel>Employment Type</InputLabel>
+                <Select
+                  name="EmploymentType"
+                  value={formData.EmploymentType}
+                  onChange={handleChange}
+                  label="Employment Type"
+                >
+                  <MenuItem value="Contractual">Contractual</MenuItem>
+                  <MenuItem value="Permanent">Permanent</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
             {/* Basic */}
             <Grid item xs={12} sm={3}>

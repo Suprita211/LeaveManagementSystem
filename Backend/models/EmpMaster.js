@@ -54,6 +54,7 @@ const empMasterSchema = new mongoose.Schema(
     PrimaryContactNumber: {
       type: String,
       required: true,
+      match: [/^\d{10}$/, "Mobile number must be 10 digits"],
     },
     SecondaryContactNumber: {
       type: String,

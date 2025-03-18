@@ -40,7 +40,7 @@ const SignUpPage = () => {
       });
 
       setSuccessMessage("Account created successfully! Redirecting...");
-      setTimeout(() => navigate("/signin"), 2000); // Redirect after success
+      setTimeout(() => navigate("/employee/login"), 2000); // Redirect after success
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed.");
     } finally {
