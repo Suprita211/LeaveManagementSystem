@@ -27,7 +27,7 @@ const ApprovedLeaveList = () => {
         }
       } catch (error) {
         console.error("Error fetching approved leaves:", error);
-        setError("Failed to fetch data. Please check your connection.");
+       
       }
     };
 
