@@ -131,7 +131,7 @@ const EmployeeList = () => {
                 align="center"
                 sx={{ fontWeight: "bold", color: "#2e3b55" }}
               >
-                SL
+                ML
               </TableCell>
 
               <TableCell

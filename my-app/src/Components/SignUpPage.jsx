@@ -10,10 +10,10 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-const {API_URL_PROD} = process.env;
+const { API_URL_PROD } = process.env;
 
 const SignUpPage = () => {
-  const [EmployeeEmailID, setEmployeeEmailID] = useState("");
+  const [PrimaryContactNumber, setPrimaryContactNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
@@ -34,13 +34,10 @@ const SignUpPage = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(
-        `https://ems-be-v1.onrender.com/auth/register`,
-        {
-          EmployeeEmailID,
-          password,
-        }
-      );
+      const response = await axios.post(`http://localhost:8080/auth/register`, {
+        PrimaryContactNumber,
+        password,
+      });
 
       setSuccessMessage("Account created successfully! Redirecting...");
       setTimeout(() => navigate("/signin"), 2000); // Redirect after success
@@ -74,10 +71,12 @@ const SignUpPage = () => {
               alignItems: "center",
             }}
           >
-                      <Typography variant="h5" gutterBottom>Salary Management System</Typography>
-            
             <Typography variant="h5" gutterBottom>
-               Employee Sign Up
+              Salary Management System
+            </Typography>
+
+            <Typography variant="h5" gutterBottom>
+              Employee Sign Up
             </Typography>
 
             <Box
@@ -86,12 +85,12 @@ const SignUpPage = () => {
               sx={{ width: "100%" }}
             >
               <TextField
-                label="Email Address"
-                type="email"
+                label="Phone Number"
+                type="text"
                 fullWidth
                 required
-                value={EmployeeEmailID}
-                onChange={(e) => setEmployeeEmailID(e.target.value)}
+                value={PrimaryContactNumber}
+                onChange={(e) => setPrimaryContactNumber(e.target.value)}
                 margin="normal"
               />
               <TextField

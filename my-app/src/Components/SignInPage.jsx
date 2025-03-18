@@ -12,7 +12,7 @@ const API_URL = process.env.API_URL_PROD;
 const SignInPage = () => {
   const { theme } = useTheme();
 
-  const [EmployeeEmailID, setEmployeeEmailID] = useState('');
+  const [PrimaryContactNumber, setPrimaryContactNumber] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -24,8 +24,8 @@ const SignInPage = () => {
     setError('');
 
     try {
-      const response = await axios.post(`https://ems-be-v1.onrender.com/auth/login`, {
-        EmployeeEmailID,
+      const response = await axios.post(`http://localhost:8080/auth/login`, {
+        PrimaryContactNumber,
         password
       });
       console.log("User Data from API:", response.data.user);
@@ -70,12 +70,12 @@ const SignInPage = () => {
             <Typography variant="h5" gutterBottom>Employee/Admin Sign In</Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
-                label="Email"
-                type="email"
+                label="Phone Number"
+                type="text"
                 fullWidth
                 required
-                value={EmployeeEmailID}
-                onChange={(e) => setEmployeeEmailID(e.target.value)}
+                value={PrimaryContactNumber}
+                onChange={(e) => setPrimaryContactNumber(e.target.value)}
                 margin="normal"
                 autoFocus
               />

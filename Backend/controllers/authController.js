@@ -4,17 +4,17 @@ const User = require('../models/UserModel');
 const EmpMaster = require('../models/EmpMaster');
 
 exports.register = async (req, res) => {
-  const { EmployeeEmailID, password, usertype } = req.body;
+  const { PrimaryContactNumber, password, usertype } = req.body;
 
   try {
     // Check if EmployeeEmailID is provided
-    if (!EmployeeEmailID || !password) {
+    if (!PrimaryContactNumber || !password) {
       return res.status(400).json({ message: 'EmployeeEmailID and password are required' });
     }
 
     // Find employee in EmpMaster
-    let employee = await EmpMaster.findOne({  EmployeeEmailID });
-    console.log(employee);
+    let employee = await EmpMaster.findOne({  PrimaryContactNumber });
+    // console.log(employee);
 
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found in master records' });
@@ -22,12 +22,12 @@ exports.register = async (req, res) => {
 
     // Ensure EmpID exists in the employee record
     if (!employee.EmpID) {
-      console.error(`EmpID not found for EmployeeEmailID: ${EmployeeEmailID}`);
+      console.error(`EmpID not found for EmployeeEmailID: ${PrimaryContactNumber}`);
       return res.status(500).json({ message: 'EmpID not found for the employee' });
     }
 
     // Check if the user is already registered
-    const existingUser = await User.findOne({ where: { EmployeeEmailID } });
+    const existingUser = await User.findOne({ where: { PrimaryContactNumber } });
 
     if (existingUser) {
       return res.status(400).json({ message: 'User already registered' });
@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
 
     // Create new user with EmpID
     const newUser = await User.create({
-      EmployeeEmailID,
+      PrimaryContactNumber,
       EmpID: employee.EmpID, // Fetch and store EmpID
       password,
       usertype: usertype || 'user' // Default usertype is 'user'
@@ -43,7 +43,7 @@ exports.register = async (req, res) => {
 
     return res.status(201).json({
       message: 'User registered successfully',
-      EmployeeEmailID,
+      PrimaryContactNumber,
       EmpID: employee.EmpID,
       EmpName: employee.EmpName
     });
@@ -57,16 +57,16 @@ exports.register = async (req, res) => {
 
 
 exports.login = async (req, res) => {
-  const { EmployeeEmailID, password } = req.body;
+  const { PrimaryContactNumber, password } = req.body;
 
   try {
     // Validate input
-    if (!EmployeeEmailID || !password) {
+    if (!PrimaryContactNumber || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
 
     // Check user credentials
-    const user = await User.findOne({ EmployeeEmailID }).select('+password');
+    const user = await User.findOne({ PrimaryContactNumber }).select('+password');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -85,18 +85,18 @@ exports.login = async (req, res) => {
       { 
         userId: user._id,
         EmpID: user.EmpID,
-        email: user.EmployeeEmailID,
+        number: user.PrimaryContactNumber,
         usertype: user.usertype
       },
       process.env.JWT_SECRET,
-      { expiresIn: '8h' }
+      { expiresIn: '2h' }
     );
 
     res.status(200).json({
       token,
       user: {
         EmpID: user.EmpID,
-        email: user.EmployeeEmailID,
+        number: user.PrimaryContactNumber,
         usertype: user.usertype,
         // employeeDetails: employee
       }
