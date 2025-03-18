@@ -127,6 +127,9 @@ const ViewSingleEmployee = () => {
                 <Grid item xs={12}>
                   <TextField label="Secondary Contact" name="SecondaryContactNumber" value={updatedEmployee.SecondaryContactNumber || ''} fullWidth onChange={handleChange} variant="outlined" />
                 </Grid>
+                <Grid item xs={12}>
+                  <TextField label="Employment Type" name="EmploymentType" value={updatedEmployee.EmploymentType || ''} fullWidth onChange={handleChange} variant="outlined" />
+                </Grid>
                 {/* <Grid item xs={12}>
                   <TextField label="Date of Joining" name="DateOfJoining" value={updatedEmployee.DateOfJoining?.slice(0, 10) || ''} fullWidth onChange={handleChange} variant="outlined" type="date" InputLabelProps={{ shrink: true }} />
                 </Grid>

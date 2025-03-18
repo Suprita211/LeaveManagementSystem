@@ -545,7 +545,9 @@ const generateSalary = async (req, res) => {
       if (!bankData) {
         return res
           .status(404)
-          .json({message : `no bank details found for employee , ${employee.EmpID}`});
+          .json({
+            message: `no bank details found for employee , ${employee.EmpID}`,
+          });
       }
 
       function toFixed(value, precision) {
@@ -772,8 +774,7 @@ const generateSalary = async (req, res) => {
           <div>: &nbsp; ${employee.Designation}</div>
           <div>Days Worked</div>
           <div>: &nbsp; ${
-            (getMonthNumberAndDays(getLastMonthName()).daysInMonth) -
-            absentDays
+            getMonthNumberAndDays(getLastMonthName()).daysInMonth - absentDays
           }</div>
         </div>
         <div class="grid-container">
@@ -1018,33 +1019,54 @@ const saveSalaries = async (req, res) => {
 
     const salaryRecords = [];
 
-    for (let employee of employees) {
-      // Calculate income components
-      const basic = parseFloat(employee.basic || 0);
-      const hra = parseFloat(basic * 0.2);
-      const da = parseFloat(basic * 0.4);
-      const convence = parseFloat(basic * 0.2);
-      const medical = parseFloat(basic * 0.08333);
-      let incentive = 0,
-        advance = 0,
-        others = 0;
-      let grossSalary = parseFloat(
-        basic + hra + da + convence + medical + incentive + advance + others
-      ).toFixed(2);
+    let basic,hra,da,convence,medical,incentive,advance,others,cpf,esi,prof_tax,tds,advance_deduction,others_deduction,netSalary;
 
-      esicalculate = basic + da + hra + convence + medical;
-      // Calculate deductions
-      const cpf = Math.min(((basic + da) * 0.12),1800);
-      const esi = esicalculate > 20000 ? 0 : parseFloat(esicalculate * 0.0075);
-      let prof_tax = parseFloat(calculatePT(grossSalary));
-      let tds = 0,
-        advance_deduction = 0,
-        others_deduction = 0;
-      let totalDeductions = parseFloat(
-        cpf + esi + prof_tax + tds + advance_deduction + others_deduction
-      ).toFixed(2);
-      let netSalary = parseFloat(grossSalary - totalDeductions);
-      console.log("console", netSalary);
+    for (let employee of employees) {
+      if (employee.EmploymentType == "Permanent") {
+        // Calculate income components
+         basic = parseFloat(employee.basic || 0);
+         hra = parseFloat(basic * 0.2);
+         da = parseFloat(basic * 0.4);
+         convence = parseFloat(basic * 0.2);
+         medical = parseFloat(basic * 0.08333);
+         incentive = 0,
+          advance = 0,
+          others = 0;
+         grossSalary = parseFloat(
+          basic + hra + da + convence + medical + incentive + advance + others
+        ).toFixed(2);
+
+        esicalculate = basic + da + hra + convence + medical;
+        // Calculate deductions
+         cpf = Math.min((basic + da) * 0.12, 1800);
+         esi =
+          esicalculate > 20000 ? 0 : parseFloat(esicalculate * 0.0075);
+         prof_tax = parseFloat(calculatePT(grossSalary));
+         tds = 0,
+          advance_deduction = 0,
+          others_deduction = 0;
+         totalDeductions = parseFloat(
+          cpf + esi + prof_tax + tds + advance_deduction + others_deduction
+        ).toFixed(2);
+         netSalary = parseFloat(grossSalary - totalDeductions);
+        console.log("console", netSalary);
+      } else if (employee.EmploymentType == "Contractual") {
+        let basic = employee.basic;
+        let da = 0;
+        let hra = 0;
+        let medical = 0;
+        let convence = 0;
+        let advance = 0;
+        let others = 0;
+        let incentive = 0;
+        let cpf = 0;
+        let esi = 0;
+        let prof_tax = 0;
+        let tds = 0;
+        let advance_deduction = 0;
+        let others_deduction = 0;
+        let netSalary = employee.basic;
+      }
 
       const absentDays = await calculateAbsentDays(employee.EmpID, month);
       console.log("absent days total at last", absentDays);

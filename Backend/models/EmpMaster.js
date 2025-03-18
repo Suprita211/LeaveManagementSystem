@@ -98,6 +98,11 @@ const empMasterSchema = new mongoose.Schema(
       // required: true,
       // match: [/^\d{12}$/],
     },
+    EmploymentType : {
+      type : String,
+      required : true,
+      enum: ['Contractual' , 'Permanent'],
+    },
     basic: {
       type: Number,
       required: true,

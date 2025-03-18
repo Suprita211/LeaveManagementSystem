@@ -36,6 +36,7 @@ const EmployeeForm = () => {
     ML: 4,
     UAN: "",
     basic: 0,
+    EmploymentType : ""
   });
   const [error, setError] = useState(false);
   const [helperText, setHelperText] = useState("");
@@ -92,7 +93,7 @@ const EmployeeForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`https://ems-be-v1.onrender.com/api`, formData);
+      const response = await axios.post(`http://localhost:8080/api`, formData);
       
       if (response.status === 201) {
         console.log("Employee added:", formData);
@@ -120,6 +121,7 @@ const EmployeeForm = () => {
           ML: 0,
           UAN: "",
           basic: 0,
+          EmploymentType : ""
         });
       }
     } catch (error) {
@@ -390,7 +392,7 @@ const EmployeeForm = () => {
                   sx={{ fontSize: 16, backgroundColor: "#F5F5F5" }}
                 >
                   <MenuItem value="Married">Married</MenuItem>
-                  <MenuItem value="UnMarried">UnMarried</MenuItem>
+                  <MenuItem value="UnMarried">Unmarried</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -408,6 +410,23 @@ const EmployeeForm = () => {
                 InputProps={{ style: { fontSize: 16 } }}
               />
             </Grid>
+
+            {/* Employment Type */}
+            <Grid item xs={12} sm={3}>
+  <FormControl variant="outlined" fullWidth>
+    <InputLabel>Employment Type</InputLabel>
+    <Select
+      name="EmploymentType"
+      value={formData.EmploymentType}
+      onChange={handleChange}
+      label="Employment Type"
+    >
+      <MenuItem value="Contractual">Contractual</MenuItem>
+      <MenuItem value="Permanent">Permanent</MenuItem>
+    </Select>
+  </FormControl>
+</Grid>
+
 
             {/* Basic */}
             <Grid item xs={12} sm={3}>
@@ -436,7 +455,7 @@ const EmployeeForm = () => {
               />
             </Grid>
 
-            <Grid item xs={12} sm={3}>
+            {/* <Grid item xs={12} sm={3}>
               <TextField
                 label="Special Leave (SL)"
                 type="number"
@@ -447,7 +466,7 @@ const EmployeeForm = () => {
                 onChange={handleChange}
                 InputProps={{ style: { fontSize: 16 } }}
               />
-            </Grid>
+            </Grid> */}
 
             <Grid item xs={12} sm={3}>
               <TextField
