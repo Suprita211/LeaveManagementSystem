@@ -18,10 +18,10 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const menuItems = [
-  { text: "Add employee", path: "/empMaster" },
+  { text: "Add Employee", path: "/empMaster" },
   { text: "View All employees", path: "/emplist" },
-  { text: "Add bank Details", path: "/addbank" },
-  { text: "View bank Details", path: "/bankdetails" },
+  { text: "Add Bank Details", path: "/addbank" },
+  { text: "View Bank Details", path: "/bankdetails" },
   { text: "Update Employee", path: "/view-employee" },
   { text: "Update Single Employee", path: "/updateEmployee" },
   { text: "Update Salary Details", path: "/emp-salary" },

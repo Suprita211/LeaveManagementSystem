@@ -30,8 +30,6 @@ const empMasterSchema = new mongoose.Schema(
     },
     EmployeeEmailID: {
       type: String,
-      required: true,
-      unique: true,
       match: [/^\S+@\S+\.\S+$/, "Invalid email format"],
     },
 
@@ -98,7 +96,7 @@ const empMasterSchema = new mongoose.Schema(
     UAN: {
       type: String,
       // required: true,
-      // match: [/^\d{12}$/, "Aadhar number must be 12 digits"],
+      // match: [/^\d{12}$/],
     },
     basic: {
       type: Number,
