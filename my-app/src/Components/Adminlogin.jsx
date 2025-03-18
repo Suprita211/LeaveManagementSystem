@@ -47,6 +47,7 @@ const AdminLogin = () => {
 
     return (
         <div>
+            <h1 style={{textAlign: "center"}}>Leave Management System</h1>
             <h2>Admin Login</h2>
             {error && <p style={{ color: "red" }}>{error}</p>}
             <form onSubmit={handleSubmit}>
