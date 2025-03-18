@@ -45,7 +45,7 @@ const AddHoliday = () => {
 
   return (
     <div style={{ maxWidth: "400px", margin: "auto", padding: "20px", border: "1px solid #ccc", borderRadius: "8px" }}>
-      <h2>Add Holiday</h2>
+      <h2>Add Calendar Holidays</h2>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form onSubmit={handleSubmit}>
         <label>Date:</label>

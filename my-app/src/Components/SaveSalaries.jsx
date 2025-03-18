@@ -112,7 +112,7 @@ const SaveSalaries = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h5" sx={{ my: 2, textAlign: "center" }}>
-        Save Employee Salaries
+        Employee Salary Generation
       </Typography>
 
       <form onSubmit={handleSubmit}>

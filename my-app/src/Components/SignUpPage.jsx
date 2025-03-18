@@ -74,6 +74,8 @@ const SignUpPage = () => {
               alignItems: "center",
             }}
           >
+                      <Typography variant="h5" gutterBottom>Salary Management System</Typography>
+            
             <Typography variant="h5" gutterBottom>
                Employee Sign Up
             </Typography>

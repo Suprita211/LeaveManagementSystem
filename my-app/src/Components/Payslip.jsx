@@ -22,7 +22,7 @@ const Payslip = () => {
 
     return (
         <Container>
-            <Typography variant="h4" sx={{ mb: 2 }}>Salary Management</Typography>
+            <Typography variant="h4" sx={{ mb: 2 }}>Update Salary Info</Typography>
             <SearchBar onSearch={handleSearch} />
             {empID && (
                 <Box sx={{ mt: 2, p: 2, border: '1px solid #ccc', borderRadius: '8px' }}>

@@ -36,7 +36,7 @@ const ApprovedLeaveList = () => {
 
   return (
     <div style={{display: "flex", justifyContent: "center", alignItems: "center", flexDirection: "column"}}>
-      <h2>Approved Leave Applications</h2>
+      <h2>Rejected Leave Applications</h2>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
@@ -67,7 +67,7 @@ const ApprovedLeaveList = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>No approved leave applications found</td>
+              <td colSpan="7" style={{ textAlign: "center" }}>No rejected leave applications found</td>
             </tr>
           )}
         </tbody>

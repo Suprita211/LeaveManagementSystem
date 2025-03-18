@@ -52,6 +52,7 @@ const SignInPage = () => {
             {/* <Navbar /> */}
 
     <Grid container style={{ height: '100vh' }} className={theme}>
+      
       {/* Left side with the Logo */}
       <Grid item xs={6} container justifyContent="center" alignItems="center">
         <img
@@ -65,6 +66,7 @@ const SignInPage = () => {
       <Grid item xs={6} container justifyContent="center" alignItems="center">
         <Container component="main" maxWidth="xs">
           <Paper elevation={3} sx={{ padding: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Typography variant="h5" gutterBottom>Salary Management System</Typography>
             <Typography variant="h5" gutterBottom>Employee/Admin Sign In</Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
