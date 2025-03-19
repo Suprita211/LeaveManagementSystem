@@ -1051,21 +1051,21 @@ const saveSalaries = async (req, res) => {
          netSalary = parseFloat(grossSalary - totalDeductions);
         console.log("console", netSalary);
       } else if (employee.EmploymentType == "Contractual") {
-        let basic = employee.basic;
-        let da = 0;
-        let hra = 0;
-        let medical = 0;
-        let convence = 0;
-        let advance = 0;
-        let others = 0;
-        let incentive = 0;
-        let cpf = 0;
-        let esi = 0;
-        let prof_tax = 0;
-        let tds = 0;
-        let advance_deduction = 0;
-        let others_deduction = 0;
-        let netSalary = employee.basic;
+         basic = employee.basic;
+         da = 0;
+         hra = 0;
+         medical = 0;
+         convence = 0;
+         advance = 0;
+         others = 0;
+         incentive = 0;
+         cpf = 0;
+         esi = 0;
+         prof_tax = 0;
+         tds = 0;
+         advance_deduction = 0;
+         others_deduction = 0;
+         netSalary = employee.basic;
       }
 
       const absentDays = await calculateAbsentDays(employee.EmpID, month);
