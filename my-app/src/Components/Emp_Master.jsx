@@ -58,7 +58,7 @@ const EmployeeManager = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`http://localhost:8080/api/`, formData)
+    axios.post(`https://ems-be-v1.onrender.com/api/`, formData)
       .then(response => {
         setEmployees([...employees, response.data]);
         setFormData({
