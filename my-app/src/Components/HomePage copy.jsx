@@ -104,7 +104,7 @@ const HomePage = () => {
               <Typography variant="h6">Overview</Typography>
               {/* Add more details here (charts, tables, etc.) */}
               <Typography variant="h4">
-                Flow of program for generating Salary
+                Flow of program for Generating Salary
               </Typography>
               <Typography variant="body1">
                 1. Add Employee details(mandatory)
