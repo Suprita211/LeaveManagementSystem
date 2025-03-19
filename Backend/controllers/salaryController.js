@@ -577,7 +577,7 @@ const generateSalary = async (req, res) => {
     <title>PaySlip</title>
     <style>
         body{
-            font-family: Arial, Helvetica, sans-serif;
+        font-family:"Calibri", sans-serif;
         }
 
       .container {
@@ -592,11 +592,13 @@ const generateSalary = async (req, res) => {
         grid-template-columns: 1fr 6fr 1fr;
         /* gap: 10px; */
         align-items: center;
+                font-family:Arial, Helvetica, sans-serif;
         /* margin: 4vh */
       }
 
       .item {
         text-align: center;
+                font-family:Arial, Helvetica, sans-serif;
       }
 
       .item img {
@@ -608,6 +610,7 @@ const generateSalary = async (req, res) => {
       .subhead {
         display: flex;
         justify-content: center;
+                font-family:Arial, Helvetica, sans-serif;
         margin-bottom: 1rem;
         margin-top: -1rem;
       }
@@ -1040,7 +1043,7 @@ const saveSalaries = async (req, res) => {
         // Calculate deductions
          cpf = Math.min((basic + da) * 0.12, 1800);
          esi =
-          esicalculate > 20000 ? 0 : parseFloat(esicalculate * 0.0075);
+          esicalculate >= 21000 ? 0 : parseFloat(esicalculate * 0.0075);
          prof_tax = parseFloat(calculatePT(grossSalary));
          tds = 0,
           advance_deduction = 0,

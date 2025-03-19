@@ -14,7 +14,7 @@ import {
   Grid,
   Divider,
 } from "@mui/material";
-const {API_URL_PROD} = process.env;
+const { API_URL_PROD } = process.env;
 const EmployeeList = () => {
   const [employee, setEmployee] = useState([]);
   const [page, setPage] = useState(0);
@@ -87,6 +87,12 @@ const EmployeeList = () => {
                 align="center"
                 sx={{ fontWeight: "bold", color: "#2e3b55" }}
               >
+                Department
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
                 Residence Address
               </TableCell>
               <TableCell
@@ -100,6 +106,12 @@ const EmployeeList = () => {
                 sx={{ fontWeight: "bold", color: "#2e3b55" }}
               >
                 Secondary Contact
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
+                DOB
               </TableCell>
               <TableCell
                 align="center"
@@ -125,7 +137,30 @@ const EmployeeList = () => {
               >
                 Married
               </TableCell>
-              <TableCell align="center" sx={{ fontWeight: 'bold', color: '#2e3b55' }}>Guardian Name</TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
+                Guardian Name
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
+                Employment Type
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
+                UAN Number
+              </TableCell>
+              <TableCell
+                align="center"
+                sx={{ fontWeight: "bold", color: "#2e3b55" }}
+              >
+                Basic
+              </TableCell>
               {/* <TableCell align="center" sx={{ fontWeight: 'bold', color: '#2e3b55' }}>Guardian/Spouse Name</TableCell> */}
               <TableCell
                 align="center"
@@ -158,6 +193,9 @@ const EmployeeList = () => {
                   {employee.Designation || "-"}
                 </TableCell>
                 <TableCell align="center">
+                  {employee.Department || "-"}
+                </TableCell>
+                <TableCell align="center">
                   {employee.ResidenceAddress || "-"}
                 </TableCell>
                 <TableCell align="center">
@@ -165,6 +203,9 @@ const EmployeeList = () => {
                 </TableCell>
                 <TableCell align="center">
                   {employee.SecondaryContactNumber || "-"}
+                </TableCell>
+                <TableCell align="center">
+                  {new Date(employee.BirthDate).toLocaleDateString() || "-"}
                 </TableCell>
                 <TableCell align="center">
                   {new Date(employee.DateOfJoining).toLocaleDateString() || "-"}
@@ -179,8 +220,22 @@ const EmployeeList = () => {
                   {employee.MarriedStatus || "-"}
                 </TableCell>
                 {/* <TableCell align="center">{employee.GuardianName || '-'}</TableCell> */}
-                <TableCell align="center">{employee.GuardianSpouseName || '-'}</TableCell> 
-                                <TableCell align="center">{employee.ML || "-"}</TableCell>
+                <TableCell align="center">
+                  {employee.GuardianSpouseName || "-"}
+                </TableCell>
+
+                <TableCell align="center">
+                  {employee.EmploymentType || "-"}
+                </TableCell>
+
+                <TableCell align="center">
+                  {employee.UAN || "-"}
+                </TableCell>
+                <TableCell align="center">
+                  {employee.basic || "-"}
+                </TableCell>
+
+                <TableCell align="center">{employee.ML || "-"}</TableCell>
                 {/* <TableCell align="center">{employee.PL || "-"}</TableCell> */}
                 <TableCell align="center">{employee.CL || "-"}</TableCell>
                 {/* <TableCell align="center">{employee.EOL || "-"}</TableCell> */}
