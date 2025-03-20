@@ -929,9 +929,9 @@ const generateSalary = async (req, res) => {
       </div>
 
       <div class="footer">
-        <div><strong>Leave Balance:</strong> CL: ${employee.CL} | ML: ${
+        <!--<div><strong>Leave Balance:</strong> CL: ${employee.CL} | ML: ${
         employee.ML
-      }</div>
+      }</div>-->
         <div><strong>Remaining Adjusted Balance:</strong> Advance: ₹${
           salaryData.income.advance - salaryData.deductions.advance || 0
         }</div>
